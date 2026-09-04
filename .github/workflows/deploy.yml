@@ -1,0 +1,60 @@
+name: 🚀 Deploy to Linux Shared Hosting (CI/CD)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  web-deploy:
+    name: 📦 Sync & Deploy to Live Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check out repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # -------------------------------------------------------------
+      # OPTION 1: FTP / FTPS / SFTP DEPLOY (Universal for all Shared Hosting)
+      # Works on cPanel, Hostinger, GoDaddy, Bluehost, Namecheap, etc.
+      # -------------------------------------------------------------
+      - name: 📤 Deploy via FTP/FTPS to Shared Hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}       # e.g., ftp.yourdomain.com or server IP
+          username: ${{ secrets.FTP_USERNAME }}   # e.g., your cPanel / hosting username
+          password: ${{ secrets.FTP_PASSWORD }}   # e.g., your hosting FTP password
+          server-dir: ${{ secrets.FTP_SERVER_DIR || 'public_html/' }}
+          protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }} # 'ftp', 'ftps', or 'sftp'
+          dry-run: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/node_modules/**
+            **/scratch/**
+            **/hardware_erp.db-journal
+            README.md
+
+      # -------------------------------------------------------------
+      # Restart Passenger WSGI Python App (Zero-Downtime Reload)
+      # In cPanel Python App, touching tmp/restart.txt reloads the server
+      # -------------------------------------------------------------
+      - name: 🔄 Reload Python Passenger App via SSH (Optional)
+        if: env.SSH_HOST != ''
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd ${{ secrets.FTP_SERVER_DIR || 'public_html' }}
+            mkdir -p tmp
+            touch tmp/restart.txt
+            echo "✅ Passenger WSGI Python application reloaded successfully!"

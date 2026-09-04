@@ -1,0 +1,4 @@
+# PCWARE Enterprise uses Python Standard Library (http.server, sqlite3, json, socketserver)
+# No heavy external dependencies required.
+# If you plan to use Gemini AI API online, you can uncomment below:
+# google-generativeai>=0.8.0

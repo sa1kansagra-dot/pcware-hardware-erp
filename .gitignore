@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+
+# Database journal & temp files (keep hardware_erp.db tracked for initial seed or exclude if production db is maintained remotely)
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Antigravity & IDE
+.gemini/
+.system_generated/
+scratch/
+
+# OS
+.DS_Store
+Thumbs.db
