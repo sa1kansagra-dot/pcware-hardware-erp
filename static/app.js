@@ -4882,7 +4882,8 @@ function switchView(viewName) {
   const bottomNavBtns = {
     catalog: document.getElementById("mob-nav-btn-catalog"),
     builder: document.getElementById("mob-nav-btn-builder"),
-    track: document.getElementById("mob-nav-btn-track")
+    track: document.getElementById("mob-nav-btn-track"),
+    admin: document.getElementById("mob-nav-btn-admin")
   };
   Object.entries(bottomNavBtns).forEach(([k, btn]) => {
     if (!btn) return;

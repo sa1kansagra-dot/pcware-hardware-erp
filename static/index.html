@@ -265,8 +265,14 @@
             </div>
           </div>
 
-          <!-- Right Mobile Actions: Language + Account + Cart -->
+          <!-- Right Mobile Actions: Language + Admin ERP + Account + Cart -->
           <div class="flex items-center gap-1.5">
+            <!-- Mobile Admin ERP Button -->
+            <button type="button" onclick="switchView('admin')" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black text-xs flex items-center gap-1 shadow-md active:scale-95 cursor-pointer border border-amber-300" title="Open Staff & Admin ERP">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              <span>ERP</span>
+            </button>
+
             <!-- Mobile Language Switcher -->
             <div class="flex items-center bg-slate-800 p-0.5 rounded-md border border-slate-700 text-[10px] font-bold">
               <button type="button" id="btn-lang-en-mob" onclick="setLanguage('en')" class="px-1.5 py-0.5 rounded bg-[#232f3e] text-amber-400 font-bold">EN</button>
@@ -5708,8 +5714,14 @@
       <span class="text-[10px] mt-0.5">Account</span>
     </button>
 
-    <!-- Tab 5: Cart with live badge -->
-    <button type="button" onclick="toggleCartDrawer(true)" id="mob-nav-btn-cart" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl hover:text-white transition cursor-pointer active:scale-90 relative">
+    <!-- Tab 5: Admin ERP -->
+    <button type="button" onclick="switchView('admin')" id="mob-nav-btn-admin" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl hover:text-white transition cursor-pointer active:scale-90 text-amber-400 font-bold">
+      <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <span class="text-[10px] mt-0.5 font-bold text-amber-300">Admin ERP</span>
+    </button>
+
+    <!-- Tab 6: Cart with live badge -->
+    <button type="button" onclick="toggleCartDrawer(true)" id="mob-nav-btn-cart" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl hover:text-white transition cursor-pointer active:scale-90 relative">
       <div class="relative">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
         <span id="mob-bar-cart-badge" class="absolute -top-1.5 -right-2 bg-[#f08804] text-slate-950 font-black text-[9px] rounded-full w-4 h-4 flex items-center justify-center shadow-xs">0</span>
