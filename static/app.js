@@ -5821,6 +5821,24 @@ function renderProductsGrid() {
     const reviewsCount = 18 + ((p.id * 19) % 210);
 
     // Amazon-style ribbons
+    const catDisplayNames = {
+      laptop: "Laptop",
+      desktop: "Desktop PC",
+      aio: "All-in-One",
+      screen_accessory: "Monitor / Acc",
+      processor: "Processor",
+      antivirus_software: "Antivirus",
+      gpu: "Graphics Card",
+      motherboard: "Motherboard",
+      storage: "NVMe SSD",
+      ram: "RAM Memory",
+      cabinet: "Cabinet",
+      cooler: "Cooler",
+      workstation: "Workstation",
+      server: "Server"
+    };
+    const catLabel = catDisplayNames[p.category] || p.category;
+
     let badgeHtml = '';
     if (p.id % 7 === 1) {
       badgeHtml = `<span class="inline-block bg-[#232f3e] text-[#febd69] text-[10px] font-black uppercase px-2 py-0.5 rounded shadow-xs tracking-wider">Amazon's <span class="text-white">Choice</span></span>`;
@@ -5829,7 +5847,7 @@ function renderProductsGrid() {
     } else if (discountPct >= 18) {
       badgeHtml = `<span class="inline-block bg-[#cc0c39] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow-xs tracking-wider">Limited time deal</span>`;
     } else {
-      badgeHtml = `<span class="inline-block bg-slate-100 text-slate-700 text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider border border-slate-200">${escapeHtml(p.category)}</span>`;
+      badgeHtml = `<span class="inline-block bg-slate-100 text-slate-700 text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider border border-slate-200">${escapeHtml(catLabel)}</span>`;
     }
 
     return `
