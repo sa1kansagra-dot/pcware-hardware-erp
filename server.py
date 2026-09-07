@@ -2952,6 +2952,12 @@ def run_server():
     os.chdir(BASE_DIR)
     os.makedirs(STATIC_DIR, exist_ok=True)
     os.makedirs(BACKUPS_DIR, exist_ok=True)
+    try:
+        from database import init_db
+        init_db(force_reseed=False)
+        print("[Database] Successfully initialized database tables and seed staff data.")
+    except Exception as e:
+        print("[Database Warning] Database initialization exception:", e)
     ensure_daily_backup()
     # Bind to all interfaces (0.0.0.0) so browser can connect via localhost
     with socketserver.ThreadingTCPServer(("0.0.0.0", PORT), ERPRequestHandler) as httpd:
