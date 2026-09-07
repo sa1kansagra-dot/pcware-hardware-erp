@@ -4413,7 +4413,11 @@ function handleLocalMock(endpoint, method, data) {
 async function apiGet(endpoint) {
   if (window.location.protocol !== "file:") {
     try {
-      const res = await fetch("/api/" + endpoint);
+      const headers = {};
+      if (typeof state !== "undefined" && state.staffToken) {
+        headers["Authorization"] = "Bearer " + state.staffToken;
+      }
+      const res = await fetch("/api/" + endpoint, { headers });
       if (res.ok) return await res.json();
     } catch (e) {}
   }
@@ -4423,9 +4427,13 @@ async function apiGet(endpoint) {
 async function apiPost(endpoint, data) {
   if (window.location.protocol !== "file:") {
     try {
+      const headers = { "Content-Type": "application/json" };
+      if (typeof state !== "undefined" && state.staffToken) {
+        headers["Authorization"] = "Bearer " + state.staffToken;
+      }
       const res = await fetch("/api/" + endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify(data)
       });
       if (res.ok) return await res.json();
@@ -4437,9 +4445,13 @@ async function apiPost(endpoint, data) {
 async function apiPut(endpoint, data) {
   if (window.location.protocol !== "file:") {
     try {
+      const headers = { "Content-Type": "application/json" };
+      if (typeof state !== "undefined" && state.staffToken) {
+        headers["Authorization"] = "Bearer " + state.staffToken;
+      }
       const res = await fetch("/api/" + endpoint, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify(data)
       });
       if (res.ok) return await res.json();
@@ -4758,6 +4770,13 @@ const state = {
   cart: JSON.parse(localStorage.getItem("pcware_cart") || "[]"),
   currentView: "catalog",
   adminTab: "overview",
+  currentStaff: null,
+  staffToken: localStorage.getItem("pcware_staff_token") || null,
+  appliedReferral: null,
+  redeemPoints: false,
+  customerRewardBalance: 0,
+  customerReferralCode: '',
+  newProductPendingImages: [],
   pcBuilder: {
     processor: null,
     motherboard: null,
@@ -4783,6 +4802,7 @@ function initApp() {
   updateCartUI();
   setupInvoiceLineRowDefault();
   if (typeof updateCustomerHeaderUI === "function") updateCustomerHeaderUI();
+  if (typeof initStaffAuth === "function") initStaffAuth();
 
   const today = new Date().toISOString().split("T")[0];
   const nextYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
@@ -4804,6 +4824,10 @@ async function loadStoreSettings() {
 }
 
 function switchView(viewName) {
+  if (viewName === "admin" && !state.currentStaff) {
+    openStaffLoginModal("admin");
+    return;
+  }
   state.currentView = viewName;
   const views = ["catalog", "builder", "track", "book", "admin"];
   views.forEach(v => {
@@ -4857,7 +4881,13 @@ function switchView(viewName) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (viewName === "catalog") loadProducts();
-  if (viewName === "builder") renderPCBuilder();
+  if (viewName === "builder") {
+    if (state.builderMode === "diy") {
+      renderPCBuilder();
+    } else {
+      renderCTOConfigurator();
+    }
+  }
   if (viewName === "admin") {
     loadAdminStats();
     switchAdminTab(state.adminTab || "overview");
@@ -5384,7 +5414,7 @@ async function updateInquiryFulfillment(inqId, mode, trackingNo = "") {
 
 function switchAdminTab(tabName) {
   state.adminTab = tabName;
-  const tabs = ["overview", "inquiries_orders", "purchase_shortage", "accounts_ledger", "jobsheets", "inventory", "serials", "billing", "staff", "warehouses", "amc"];
+  const tabs = ["overview", "inquiries_orders", "purchase_shortage", "accounts_ledger", "jobsheets", "inventory", "serials", "billing", "staff", "warehouses", "amc", "referrals", "backup_restore"];
   tabs.forEach(t => {
     const panel = document.getElementById("admin-tab-" + t);
     const btn = document.getElementById("tab-btn-" + t);
@@ -5417,6 +5447,8 @@ function switchAdminTab(tabName) {
   if (tabName === "amc") loadAMCTable();
   if (tabName === "staff") renderStaffTab();
   if (tabName === "warehouses") loadWarehousesAndStocks();
+  if (tabName === "referrals") loadAdminReferrals();
+  if (tabName === "backup_restore") loadAdminBackups();
 }
 
 async function loadProducts() {
@@ -5693,7 +5725,7 @@ function resetAllFilters() {
   applyCatalogFilters();
 }
 
-let lightningTimerInterval = null;
+var lightningTimerInterval = null;
 function initLightningCountdown() {
   if (lightningTimerInterval) clearInterval(lightningTimerInterval);
   
@@ -5760,6 +5792,18 @@ function renderProductsGrid() {
   }
 
   container.innerHTML = state.filteredProducts.map(p => {
+    // Safe gallery images preparation
+    let gallery = [];
+    try {
+      gallery = typeof p.gallery_images === 'string' ? JSON.parse(p.gallery_images) : (p.gallery_images || []);
+    } catch(e) { gallery = []; }
+    if (!Array.isArray(gallery) || gallery.length === 0) {
+      gallery = [p.image_url || 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400'];
+    }
+    gallery = gallery.filter(Boolean);
+    if (gallery.length === 0) gallery = ['https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400'];
+    const safeGalleryJson = JSON.stringify(gallery).replace(/"/g, '&quot;');
+
     const isLowStock = p.stock_quantity <= p.low_stock_threshold && p.stock_quantity > 0;
     const isOutOfStock = p.stock_quantity <= 0;
     const isCustomizable = (p.category === "laptop" || p.category === "workstation");
@@ -5803,12 +5847,30 @@ function renderProductsGrid() {
           </span>
         </div>
 
-        <!-- Product Image Showcase with Subtle Zoom -->
-        <div class="relative h-44 sm:h-48 bg-slate-50/70 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3 border border-slate-100">
-          <img src="${p.image_url || 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400'}" alt="${escapeHtml(p.name)}" loading="lazy" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-          <span class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+        <!-- Product Image Showcase with Smooth Hover Slider & Gallery Scrubbing -->
+        <div class="relative h-44 sm:h-48 bg-slate-50/70 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3 border border-slate-100 cursor-pointer prod-gallery-card group/slider"
+             id="prod-gallery-${p.id}"
+             data-images="${safeGalleryJson}"
+             data-idx="0"
+             onmouseenter="handleProductGalleryHoverStart(${p.id}, this)"
+             onmouseleave="handleProductGalleryHoverStop(${p.id}, this)"
+             onmousemove="handleProductGalleryMouseMove(event, ${p.id}, this)">
+          
+          <img id="prod-img-${p.id}" src="${gallery[0]}" alt="${escapeHtml(p.name)}" loading="lazy" class="max-h-full max-w-full object-contain transition-all duration-300 transform group-hover/slider:scale-105 select-none">
+          
+          <span class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider pointer-events-none z-10">
             ${escapeHtml(p.brand)}
           </span>
+
+          ${gallery.length > 1 ? `
+            <span class="absolute top-2 right-2 bg-slate-900/75 backdrop-blur text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 opacity-80 group-hover/slider:opacity-100 transition z-10 pointer-events-none">
+              <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>${gallery.length} Photos</span>
+            </span>
+            <div id="prod-dots-${p.id}" class="absolute bottom-2 right-2 flex items-center gap-1 z-10 bg-slate-900/50 backdrop-blur px-1.5 py-0.5 rounded-full pointer-events-none">
+              ${gallery.map((_, i) => `<span class="prod-dot-${p.id} h-1.5 rounded-full transition-all duration-200 ${i === 0 ? 'bg-amber-400 w-3' : 'bg-white/60 w-1.5'}"></span>`).join('')}
+            </div>
+          ` : ''}
         </div>
 
         <!-- Product Details -->
@@ -5891,6 +5953,14 @@ function renderProductsGrid() {
                   <span>Customize RAM / SSD</span>
                 </button>
               ` : ''}
+
+              <!-- Flagship Dell CTO Workstation Button -->
+              ${p.category === 'workstation' || (p.name && p.name.toLowerCase().includes('precision')) ? `
+                <button type="button" onclick="openCTOFromProduct('dell-precision-9-t6')" class="w-full bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 text-indigo-900 border border-indigo-200 font-black text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
+                  <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                  <span>Configure To Order (Dell CTO)</span>
+                </button>
+              ` : ''}
             </div>
 
           </div>
@@ -5963,19 +6033,54 @@ function updateCartUI() {
   const container = document.getElementById("cart-items-container");
   const subtotalEl = document.getElementById("cart-subtotal");
   const grandTotalEl = document.getElementById("cart-grand-total");
+  const rowRefDisc = document.getElementById("cart-row-referral-disc");
+  const valRefDisc = document.getElementById("cart-referral-disc-val");
+  const rowPtsDisc = document.getElementById("cart-row-points-disc");
+  const valPtsDisc = document.getElementById("cart-points-disc-val");
+  const ptsBadge = document.getElementById("cart-available-pts-badge");
 
-  const totalAmount = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const refDiscount = state.appliedReferral ? Number(state.appliedReferral.discount_amount || 0) : 0;
+  
+  const availPoints = Number(state.customerRewardBalance || 0);
+  if (ptsBadge) ptsBadge.textContent = `${availPoints} Pts`;
 
-  if (subtotalEl) subtotalEl.textContent = "₹" + totalAmount.toLocaleString('en-IN');
-  if (grandTotalEl) grandTotalEl.textContent = "₹" + totalAmount.toLocaleString('en-IN');
+  let maxPointsDiscount = 0;
+  if (state.redeemPoints && availPoints > 0) {
+    const afterRef = Math.max(0, subtotal - refDiscount);
+    maxPointsDiscount = Math.min(availPoints, afterRef);
+  }
+
+  const netPayable = Math.max(0, subtotal - refDiscount - maxPointsDiscount);
+
+  if (subtotalEl) subtotalEl.textContent = "₹" + subtotal.toLocaleString('en-IN');
+  if (grandTotalEl) grandTotalEl.textContent = "₹" + netPayable.toLocaleString('en-IN');
+
+  if (rowRefDisc && valRefDisc) {
+    if (refDiscount > 0) {
+      rowRefDisc.classList.remove("hidden");
+      valRefDisc.textContent = `-₹${refDiscount.toLocaleString('en-IN')}`;
+    } else {
+      rowRefDisc.classList.add("hidden");
+    }
+  }
+
+  if (rowPtsDisc && valPtsDisc) {
+    if (maxPointsDiscount > 0) {
+      rowPtsDisc.classList.remove("hidden");
+      valPtsDisc.textContent = `-₹${maxPointsDiscount.toLocaleString('en-IN')}`;
+    } else {
+      rowPtsDisc.classList.add("hidden");
+    }
+  }
 
   if (!container) return;
 
   if (state.cart.length === 0) {
     container.innerHTML = `
       <div class="text-center py-12 text-slate-400">
-        <p class="font-medium">${t('cart_empty')}</p>
-        <p class="text-xs">${t('cart_empty_sub')}</p>
+        <p class="font-medium">${t('cart_empty') || 'તમારું કાર્ટ ખાલી છે'}</p>
+        <p class="text-xs">${t('cart_empty_sub') || 'પ્રોડક્ટ્સ ઉમેરો'}</p>
       </div>
     `;
     return;
@@ -6015,25 +6120,41 @@ async function placeOrder() {
     return;
   }
 
-  const totalAmount = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const refDiscount = state.appliedReferral ? Number(state.appliedReferral.discount_amount || 0) : 0;
+  const availPoints = Number(state.customerRewardBalance || 0);
+  const pointsRedeemed = state.redeemPoints ? Math.min(availPoints, Math.max(0, subtotal - refDiscount)) : 0;
+  const netPayable = Math.max(0, subtotal - refDiscount - pointsRedeemed);
 
   const payload = {
     customer_name: name,
     customer_phone: phone,
     customer_address: address,
     payment_method: paymentMethod,
-    total_amount: totalAmount,
+    total_amount: netPayable,
+    referral_code: state.appliedReferral ? state.appliedReferral.code : null,
+    referral_discount: refDiscount,
+    points_redeemed: pointsRedeemed,
     items: state.cart
   };
 
   const res = await apiPost("orders", payload);
   if (res && res.success) {
-    showToast("ઓર્ડર સફળ થયો! ઓર્ડર નં: " + res.order_number);
+    showToast(`ઓર્ડર સફળ થયો! નેટ બિલિંગ: ₹${netPayable.toLocaleString('en-IN')} (ઓર્ડર નં: ${res.order_number})`, "success");
     state.cart = [];
+    state.appliedReferral = null;
+    state.redeemPoints = false;
+    const cb = document.getElementById("cart-redeem-points-cb");
+    if (cb) cb.checked = false;
+    removeCartReferral();
     saveCart();
     updateCartUI();
     toggleCartDrawer(false);
     loadProducts();
+    if (phone) loadCustomerRewards(phone);
+    loadAdminReferrals();
+  } else {
+    showToast((res && res.error) || "ઓર્ડર પ્લેસ કરવામાં ક્ષતિ સર્જાઈ.", "error");
   }
 }
 
@@ -6065,6 +6186,1231 @@ function resetCompatibilityFilters() {
   renderPCBuilder();
   showToast(state.lang === 'en' ? "Compatibility filters cleared." : "કમ્પોનન્ટ ફિલ્ટર્સ રીસેટ કરવામાં આવ્યા.");
 }
+
+
+// ============================================================================
+// ENTERPRISE FEATURE: DELL-STYLE LIVE CTO WORKSTATION CONFIGURATOR ENGINE (VISUAL UX)
+// ============================================================================
+
+state.builderMode = 'cto'; // 'cto' or 'diy'
+
+state.cto = {
+  currentModelId: "dell-precision-9-t6",
+  currentAngle: "front",
+  currentEmiTenure: 12,
+  openCategories: {
+    cpu: true,
+    os: true,
+    gpu: true,
+    ram: false,
+    boot_ssd: false,
+    second_storage: false,
+    chassis_psu: false,
+    support: false,
+    security: false
+  },
+  models: {
+    "dell-precision-9-t6": {
+      id: "dell-precision-9-t6",
+      sku: "PW9T6260-USX",
+      name: "Dell Pro Precision 9 T6 AI Workstation",
+      tagline: "Intel Xeon 6500 Architecture • ISV Certified • Scale Up to 2400W SMPS",
+      basePrice: 185000,
+      image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=1000",
+      angles: {
+        front: {
+          title: "Front View & High-Speed I/O",
+          desc: "Honeycomb hexagonal acoustic mesh, 2x USB 3.2 Gen 2x2 Type-C (20Gbps), SD 4.0 Card Reader, Universal Audio Jack & Power Button.",
+          image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=1000"
+        },
+        interior: {
+          title: "Interior Dual-GPU Chamber & Liquid Cooling",
+          desc: "Direct airflow thermal tunnels, 16x DDR5 ECC RDIMM slots, PCIe Gen5 x16 dual-slot brackets, and closed-loop CPU liquid cooling.",
+          image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=1000"
+        },
+        rear: {
+          title: "Rear View, Dual 10GbE LAN & 2400W SMPS",
+          desc: "Dual 10GbE RJ-45 LAN ports, IPMI 2.0 remote server management, 6x USB 3.2 Type-A, and high-amperage 2400W Platinum power connector.",
+          image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1000"
+        }
+      },
+      defaults: {
+        cpu: "xeon-654",
+        os: "ubuntu-2404",
+        gpu: "rtx-a400",
+        ram: "ram-16-ecc",
+        boot_ssd: "ssd-512-sed",
+        second_storage: "sec-none",
+        chassis_psu: "psu-1400w",
+        support: "support-1yr-onsite",
+        security: "sec-none"
+      }
+    },
+    "titan-3d-ai": {
+      id: "titan-3d-ai",
+      sku: "PCW-TITAN-AI-3D",
+      name: "PCWARE Titan 3D & AI Enterprise Beast",
+      tagline: "Heavy 3D CGI, Blender & LLM Fine-Tuning • 1600W Titanium • Multi-GPU",
+      basePrice: 145000,
+      image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=1000",
+      angles: {
+        front: {
+          title: "Front View & High-Speed I/O",
+          desc: "High-airflow front panel, dual USB 3.2 Gen2 ports, audio jacks, and fast power switch.",
+          image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=1000"
+        },
+        interior: {
+          title: "Interior Dual-GPU Chamber & Liquid Cooling",
+          desc: "Custom 360mm AIO liquid loop, multi-PCIe slots, and high-density DDR5 memory slots.",
+          image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=1000"
+        },
+        rear: {
+          title: "Rear View & High-Output SMPS",
+          desc: "2.5GbE LAN, 8x USB ports, Optical Audio, and 1600W Titanium modular PSU.",
+          image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1000"
+        }
+      },
+      defaults: {
+        cpu: "core-i9-14900k",
+        os: "win11-pro-workstations",
+        gpu: "rtx-4000-ada",
+        ram: "ram-32-ecc",
+        boot_ssd: "ssd-1tb-gen4",
+        second_storage: "sec-2tb-sata",
+        chassis_psu: "psu-1400w",
+        support: "support-3yr-pro",
+        security: "sec-quickheal"
+      }
+    },
+    "compact-studio": {
+      id: "compact-studio",
+      sku: "PCW-STUDIO-SFF",
+      name: "PCWARE Precision Compact Studio",
+      tagline: "CAD, SolidWorks, Revit, Architecture • Whisper Silent • Low Footprint",
+      basePrice: 95000,
+      image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=1000",
+      angles: {
+        front: {
+          title: "Front Studio View",
+          desc: "Compact minimalist aluminum chassis with front USB 3.2 Type-C and card reader.",
+          image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=1000"
+        },
+        interior: {
+          title: "Interior Compact Architecture",
+          desc: "Low-profile cooling chambers, dual M.2 NVMe slots, and dedicated GPU airflow tunnel.",
+          image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=1000"
+        },
+        rear: {
+          title: "Rear Studio I/O",
+          desc: "Multiple 4K DisplayPort outputs, Gigabit LAN, and Gold-rated modular power connector.",
+          image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1000"
+        }
+      },
+      defaults: {
+        cpu: "core-i9-14900k",
+        os: "win11-pro-workstations",
+        gpu: "rtx-a400",
+        ram: "ram-32-ecc",
+        boot_ssd: "ssd-512-sed",
+        second_storage: "sec-none",
+        chassis_psu: "psu-1400w",
+        support: "support-1yr-onsite",
+        security: "sec-none"
+      }
+    }
+  },
+  presets: {
+    ai: {
+      name: "AI & Deep Learning Studio",
+      modelId: "dell-precision-9-t6",
+      toast_gu: "AI & ડીપ લર્નિંગ પ્રો પ્રીસેટ લાગુ કરવામાં આવ્યું!",
+      selections: {
+        cpu: "xeon-w7-2495x",
+        os: "ubuntu-2404",
+        gpu: "rtx-4000-ada",
+        ram: "ram-64-ecc",
+        boot_ssd: "ssd-2tb-gen4",
+        second_storage: "sec-none",
+        chassis_psu: "psu-2400w",
+        support: "support-3yr-pro",
+        security: "sec-none"
+      }
+    },
+    cad: {
+      name: "AutoCAD & Architecture Rig",
+      modelId: "dell-precision-9-t6",
+      toast_gu: "AutoCAD અને આર્કિટેક્ચર રિગ પ્રીસેટ લાગુ કરવામાં આવ્યું!",
+      selections: {
+        cpu: "core-i9-14900k",
+        os: "win11-pro-workstations",
+        gpu: "rtx-a400",
+        ram: "ram-32-ecc",
+        boot_ssd: "ssd-1tb-gen4",
+        second_storage: "sec-2tb-sata",
+        chassis_psu: "psu-1400w",
+        support: "support-1yr-onsite",
+        security: "sec-quickheal"
+      }
+    },
+    vfx: {
+      name: "8K Video & 3D CGI Beast",
+      modelId: "dell-precision-9-t6",
+      toast_gu: "8K વિડિયો એડિટિંગ અને 3D CGI પ્રીસેટ લાગુ કરવામાં આવ્યું!",
+      selections: {
+        cpu: "xeon-w9-3495x",
+        os: "win11-pro-workstations",
+        gpu: "rtx-5000-ada",
+        ram: "ram-128-ecc",
+        boot_ssd: "ssd-2tb-gen4",
+        second_storage: "sec-4tb-gold",
+        chassis_psu: "psu-2400w",
+        support: "support-3yr-plus",
+        security: "sec-quickheal"
+      }
+    }
+  },
+  selections: {
+    cpu: "xeon-654",
+    os: "ubuntu-2404",
+    gpu: "rtx-a400",
+    ram: "ram-16-ecc",
+    boot_ssd: "ssd-512-sed",
+    second_storage: "sec-none",
+    chassis_psu: "psu-1400w",
+    support: "support-1yr-onsite",
+    security: "sec-none"
+  },
+  categories: [
+    {
+      key: "cpu",
+      icon: "⚡",
+      title_en: "1. Processor (CPU Architecture)",
+      title_gu: "૧. પ્રોસેસર (CPU આર્કિટેક્ચર)",
+      desc_en: "Workstation-class multi-core processors with massive L3 cache & Intel vPro enterprise reliability.",
+      options: [
+        {
+          id: "xeon-654",
+          name: "Intel® Xeon® 654 (36MB Cache, 18 cores, 36 threads, up to 3.7 GHz, 150W)",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "🏢 Standard 24/7 Office Compute, Virtualization & High Reliability",
+          specs: "18 Cores / 36 Threads • 36MB Smart Cache • Intel vPro Enterprise Certified"
+        },
+        {
+          id: "xeon-w7-2495x",
+          name: "Intel® Xeon® w7-2495X (45MB Cache, 24 cores, 48 threads, up to 4.8 GHz Turbo, 225W)",
+          badge: "Dell Recommended for 3D/AI",
+          badgeColor: "indigo",
+          delta: 48000,
+          bestFor: "🤖 3D Modeling, AI Model Training, Simulation & Heavy Multi-tasking",
+          specs: "24 Cores / 48 Threads • 45MB Cache • Unlocked Multiplier for Sustained AI Compute"
+        },
+        {
+          id: "xeon-w9-3495x",
+          name: "Intel® Xeon® w9-3495X (105MB Cache, 56 cores, 112 threads, up to 4.8 GHz Turbo, 350W)",
+          badge: "Ultimate Compute Power",
+          badgeColor: "amber",
+          delta: 155000,
+          bestFor: "🚀 Datacenter-grade 56 Cores for Massive Finite Element Analysis & VFX",
+          specs: "56 Cores / 112 Threads • 105MB Cache • 112 PCIe Gen5 Lanes for Massive Multi-GPU"
+        },
+        {
+          id: "core-i9-14900k",
+          name: "Intel® Core™ i9-14900K (36MB Cache, 24 cores (8P+16E), 32 threads, up to 6.0 GHz Turbo)",
+          badge: "Max Single-Core Clock",
+          badgeColor: "sky",
+          delta: 18000,
+          bestFor: "📐 Maximum Single-Thread Clock for AutoCAD, Revit & High-FPS Viewports",
+          specs: "24 Cores / 32 Threads • 6.0 GHz Max Turbo Clock • High FPS in CAD, Revit & 3ds Max"
+        }
+      ]
+    },
+    {
+      key: "os",
+      icon: "💻",
+      title_en: "2. Operating System",
+      title_gu: "૨. ઓપરેટિંગ સિસ્ટમ (OS)",
+      desc_en: "Certified OEM workstation operating systems tailored for developer frameworks and enterprise compliance.",
+      options: [
+        {
+          id: "ubuntu-2404",
+          name: "Ubuntu Linux 24.04 LTS (64-bit, AI & Data Science Optimized)",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "🐧 Free & Open Source • Pre-configured for Python, Docker, PyTorch & CUDA",
+          specs: "Open Source Free OS • Pre-configured with Docker & NVIDIA CUDA / PyTorch Toolkits"
+        },
+        {
+          id: "win11-pro-workstations",
+          name: "Windows 11 Pro for Workstations (64-bit English)",
+          badge: "Dell Recommended",
+          badgeColor: "indigo",
+          delta: 4500,
+          bestFor: "💼 Best for Tally Prime, AutoCAD, Adobe CC, MS Office & Corporate Domain Join",
+          specs: "ReFS Resilient File System • SMB Direct High-Throughput Networking • Persistent Memory"
+        },
+        {
+          id: "rhel-9",
+          name: "Red Hat Enterprise Linux 9 Workstation (Self-Support 1-Year)",
+          badge: "Enterprise Stability",
+          badgeColor: "rose",
+          delta: 3900,
+          bestFor: "🔒 Mission-critical military-grade Linux with SELinux Security Policies",
+          specs: "Mission-Critical Linux Architecture with SELinux Security & Corporate Long-Term Support"
+        }
+      ]
+    },
+    {
+      key: "gpu",
+      icon: "🎮",
+      title_en: "3. Graphics Card (GPU Accelerator)",
+      title_gu: "૩. ગ્રાફિક્સ કાર્ડ (GPU એક્સેલરેટર)",
+      desc_en: "NVIDIA RTX workstation-class GPUs with ECC VRAM, ISV driver certification, and ray-tracing hardware.",
+      options: [
+        {
+          id: "rtx-a400",
+          name: "NVIDIA® RTX™ A400 (4GB GDDR6, 4x Mini-DisplayPort 1.4a)",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "📐 Smooth 2D/3D Drafting, Multi-Monitor Trading & Basic Photoshop",
+          specs: "50W Low-Profile • ISV Certified Entry 2D/3D CAD • Supports Quad 4K Displays"
+        },
+        {
+          id: "rtx-4000-ada",
+          name: "NVIDIA® RTX™ 4000 Ada Generation (20GB GDDR6 ECC, 4x DP 1.4a)",
+          badge: "Dell Best Seller",
+          badgeColor: "indigo",
+          delta: 89000,
+          bestFor: "🤖 20GB ECC Memory prevents crash during 8K Video, SolidWorks & LLM",
+          specs: "20GB ECC VRAM • 70 TFLOPS AI Tensor Performance • Real-time Hardware Ray Tracing"
+        },
+        {
+          id: "rtx-5000-ada",
+          name: "NVIDIA® RTX™ 5000 Ada Generation (32GB GDDR6 ECC, 4x DP 1.4a)",
+          badge: "High-Capacity AI & 8K VFX",
+          badgeColor: "amber",
+          delta: 210000,
+          bestFor: "🎬 32GB VRAM for 70B Parameter Local LLM AI Inference & Massive CGI",
+          specs: "32GB ECC VRAM • 250W TDP • Designed for Local LLM Fine-Tuning & Photorealistic CGI"
+        },
+        {
+          id: "dual-rtx-4090",
+          name: "Dual NVIDIA® GeForce RTX™ 4090 24GB Multi-GPU (48GB Total VRAM)",
+          badge: "Extreme AI Training Beast",
+          badgeColor: "purple",
+          delta: 360000,
+          bestFor: "🚀 Dual 450W GPUs for extreme deep neural network training & Octane Render",
+          specs: "2x 24GB 384-bit GDDR6X • Liquid Cooled • Requires 2400W Multi-GPU Power Chassis"
+        }
+      ]
+    },
+    {
+      key: "ram",
+      icon: "💾",
+      title_en: "4. System Memory (RAM)",
+      title_gu: "૪. સિસ્ટમ મેમરી (RAM)",
+      desc_en: "High-speed DDR5 5600 MT/s ECC Registered DIMMs (RDIMM) with multi-channel bandwidth and zero memory crash.",
+      options: [
+        {
+          id: "ram-16-ecc",
+          name: "16GB (1x16GB) DDR5 5600 MT/s ECC RDIMM Single-Channel",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "💼 Basic Office, Accounting and standard business workloads",
+          specs: "5600 MT/s Server RDIMM • Error Correcting Code (ECC) • 1 of 16 Slots Used"
+        },
+        {
+          id: "ram-32-ecc",
+          name: "32GB (2x16GB) DDR5 5600 MT/s ECC RDIMM Dual-Channel",
+          badge: "Recommended",
+          badgeColor: "indigo",
+          delta: 9500,
+          bestFor: "⚡ Double the memory bandwidth • Optimal for CAD & Content Creation",
+          specs: "Dual-Channel Bandwidth • 2 of 16 Slots Used • 100% Balanced Multi-Tasking"
+        },
+        {
+          id: "ram-64-ecc",
+          name: "64GB (4x16GB) DDR5 5600 MT/s ECC RDIMM Quad-Channel",
+          badge: "Pro Multitasking",
+          badgeColor: "sky",
+          delta: 24000,
+          bestFor: "🎬 Smooth 4K Video Timelines, After Effects & Large Assemblies",
+          specs: "Quad-Channel High-Speed Bus • 4 of 16 Slots Used • Smooth 4K Premiere & SolidWorks"
+        },
+        {
+          id: "ram-128-ecc",
+          name: "128GB (4x32GB) DDR5 5600 MT/s ECC RDIMM Quad-Channel",
+          badge: "Heavy Simulation & VFX",
+          badgeColor: "amber",
+          delta: 55000,
+          bestFor: "🔬 Heavy Physics Simulations, ANSYS, COMSOL, CFD & Big Data",
+          specs: "High-Density Server RDIMM • Ideal for ANSYS, COMSOL, CFD & Complex 3D Simulations"
+        },
+        {
+          id: "ram-256-ecc",
+          name: "256GB (8x32GB) DDR5 5600 MT/s ECC RDIMM Octa-Channel Max Bandwidth",
+          badge: "Maximum Memory Bandwidth",
+          badgeColor: "purple",
+          delta: 120000,
+          bestFor: "🚀 358 GB/s Theoretical Octa-Channel Bandwidth with zero bottleneck",
+          specs: "Octa-Channel Memory Bus • Up to 358 GB/s Theoretical Bandwidth • Zero Bottleneck"
+        }
+      ]
+    },
+    {
+      key: "boot_ssd",
+      icon: "⚡",
+      title_en: "5. Primary Boot Storage (M.2 NVMe SSD)",
+      title_gu: "૫. પ્રાયમરી બૂટ SSD (M.2 NVMe Gen4)",
+      desc_en: "Ultra-fast PCIe Gen4 NVMe solid-state storage with Self-Encrypting Drive (SED Opal 2.0) hardware protection.",
+      options: [
+        {
+          id: "ssd-512-sed",
+          name: "512GB M.2 PCIe NVMe Gen4 High-Performance SED Ready Class 40",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "⚡ Lightning fast 7000 MB/s OS boot & essential apps",
+          specs: "Up to 7,000 MB/s Read • Hardware Opal 2.0 SED Encryption • Class 40 Endurance"
+        },
+        {
+          id: "ssd-1tb-gen4",
+          name: "1TB M.2 PCIe NVMe Gen4 High-Performance SSD Class 40",
+          badge: "Recommended",
+          badgeColor: "indigo",
+          delta: 4500,
+          bestFor: "🎯 Plenty of room for Windows, Software Suite & active project files",
+          specs: "Up to 7,400 MB/s Read, 6,500 MB/s Write • 1200 TBW Endurance • Fast OS Boot"
+        },
+        {
+          id: "ssd-2tb-gen4",
+          name: "2TB M.2 PCIe NVMe Gen4 Enterprise SSD Class 40",
+          badge: "Double Capacity",
+          badgeColor: "sky",
+          delta: 10500,
+          bestFor: "💼 Pro creator capacity with dedicated aluminum thermal shield",
+          specs: "Up to 7,450 MB/s Read • Dedicated Aluminum Thermal Shield • High IOPS"
+        },
+        {
+          id: "ssd-4tb-gen4",
+          name: "4TB M.2 PCIe NVMe Gen4 Ultra Enterprise SSD Class 50",
+          badge: "Maximum Single Drive",
+          badgeColor: "purple",
+          delta: 26000,
+          bestFor: "🚀 4000GB usable space with datacenter endurance grade",
+          specs: "4000GB Usable Space • 3000 TBW Datacenter Endurance Grade • No Storage Limits"
+        }
+      ]
+    },
+    {
+      key: "second_storage",
+      icon: "🗄️",
+      title_en: "6. Secondary Storage Drive",
+      title_gu: "૬. સેકન્ડરી સ્ટોરેજ ડ્રાઇવ",
+      desc_en: "Bulk data storage, fast scratch drives for video rendering, or enterprise fault-tolerant RAID arrays.",
+      options: [
+        {
+          id: "sec-none",
+          name: "None (Single Primary NVMe Boot SSD)",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "Empty bay ready for future storage expansion",
+          specs: "Empty secondary bays available for future SATA or NVMe drive expansion"
+        },
+        {
+          id: "sec-2tb-sata",
+          name: "2TB 7200 RPM 3.5-Inch Enterprise SATA Hard Drive (256MB Cache)",
+          badge: "Budget Bulk Storage",
+          badgeColor: "slate",
+          delta: 4200,
+          bestFor: "📁 Economical 2TB storage for project backups and documents",
+          specs: "24/7 Enterprise Reliability • 1.2M Hours MTBF • Reliable Project Archiving"
+        },
+        {
+          id: "sec-4tb-gold",
+          name: "4TB Western Digital Gold Enterprise Datacenter SATA HDD",
+          badge: "Datacenter Grade",
+          badgeColor: "amber",
+          delta: 8900,
+          bestFor: "🏆 2.5M Hours MTBF datacenter reliability with vibration protection",
+          specs: "2M Hours MTBF • ArmorCache Vibration Protection • 550 TB/yr Workload Rating"
+        },
+        {
+          id: "sec-2tb-nvme",
+          name: "2TB Secondary M.2 PCIe NVMe Gen4 Ultra-Speed Scratch Disk",
+          badge: "Fast 4K/8K Video Cache",
+          badgeColor: "indigo",
+          delta: 10500,
+          bestFor: "🎬 Ultra-fast cache drive for Adobe Premiere, DaVinci & Blender",
+          specs: "Dedicated Scratch Drive for Adobe Premiere, After Effects, DaVinci & Blender Cache"
+        },
+        {
+          id: "sec-8tb-raid",
+          name: "8TB (2x 4TB RAID 1 Mirrored) Enterprise Fault-Tolerant Array",
+          badge: "Zero Data-Loss Vault",
+          badgeColor: "purple",
+          delta: 22000,
+          bestFor: "🛡️ Instant hardware mirroring: If 1 drive fails, 0 data is lost",
+          specs: "Hardware RAID 1 Mirroring: Instant auto-failover if one drive fails, zero data loss"
+        }
+      ]
+    },
+    {
+      key: "chassis_psu",
+      icon: "🔌",
+      title_en: "7. Chassis, Power Supply & Liquid Thermal",
+      title_gu: "૭. ચેસિસ, પાવર સપ્લાય & કૂલિંગ",
+      desc_en: "Engineered chassis acoustic tunnels with 80 PLUS Platinum high-efficiency modular power supplies.",
+      options: [
+        {
+          id: "psu-1400w",
+          name: "Precision 9 T6 Chassis with 1400W Platinum Modular PSU & Liquid CPU Cooler",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "⚡ Supports single high-end GPU with 92% Platinum efficiency",
+          specs: "80 PLUS Platinum 92% Efficiency • Supports 1x 350W GPU • Direct Front-to-Back Airflow"
+        },
+        {
+          id: "psu-2400w",
+          name: "Precision 9 T6 Multi-GPU Expansion Chassis with 2400W Platinum PSU & Dual Liquid Loops",
+          badge: "Dual-GPU Ready / Extreme Power",
+          badgeColor: "indigo",
+          delta: 18500,
+          bestFor: "🚀 Required for Dual RTX 4090 or multi-accelerator configurations",
+          specs: "2400W High-Amperage SMPS • Dedicated Auxiliary PCIe Power • Ready for Dual 300W Ada GPUs"
+        }
+      ]
+    },
+    {
+      key: "support",
+      icon: "🛡️",
+      title_en: "8. Dell ProSupport & Accidental Damage Services",
+      title_gu: "૮. ડેલ-સ્ટાઇલ ProSupport વોરંટી સર્વિસ",
+      desc_en: "Direct certified engineer access, Next Business Day onsite parts dispatch, and enterprise security guarantees.",
+      options: [
+        {
+          id: "support-1yr-onsite",
+          name: "1-Year Basic Hardware Repair Onsite Service with Next Business Day Dispatch",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "Standard onsite warranty during business hours",
+          specs: "Standard 9x5 Business Hours Support • Genuine OEM Parts & Onsite Labor Included"
+        },
+        {
+          id: "support-3yr-pro",
+          name: "3-Year PCWARE ProSupport with 24/7 Priority Tech Dispatch & Direct Engineer Access",
+          badge: "Dell Best Value",
+          badgeColor: "indigo",
+          delta: 7500,
+          bestFor: "⭐ 3 Years Peace of mind with 24x7 engineer dispatch & priority parts",
+          specs: "24x7 Priority Support • Direct Access to Tier-2 Hardware Masters • Priority Parts Allocation"
+        },
+        {
+          id: "support-3yr-plus",
+          name: "3-Year ProSupport Plus with Accidental Damage & 'Keep Your Hard Drive' Guarantee",
+          badge: "Total Enterprise Security",
+          badgeColor: "amber",
+          delta: 14900,
+          bestFor: "🔒 Total enterprise protection: Covers drops/spills + you keep defective SSDs",
+          specs: "Covers Accidental Drops & Electrical Surges • Keep Defective SSDs (Zero Data Leakage)"
+        }
+      ]
+    },
+    {
+      key: "security",
+      icon: "🔒",
+      title_en: "9. Security Software & Commercial Productivity",
+      title_gu: "૯. સિક્યોરિટી સોફ્ટવેર & પ્રોડક્ટિવિટી",
+      desc_en: "Commercial endpoint security with central cloud console and zero ransomware vulnerabilities.",
+      options: [
+        {
+          id: "sec-none",
+          name: "None (Use Standard Built-in OS Security)",
+          badge: "Included in price",
+          badgeColor: "emerald",
+          delta: 0,
+          bestFor: "Standard built-in Windows Defender or Linux AppArmor security",
+          specs: "Standard default OS security protections (Windows Defender / Linux AppArmor)"
+        },
+        {
+          id: "sec-quickheal",
+          name: "Quick Heal Total Security Commercial Edition (3-Year License with Cloud Console)",
+          badge: "Commercial Grade",
+          badgeColor: "indigo",
+          delta: 1499,
+          bestFor: "🏢 3-Year Ransomware protection with USB control & cloud console",
+          specs: "Ransomware Shield • USB Flash Protection • Web & Email Security • Central Console"
+        },
+        {
+          id: "sec-crowdstrike",
+          name: "CrowdStrike Falcon AI Commercial Endpoint Protection (1-Year Enterprise Subscription)",
+          badge: "Enterprise AI Defense",
+          badgeColor: "rose",
+          delta: 3499,
+          bestFor: "🤖 Next-gen behavioral AI defense against zero-day cyber threats",
+          specs: "Next-Gen AI Antivirus • EDR Threat Detection • Behavioral Analysis & Ransomware Rollback"
+        }
+      ]
+    }
+  ]
+};
+
+function switchBuilderMode(mode) {
+  state.builderMode = mode;
+  const btnCto = document.getElementById("btn-mode-cto");
+  const btnDiy = document.getElementById("btn-mode-diy");
+  const ctoView = document.getElementById("builder-mode-cto");
+  const diyView = document.getElementById("builder-mode-diy");
+
+  if (mode === 'cto') {
+    if (ctoView) ctoView.classList.remove("hidden");
+    if (diyView) diyView.classList.add("hidden");
+    if (btnCto) {
+      btnCto.className = "flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-indigo-700 shadow-sm border border-indigo-200 cursor-pointer";
+    }
+    if (btnDiy) {
+      btnDiy.className = "flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 cursor-pointer";
+    }
+    renderCTOConfigurator();
+  } else {
+    if (ctoView) ctoView.classList.add("hidden");
+    if (diyView) diyView.classList.remove("hidden");
+    if (btnCto) {
+      btnCto.className = "flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 cursor-pointer";
+    }
+    if (btnDiy) {
+      btnDiy.className = "flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-brand-700 shadow-sm border border-brand-200 cursor-pointer";
+    }
+    renderPCBuilder();
+  }
+}
+
+function renderCTOConfigurator() {
+  renderCTOModelCards();
+  renderCTOVisualizer();
+  renderCTOOptionGroups();
+  updateCTOBenchmarkUI();
+  updateCTOSummary();
+}
+
+function renderCTOModelCards() {
+  const container = document.getElementById("cto-models-container");
+  if (!container) return;
+
+  const models = Object.values(state.cto.models);
+  container.innerHTML = models.map(m => {
+    const isSelected = (m.id === state.cto.currentModelId);
+    return `
+      <div onclick="selectCTOModel('${m.id}')" class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+        isSelected
+          ? 'border-indigo-600 bg-indigo-50/40 shadow-md ring-2 ring-indigo-300'
+          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
+      }">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider ${
+              isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
+            }">${m.sku}</span>
+            ${isSelected ? `
+              <span class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">
+                <svg class="w-3.5 h-3.5 text-indigo-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Active Platform
+              </span>
+            ` : ''}
+          </div>
+          <h4 class="font-extrabold text-sm text-slate-900 leading-snug">${m.name}</h4>
+          <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${m.tagline}</p>
+        </div>
+        <div class="pt-3 mt-3 border-t border-slate-100 flex items-baseline justify-between">
+          <span class="text-xs text-slate-500 font-semibold">Base Chassis:</span>
+          <span class="text-base font-black text-indigo-700">₹${m.basePrice.toLocaleString('en-IN')}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const skuEl = document.getElementById("cto-active-sku");
+  if (skuEl) skuEl.textContent = state.cto.models[state.cto.currentModelId].sku;
+}
+
+function selectCTOModel(modelId) {
+  if (!state.cto.models[modelId]) return;
+  state.cto.currentModelId = modelId;
+  const model = state.cto.models[modelId];
+  // Reset selections to this model's defaults
+  state.cto.selections = { ...model.defaults };
+  renderCTOConfigurator();
+  showToast(state.lang === 'en' ? `Switched to ${model.name}` : `${model.name} પ્લેટફોર્મ સક્રિય કરવામાં આવ્યું.`);
+}
+
+function renderCTOVisualizer() {
+  const model = state.cto.models[state.cto.currentModelId];
+  const angleInfo = model.angles[state.cto.currentAngle] || model.angles.front;
+
+  const titleEl = document.getElementById("cto-visual-title");
+  const descEl = document.getElementById("cto-visual-desc");
+  const imgEl = document.getElementById("cto-chassis-image");
+  const badgeEl = document.getElementById("cto-angle-badge");
+
+  if (titleEl) titleEl.textContent = model.name;
+  if (descEl) descEl.textContent = angleInfo.desc;
+  if (imgEl) imgEl.src = angleInfo.image;
+  if (badgeEl) badgeEl.textContent = angleInfo.title;
+
+  ['front', 'interior', 'rear'].forEach(ang => {
+    const btn = document.getElementById('btn-angle-' + ang);
+    if (btn) {
+      if (ang === state.cto.currentAngle) {
+        btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 cursor-pointer";
+      } else {
+        btn.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer";
+      }
+    }
+  });
+}
+
+function changeCTOAngle(angle) {
+  state.cto.currentAngle = angle;
+  renderCTOVisualizer();
+}
+
+function calculateCTOBenchmarks() {
+  const sel = state.cto.selections;
+
+  // 1. AI Score (0-100)
+  let ai = 40;
+  if (sel.cpu === 'xeon-654') ai += 15;
+  else if (sel.cpu === 'core-i9-14900k') ai += 18;
+  else if (sel.cpu === 'xeon-w7-2495x') ai += 28;
+  else if (sel.cpu === 'xeon-w9-3495x') ai += 36;
+
+  if (sel.gpu === 'rtx-a400') ai += 10;
+  else if (sel.gpu === 'rtx-4000-ada') ai += 35;
+  else if (sel.gpu === 'rtx-5000-ada') ai += 44;
+  else if (sel.gpu === 'dual-rtx-4090') ai += 48;
+
+  if (sel.ram === 'ram-32-ecc') ai += 5;
+  else if (sel.ram === 'ram-64-ecc') ai += 10;
+  else if (sel.ram === 'ram-128-ecc') ai += 14;
+  else if (sel.ram === 'ram-256-ecc') ai += 18;
+
+  if (sel.os === 'ubuntu-2404') ai += 8;
+
+  // 2. 3D CAD Score (0-100)
+  let cad = 50;
+  if (sel.cpu === 'core-i9-14900k') cad += 35; // single core beast
+  else if (sel.cpu === 'xeon-w7-2495x') cad += 30;
+  else if (sel.cpu === 'xeon-w9-3495x') cad += 32;
+  else if (sel.cpu === 'xeon-654') cad += 20;
+
+  if (sel.gpu === 'rtx-a400') cad += 20;
+  else if (sel.gpu === 'rtx-4000-ada') cad += 32;
+  else if (sel.gpu === 'rtx-5000-ada') cad += 34;
+  else if (sel.gpu === 'dual-rtx-4090') cad += 35;
+
+  if (sel.os === 'win11-pro-workstations') cad += 10;
+  if (sel.ram !== 'ram-16-ecc') cad += 8;
+
+  // 3. 8K Video & VFX Score (0-100)
+  let vfx = 45;
+  if (sel.cpu === 'xeon-w9-3495x') vfx += 38;
+  else if (sel.cpu === 'xeon-w7-2495x') vfx += 30;
+  else if (sel.cpu === 'core-i9-14900k') vfx += 26;
+  else if (sel.cpu === 'xeon-654') vfx += 18;
+
+  if (sel.gpu === 'rtx-5000-ada') vfx += 40;
+  else if (sel.gpu === 'dual-rtx-4090') vfx += 45;
+  else if (sel.gpu === 'rtx-4000-ada') vfx += 32;
+  else if (sel.gpu === 'rtx-a400') vfx += 12;
+
+  if (sel.ram === 'ram-64-ecc') vfx += 12;
+  else if (sel.ram === 'ram-128-ecc') vfx += 18;
+  else if (sel.ram === 'ram-256-ecc') vfx += 22;
+
+  if (sel.boot_ssd !== 'ssd-512-sed') vfx += 6;
+
+  return {
+    ai: Math.min(99, Math.max(45, ai)),
+    cad: Math.min(99, Math.max(50, cad)),
+    vfx: Math.min(99, Math.max(45, vfx))
+  };
+}
+
+function updateCTOBenchmarkUI() {
+  const scores = calculateCTOBenchmarks();
+
+  const aiScoreEl = document.getElementById("bm-score-ai");
+  const aiBarEl = document.getElementById("bm-bar-ai");
+  const aiDescEl = document.getElementById("bm-desc-ai");
+
+  const cadScoreEl = document.getElementById("bm-score-cad");
+  const cadBarEl = document.getElementById("bm-bar-cad");
+  const cadDescEl = document.getElementById("bm-desc-cad");
+
+  const vfxScoreEl = document.getElementById("bm-score-vfx");
+  const vfxBarEl = document.getElementById("bm-bar-vfx");
+  const vfxDescEl = document.getElementById("bm-desc-vfx");
+
+  if (aiScoreEl) aiScoreEl.textContent = `${scores.ai}%`;
+  if (aiBarEl) aiBarEl.style.width = `${scores.ai}%`;
+  if (aiDescEl) {
+    if (scores.ai >= 90) aiDescEl.textContent = "Extreme LLM Fine-tuning & PyTorch Server Ready";
+    else if (scores.ai >= 75) aiDescEl.textContent = "High Performance Model Inference & Computer Vision";
+    else aiDescEl.textContent = "Entry inference & data analytics";
+  }
+
+  if (cadScoreEl) cadScoreEl.textContent = `${scores.cad}%`;
+  if (cadBarEl) cadBarEl.style.width = `${scores.cad}%`;
+  if (cadDescEl) {
+    if (scores.cad >= 90) cadDescEl.textContent = "Fluid 120 FPS in SolidWorks, Revit & Complex Assemblies";
+    else if (scores.cad >= 75) cadDescEl.textContent = "Certified for AutoCAD & 3D Architectural Modeling";
+    else cadDescEl.textContent = "Standard 2D/3D Drafting";
+  }
+
+  if (vfxScoreEl) vfxScoreEl.textContent = `${scores.vfx}%`;
+  if (vfxBarEl) vfxBarEl.style.width = `${scores.vfx}%`;
+  if (vfxDescEl) {
+    if (scores.vfx >= 90) vfxDescEl.textContent = "Real-Time 8K RAW RED/ARRI Playback & GPU Rendering";
+    else if (scores.vfx >= 75) vfxDescEl.textContent = "Smooth 4K Premiere, After Effects & Blender Timelines";
+    else vfxDescEl.textContent = "1080p / 4K Light Video Timeline";
+  }
+}
+
+function applyCTOPreset(presetKey) {
+  const preset = state.cto.presets[presetKey];
+  if (!preset) return;
+
+  state.cto.currentModelId = preset.modelId;
+  state.cto.selections = { ...preset.selections };
+
+  // Open the first 3 categories for clear inspection
+  state.cto.openCategories = {
+    cpu: true,
+    os: true,
+    gpu: true,
+    ram: false,
+    boot_ssd: false,
+    second_storage: false,
+    chassis_psu: false,
+    support: false,
+    security: false
+  };
+
+  renderCTOConfigurator();
+  showToast(state.lang === 'en' ? `Preset Applied: ${preset.name}` : preset.toast_gu, "success");
+}
+
+function toggleCTOCategoryAccordion(catKey) {
+  state.cto.openCategories[catKey] = !state.cto.openCategories[catKey];
+  renderCTOOptionGroups();
+}
+
+function toggleAllCTOAccordions(expand) {
+  state.cto.categories.forEach(c => {
+    state.cto.openCategories[c.key] = expand;
+  });
+  renderCTOOptionGroups();
+}
+
+function renderCTOOptionGroups() {
+  const container = document.getElementById("cto-options-container");
+  if (!container) return;
+
+  const isGu = (state.lang === 'gu');
+
+  container.innerHTML = state.cto.categories.map((cat, idx) => {
+    const selectedOptId = state.cto.selections[cat.key];
+    const catTitle = isGu ? cat.title_gu : cat.title_en;
+    const isOpen = (state.cto.openCategories[cat.key] !== false);
+
+    // Find currently selected option for the header summary pill
+    const currentOpt = cat.options.find(o => o.id === selectedOptId) || cat.options[0];
+    const isCurrentIncluded = (currentOpt.delta === 0);
+    const headerDeltaText = isCurrentIncluded ? (isGu ? "શામેલ (+₹0)" : "Included") : `+₹${currentOpt.delta.toLocaleString('en-IN')}`;
+
+    const cardsHtml = cat.options.map(opt => {
+      const isSelected = (opt.id === selectedOptId);
+      const isIncluded = (opt.delta === 0);
+      const deltaText = isIncluded ? (isGu ? "કિંમતમાં શામેલ (+₹0)" : "Included in price") : `+₹${opt.delta.toLocaleString('en-IN')}`;
+
+      // Badge color mapping
+      let badgeClass = "bg-slate-100 text-slate-700 border-slate-200";
+      if (opt.badgeColor === "emerald") badgeClass = "bg-emerald-50 text-emerald-800 border-emerald-200";
+      else if (opt.badgeColor === "indigo") badgeClass = "bg-indigo-50 text-indigo-800 border-indigo-200";
+      else if (opt.badgeColor === "amber") badgeClass = "bg-amber-50 text-amber-900 border-amber-200";
+      else if (opt.badgeColor === "purple") badgeClass = "bg-purple-50 text-purple-800 border-purple-200";
+      else if (opt.badgeColor === "sky") badgeClass = "bg-sky-50 text-sky-800 border-sky-200";
+      else if (opt.badgeColor === "rose") badgeClass = "bg-rose-50 text-rose-800 border-rose-200";
+
+      return `
+        <div onclick="selectCTOOption('${cat.key}', '${opt.id}')" class="p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-2.5 relative ${
+          isSelected
+            ? 'border-indigo-600 bg-indigo-50/40 shadow-md ring-2 ring-indigo-200'
+            : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50'
+        }">
+          <div class="space-y-2">
+            <!-- Header: Radio, Title & Differential Price -->
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 transition ${
+                  isSelected ? 'border-indigo-600 bg-indigo-600 shadow-sm shadow-indigo-600/30' : 'border-slate-300 bg-white'
+                }">
+                  ${isSelected ? '<div class="w-2 h-2 rounded-full bg-white"></div>' : ''}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h4 class="font-black text-xs sm:text-sm text-slate-900 leading-snug">${escapeHtml(opt.name)}</h4>
+                    ${opt.badge ? `
+                      <span class="inline-block text-[10px] font-black px-2 py-0.5 rounded border ${badgeClass}">
+                        ${opt.badge}
+                      </span>
+                    ` : ''}
+                  </div>
+
+                  ${opt.bestFor ? `
+                    <div class="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-700 bg-slate-100/90 px-2 py-0.5 rounded-md border border-slate-200/80">
+                      <span>💡</span>
+                      <span>${opt.bestFor}</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="text-right shrink-0">
+                <span class="text-xs font-black px-2.5 py-1 rounded-lg ${
+                  isIncluded
+                    ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                    : 'text-indigo-700 bg-indigo-50 border border-indigo-200'
+                }">
+                  ${deltaText}
+                </span>
+              </div>
+            </div>
+
+            <!-- Specs description snippet -->
+            <p class="text-[11px] text-slate-500 pl-8 leading-relaxed">${escapeHtml(opt.specs)}</p>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden transition-all duration-200">
+        <!-- ACCORDION HEADER (CLICKABLE) -->
+        <div onclick="toggleCTOCategoryAccordion('${cat.key}')" class="p-4 sm:p-5 flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-slate-50/80 transition border-b ${
+          isOpen ? 'border-slate-100 bg-slate-50/40' : 'border-transparent'
+        }">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="text-2xl shrink-0">${cat.icon || '⚙️'}</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-black text-sm sm:text-base text-slate-900 truncate">${catTitle}</h3>
+                <span class="text-[10px] font-black uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded hidden sm:inline-block">Step ${idx + 1}/9</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5 truncate hidden sm:block">${cat.desc_en}</p>
+            </div>
+          </div>
+
+          <!-- Current Selection Pill & Chevron -->
+          <div class="flex items-center gap-2.5 shrink-0">
+            <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 border border-indigo-200/80 text-indigo-900 text-xs font-bold max-w-[240px] truncate">
+              <span class="text-indigo-600 font-black">✓</span>
+              <span class="truncate">${escapeHtml(currentOpt.name.split('(')[0].trim())}</span>
+              <span class="font-black text-indigo-700">(${headerDeltaText})</span>
+            </div>
+
+            <div class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+              <svg class="w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180 text-indigo-600' : 'rotate-0'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCORDION BODY (OPTION CARDS) -->
+        ${isOpen ? `
+          <div class="p-4 sm:p-5 pt-3 space-y-2.5 bg-white">
+            <div class="grid grid-cols-1 gap-2.5">
+              ${cardsHtml}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join("");
+}
+
+function selectCTOOption(catKey, optionId) {
+  state.cto.selections[catKey] = optionId;
+  renderCTOOptionGroups();
+  updateCTOBenchmarkUI();
+  updateCTOSummary();
+}
+
+function calculateCTOTotal() {
+  const model = state.cto.models[state.cto.currentModelId];
+  let total = model.basePrice;
+  state.cto.categories.forEach(cat => {
+    const selectedId = state.cto.selections[cat.key];
+    const opt = cat.options.find(o => o.id === selectedId);
+    if (opt) total += opt.delta;
+  });
+  return total;
+}
+
+function calculateCTOAddonsTotal() {
+  let sum = 0;
+  state.cto.categories.forEach(cat => {
+    const selectedId = state.cto.selections[cat.key];
+    const opt = cat.options.find(o => o.id === selectedId);
+    if (opt) sum += opt.delta;
+  });
+  return sum;
+}
+
+function getCTOSpecsSummaryList() {
+  const list = [];
+  state.cto.categories.forEach(cat => {
+    const selectedId = state.cto.selections[cat.key];
+    const opt = cat.options.find(o => o.id === selectedId);
+    if (opt) {
+      list.push({
+        categoryKey: cat.key,
+        categoryTitle: cat.title_en.replace(/^[0-9]+\.\s*/, ''),
+        label: cat.title_en.split('(')[0].replace(/^[0-9]+\.\s*/, '').trim(),
+        value: opt.name.split('(')[0].trim(),
+        fullName: opt.name,
+        specs: opt.specs,
+        delta: opt.delta
+      });
+    }
+  });
+  return list;
+}
+
+function selectCTOEMITenure(months) {
+  state.cto.currentEmiTenure = months;
+  [3, 6, 12, 24].forEach(m => {
+    const tab = document.getElementById("emi-tab-" + m);
+    if (tab) {
+      if (m === months) {
+        tab.className = "px-2 py-0.5 rounded text-[10px] font-black text-amber-300 bg-slate-800 border border-amber-400/50 transition cursor-pointer";
+      } else {
+        tab.className = "px-2 py-0.5 rounded text-[10px] font-bold text-slate-400 hover:text-white bg-slate-800 transition cursor-pointer";
+      }
+    }
+  });
+  updateCTOSummary();
+}
+
+function updateCTOSummary() {
+  const model = state.cto.models[state.cto.currentModelId];
+  const grandTotal = calculateCTOTotal();
+  const addonsTotal = calculateCTOAddonsTotal();
+
+  // Multi-tenure EMI calculation
+  const months = state.cto.currentEmiTenure || 12;
+  let emiMonthly = Math.round(grandTotal / months);
+  if (months === 12) emiMonthly = Math.round((grandTotal / 12) * 1.02);
+  else if (months === 24) emiMonthly = Math.round((grandTotal / 24) * 1.05);
+
+  const gstAmount = Math.round(grandTotal - (grandTotal / 1.18));
+
+  // Update Summary elements
+  const modelNameEl = document.getElementById("cto-summary-model-name");
+  const skuEl = document.getElementById("cto-summary-sku");
+  const grandTotalEl = document.getElementById("cto-grand-total");
+  const emiEl = document.getElementById("cto-emi-est");
+  const basePriceEl = document.getElementById("cto-base-price-breakdown");
+  const addonsEl = document.getElementById("cto-addons-breakdown");
+  const taxEl = document.getElementById("cto-tax-breakdown");
+  const specsListEl = document.getElementById("cto-selected-specs-list");
+  const mobileTotalEl = document.getElementById("cto-mobile-total");
+
+  if (modelNameEl) modelNameEl.textContent = model.name;
+  if (skuEl) skuEl.textContent = `Base SKU: ${model.sku}`;
+  if (grandTotalEl) grandTotalEl.textContent = `₹${grandTotal.toLocaleString('en-IN')}`;
+  if (emiEl) emiEl.textContent = `₹${emiMonthly.toLocaleString('en-IN')}/mo (${months} mos)`;
+  if (basePriceEl) basePriceEl.textContent = `₹${model.basePrice.toLocaleString('en-IN')}`;
+  if (addonsEl) addonsEl.textContent = addonsTotal > 0 ? `+₹${addonsTotal.toLocaleString('en-IN')}` : `+₹0`;
+  if (taxEl) taxEl.textContent = `₹${gstAmount.toLocaleString('en-IN')} (Input Credit Available)`;
+  if (mobileTotalEl) mobileTotalEl.textContent = `₹${grandTotal.toLocaleString('en-IN')}`;
+
+  if (specsListEl) {
+    const specs = getCTOSpecsSummaryList();
+    specsListEl.innerHTML = specs.map(s => `
+      <div class="py-1.5 flex items-center justify-between gap-2 text-xs">
+        <span class="text-slate-500 font-medium truncate max-w-[120px]">${s.label}:</span>
+        <span class="font-bold text-slate-800 text-right truncate flex-1 text-[11px]" title="${escapeHtml(s.fullName)}">${escapeHtml(s.value)}</span>
+      </div>
+    `).join("");
+  }
+}
+
+function resetCTOToDefault() {
+  const model = state.cto.models[state.cto.currentModelId];
+  state.cto.selections = { ...model.defaults };
+  renderCTOConfigurator();
+  showToast(state.lang === 'en' ? "Configuration reset to base specifications." : "સ્પેસિફિકેશન્સ બેઝ સેટિંગ્સ પર રીસેટ થયા.");
+}
+
+function addCTOBuildToCart() {
+  const model = state.cto.models[state.cto.currentModelId];
+  const grandTotal = calculateCTOTotal();
+  const specs = getCTOSpecsSummaryList();
+  
+  const customId = 998000 + Math.floor(Math.random() * 999);
+  const specsString = specs.map(s => `${s.label}: ${s.value}`).join(" | ");
+
+  const ctoCartItem = {
+    id: customId,
+    sku: model.sku,
+    name: `${model.name} (Custom CTO Build)`,
+    price: grandTotal,
+    category: "workstation",
+    image_url: model.image,
+    qty: 1,
+    specs: specsString,
+    cto_config: {
+      modelId: model.id,
+      modelName: model.name,
+      basePrice: model.basePrice,
+      selections: { ...state.cto.selections },
+      totalPrice: grandTotal
+    }
+  };
+
+  state.cart.push(ctoCartItem);
+  saveCart();
+  updateCartUI();
+  toggleCartDrawer(true);
+  showToast(state.lang === 'en' ? "Dell CTO Workstation added to cart!" : "કસ્ટમ ડેલ વર્કસ્ટેશન કાર્ટમાં સફળતાપૂર્વક ઉમેરાયું!", "success");
+}
+
+function openCTOQuotationModal() {
+  const modal = document.getElementById("cto-quotation-modal");
+  if (!modal) return;
+
+  const model = state.cto.models[state.cto.currentModelId];
+  const grandTotal = calculateCTOTotal();
+  const addonsTotal = calculateCTOAddonsTotal();
+  const taxableVal = Math.round(grandTotal / 1.18);
+  const gstVal = grandTotal - taxableVal;
+
+  // Quotation number & date
+  const quoNumberEl = document.getElementById("quo-number");
+  const quoDateEl = document.getElementById("quo-date");
+  const custNameEl = document.getElementById("quo-cust-name");
+  const custPhoneEl = document.getElementById("quo-cust-phone");
+  const systemNameEl = document.getElementById("quo-system-name");
+  const systemSkuEl = document.getElementById("quo-system-sku");
+
+  const basePriceEl = document.getElementById("quo-base-price");
+  const addonsPriceEl = document.getElementById("quo-addons-price");
+  const taxableEl = document.getElementById("quo-taxable-val");
+  const gstEl = document.getElementById("quo-gst-val");
+  const grandTotalEl = document.getElementById("quo-grand-total");
+  const tbody = document.getElementById("quo-bom-tbody");
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  const randomQuo = "PCW/QUO/" + now.getFullYear() + "/CTO-" + (1000 + Math.floor(Math.random() * 9000));
+
+  if (quoNumberEl) quoNumberEl.textContent = randomQuo;
+  if (quoDateEl) quoDateEl.textContent = dateStr;
+
+  if (custNameEl) custNameEl.textContent = (state.customerProfile && state.customerProfile.name) || "Enterprise Client / Valued Partner";
+  if (custPhoneEl) custPhoneEl.textContent = (state.customerProfile && state.customerProfile.phone) || "+91 98980 00000";
+
+  if (systemNameEl) systemNameEl.textContent = model.name;
+  if (systemSkuEl) systemSkuEl.textContent = `Model Code: ${model.sku}`;
+
+  if (basePriceEl) basePriceEl.textContent = `₹${model.basePrice.toLocaleString('en-IN')}`;
+  if (addonsPriceEl) addonsPriceEl.textContent = addonsTotal > 0 ? `+₹${addonsTotal.toLocaleString('en-IN')}` : `+₹0`;
+  if (taxableEl) taxableEl.textContent = `₹${taxableVal.toLocaleString('en-IN')}`;
+  if (gstEl) gstEl.textContent = `₹${gstVal.toLocaleString('en-IN')}`;
+  if (grandTotalEl) grandTotalEl.textContent = `₹${grandTotal.toLocaleString('en-IN')}`;
+
+  if (tbody) {
+    const specs = getCTOSpecsSummaryList();
+    tbody.innerHTML = specs.map((s, idx) => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="py-2.5 px-3 text-center text-slate-400 font-bold">${idx + 1}</td>
+        <td class="py-2.5 px-3 font-bold text-slate-800">${escapeHtml(s.categoryTitle)}</td>
+        <td class="py-2.5 px-3">
+          <strong class="text-slate-900 block">${escapeHtml(s.fullName)}</strong>
+          <span class="text-[11px] text-slate-500">${escapeHtml(s.specs)}</span>
+        </td>
+        <td class="py-2.5 px-3 text-right font-bold ${s.delta > 0 ? 'text-indigo-700' : 'text-emerald-700'}">
+          ${s.delta > 0 ? `+₹${s.delta.toLocaleString('en-IN')}` : 'Included (+₹0)'}
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeCTOQuotationModal() {
+  const modal = document.getElementById("cto-quotation-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function shareCTOWhatsApp() {
+  const model = state.cto.models[state.cto.currentModelId];
+  const grandTotal = calculateCTOTotal();
+  const specs = getCTOSpecsSummaryList();
+
+  let msg = `*OFFICIAL DELL CTO WORKSTATION INQUIRY - PCWARE*\n`;
+  msg += `*Chassis Model:* ${model.name}\n`;
+  msg += `*OEM SKU:* ${model.sku}\n`;
+  msg += `------------------------------------\n`;
+  specs.forEach((s, idx) => {
+    msg += `${idx + 1}. *${s.label}:* ${s.fullName}\n`;
+  });
+  msg += `------------------------------------\n`;
+  msg += `*Estimated Grand Total:* ₹${grandTotal.toLocaleString('en-IN')} (Incl. 18% GST)\n`;
+  msg += `*Monthly EMI:* From ₹${Math.round((grandTotal / 12) * 1.02).toLocaleString('en-IN')}/month\n\n`;
+  msg += `Hello PCWARE Lab Lead! Please verify component allocation, supply timeline, and official GST quote for this workstation configuration.`;
+
+  const url = "https://wa.me/917016737271?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
+}
+
+function openCTOFromProduct(modelIdOrProduct) {
+  switchView('builder');
+  switchBuilderMode('cto');
+  if (typeof modelIdOrProduct === 'string' && state.cto.models[modelIdOrProduct]) {
+    selectCTOModel(modelIdOrProduct);
+  } else {
+    selectCTOModel('dell-precision-9-t6');
+  }
+  window.scrollTo({ top: 350, behavior: "smooth" });
+}
+
+// Global window bindings for CTO functions
+window.switchBuilderMode = switchBuilderMode;
+window.renderCTOConfigurator = renderCTOConfigurator;
+window.selectCTOModel = selectCTOModel;
+window.selectCTOOption = selectCTOOption;
+window.changeCTOAngle = changeCTOAngle;
+window.resetCTOToDefault = resetCTOToDefault;
+window.addCTOBuildToCart = addCTOBuildToCart;
+window.openCTOQuotationModal = openCTOQuotationModal;
+window.closeCTOQuotationModal = closeCTOQuotationModal;
+window.shareCTOWhatsApp = shareCTOWhatsApp;
+window.openCTOFromProduct = openCTOFromProduct;
+window.applyCTOPreset = applyCTOPreset;
+window.toggleCTOCategoryAccordion = toggleCTOCategoryAccordion;
+window.toggleAllCTOAccordions = toggleAllCTOAccordions;
+window.selectCTOEMITenure = selectCTOEMITenure;
+window.updateCTOBenchmarkUI = updateCTOBenchmarkUI;
+
 
 async function renderPCBuilder() {
   const container = document.getElementById("builder-steps-container");
@@ -8099,30 +9445,60 @@ async function handleUpdateJobSheetSubmit(e) {
 }
 
 function openNewProductModal() {
+  state.newProductPendingImages = [];
+  renderNewProductGalleryPreviews();
+  const urlInp = document.getElementById("p-image-url");
+  if (urlInp) urlInp.value = "";
   document.getElementById("modal-new-product")?.classList.remove("hidden");
 }
 
 async function handleCreateProductSubmit(e) {
   e.preventDefault();
+
+  let galleryUrls = [];
+  const manualUrl = document.getElementById("p-image-url")?.value.trim();
+  if (manualUrl) {
+    galleryUrls.push(manualUrl);
+  }
+
+  if (state.newProductPendingImages && state.newProductPendingImages.length > 0) {
+    try {
+      const upRes = await apiPost("upload", { images: state.newProductPendingImages });
+      if (upRes && upRes.urls) {
+        galleryUrls = galleryUrls.concat(upRes.urls);
+      }
+    } catch(err) {
+      console.error("Upload error:", err);
+    }
+  }
+
+  const primaryImage = galleryUrls[0] || "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400";
+
   const payload = {
     name: document.getElementById("p-name")?.value,
     category: document.getElementById("p-category")?.value,
     brand: document.getElementById("p-brand")?.value,
-    cost_price: document.getElementById("p-cost")?.value,
-    selling_price: document.getElementById("p-sell")?.value,
-    stock_quantity: document.getElementById("p-qty")?.value,
-    wattage: document.getElementById("p-wattage")?.value,
-    hsn_code: document.getElementById("p-hsn")?.value,
-    specs: document.getElementById("p-specs")?.value
+    cost_price: parseFloat(document.getElementById("p-cost")?.value || 0),
+    selling_price: parseFloat(document.getElementById("p-sell")?.value || 0),
+    stock_quantity: parseInt(document.getElementById("p-qty")?.value || 0, 10),
+    wattage: parseInt(document.getElementById("p-wattage")?.value || 0, 10),
+    hsn_code: document.getElementById("p-hsn")?.value || "8471",
+    specs: document.getElementById("p-specs")?.value || "",
+    image_url: primaryImage,
+    gallery_images: galleryUrls.length > 0 ? galleryUrls : [primaryImage]
   };
 
   const res = await apiPost("products", payload);
   if (res && res.success) {
-    showToast("પ્રોડક્ટ ઉમેરાઈ ગયો!");
+    showToast("પ્રોડક્ટ સફળતાપૂર્વક ઉમેરાઈ ગયો!", "success");
+    state.newProductPendingImages = [];
+    renderNewProductGalleryPreviews();
     closeModal("modal-new-product");
     loadProducts();
     loadInventoryTable();
     loadAdminStats();
+  } else {
+    showToast("પ્રોડક્ટ સેવ કરવામાં ભૂલ આવી.", "error");
   }
 }
 
@@ -8185,7 +9561,7 @@ async function handleCreateAMCSubmit(e) {
 function openNewInvoiceModal() {
   document.getElementById("modal-new-invoice")?.classList.remove("hidden");
   const container = document.getElementById("invoice-items-container");
-  if (!container || container.children.length === 0 || !container.querySelector(".inv-prod-select option[value]:not([value=''])")) {
+  if (!container || !container.children || container.children.length === 0 || !container.querySelector(".inv-prod-select option[value]:not([value=''])")) {
     if (container) container.innerHTML = "";
     addInvoiceLineRow();
   }
@@ -8193,7 +9569,7 @@ function openNewInvoiceModal() {
 
 function setupInvoiceLineRowDefault() {
   const container = document.getElementById("invoice-items-container");
-  if (container && container.children.length === 0) {
+  if (container && container.children && container.children.length === 0) {
     addInvoiceLineRow();
   }
 }
@@ -8780,18 +10156,18 @@ function openCustomerPortalModal() {
 function fillCustomerDemoPhone(phone) {
   const input = document.getElementById("cust-input-phone");
   if (input) input.value = phone;
-  const form = document.getElementById("form-cust-login");
-  if (form) handleCustomerLoginSubmit(new Event("submit"));
+  handleCustomerLoginSubmit(null);
 }
 
 async function handleCustomerLoginSubmit(e) {
-  if (e) e.preventDefault();
+  if (e && typeof e.preventDefault === "function") e.preventDefault();
   const phoneInput = document.getElementById("cust-input-phone");
   if (!phoneInput) return;
 
-  const phone = phoneInput.value.replace(/\D/g, "").slice(-10);
+  const rawPhone = phoneInput.value.trim();
+  const phone = rawPhone.replace(/\D/g, "").slice(-10);
   if (phone.length < 10) {
-    alert("કૃપા કરીને માન્ય ૧૦ આંકડાનો મોબાઇલ નંબર દાખલ કરો.");
+    alert("કૃપા કરીને માન્ય ૧૦ આંકડાનો મોબાઇલ નંબર દાખલ કરો (દા.ત. 9825012345).");
     return;
   }
 
@@ -8803,68 +10179,84 @@ async function handleCustomerLoginSubmit(e) {
 
   try {
     const res = await apiPost("customer/login", { phone });
-    if (res && res.success) {
-      localStorage.setItem("pcware_customer_phone", phone);
-      updateCustomerHeaderUI();
-      await loadCustomerDashboard(phone);
-    } else {
-      alert(res.error || "લૉગિન નિષ્ફળ રહ્યું. કૃપા કરીને ફરી પ્રયાસ કરો.");
-    }
+    localStorage.setItem("pcware_customer_phone", phone);
+    if (typeof updateCustomerHeaderUI === "function") updateCustomerHeaderUI();
+    await loadCustomerDashboard(phone);
   } catch(err) {
     console.error("Customer login error:", err);
     localStorage.setItem("pcware_customer_phone", phone);
-      updateCustomerHeaderUI();
+    if (typeof updateCustomerHeaderUI === "function") updateCustomerHeaderUI();
     await loadCustomerDashboard(phone);
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = "<span>લૉગિન કરો / Open My Portal</span>";
+      submitBtn.innerHTML = "<span>Login to Customer Portal</span>";
     }
   }
 }
 
 async function loadCustomerDashboard(phone) {
   try {
-    const data = await apiGet("customer/dashboard?phone=" + encodeURIComponent(phone));
-    if (!data) return;
-    currentCustomerData = data;
+    const cleanPhone = (phone || "").replace(/\D/g, "").slice(-10);
+    const data = await apiGet("customer/dashboard?phone=" + encodeURIComponent(cleanPhone));
+    currentCustomerData = data || { customer: { phone: cleanPhone, name: "Customer (" + cleanPhone + ")" }, stats: {}, invoices: [], devices: [], tickets: [] };
     if (typeof updateCustomerHeaderUI === "function") updateCustomerHeaderUI();
-    renderCustomerPortalData(data);
+    
+    // Always transition to dashboard view
+    document.getElementById("cust-login-view")?.classList.add("hidden");
+    document.getElementById("cust-dashboard-view")?.classList.remove("hidden");
 
-    document.getElementById("cust-login-view").classList.add("hidden");
-    document.getElementById("cust-dashboard-view").classList.remove("hidden");
+    renderCustomerPortalData(currentCustomerData);
   } catch (err) {
     console.error("Failed to load customer dashboard:", err);
+    // Fallback UI transition
+    document.getElementById("cust-login-view")?.classList.add("hidden");
+    document.getElementById("cust-dashboard-view")?.classList.remove("hidden");
   }
 }
 
 function renderCustomerPortalData(data) {
+  if (!data) return;
   const cust = data.customer || {};
+  const stats = data.stats || {};
   
   // Header Profile
-  document.getElementById("cust-profile-name").textContent = cust.name || "Customer";
-  document.getElementById("cust-profile-phone").textContent = cust.phone || "";
-  document.getElementById("cust-profile-city").textContent = cust.address || "Rajkot";
-  document.getElementById("cust-avatar-letter").textContent = (cust.name || "C").charAt(0).toUpperCase();
+  const nameEl = document.getElementById("cust-profile-name");
+  if (nameEl) nameEl.textContent = cust.name || "Customer";
+  const phoneEl = document.getElementById("cust-profile-phone");
+  if (phoneEl) phoneEl.textContent = cust.phone || "";
+  const cityEl = document.getElementById("cust-profile-city");
+  if (cityEl) cityEl.textContent = cust.address || "Rajkot";
+  const avatarEl = document.getElementById("cust-avatar-letter");
+  if (avatarEl) avatarEl.textContent = (cust.name || "C").charAt(0).toUpperCase();
 
   // Stats
-  document.getElementById("stat-cust-invoices").textContent = data.stats.total_invoices || 0;
-  document.getElementById("stat-cust-devices").textContent = data.stats.total_devices || 0;
-  document.getElementById("stat-cust-warranties").textContent = data.stats.active_warranties || 0;
-  document.getElementById("stat-cust-tickets").textContent = data.stats.total_tickets || 0;
+  const statInv = document.getElementById("stat-cust-invoices");
+  if (statInv) statInv.textContent = stats.total_invoices || 0;
+  const statDev = document.getElementById("stat-cust-devices");
+  if (statDev) statDev.textContent = stats.total_devices || 0;
+  const statWar = document.getElementById("stat-cust-warranties");
+  if (statWar) statWar.textContent = stats.active_warranties || 0;
+  const statTic = document.getElementById("stat-cust-tickets");
+  if (statTic) statTic.textContent = stats.total_tickets || 0;
 
   // Render Tabs
-  renderCustomerInvoices(data.invoices || []);
-  renderCustomerDevices(data.devices || []);
-  populateCustomerUpgradeDevices(data.devices || []);
-  renderCustomerTickets(data.tickets || []);
+  if (typeof renderCustomerInvoices === "function") renderCustomerInvoices(data.invoices || []);
+  if (typeof renderCustomerDevices === "function") renderCustomerDevices(data.devices || []);
+  if (typeof populateCustomerUpgradeDevices === "function") populateCustomerUpgradeDevices(data.devices || []);
+  if (typeof renderCustomerTickets === "function") renderCustomerTickets(data.tickets || []);
 
-  // Default to invoices or devices tab
-  switchCustomerTab("devices");
+  // Switch to devices tab
+  if (typeof switchCustomerTab === "function") switchCustomerTab("devices");
+
+  const custPhone = (cust && cust.phone) || localStorage.getItem("pcware_customer_phone");
+  if (custPhone && typeof loadCustomerRewards === "function") {
+    loadCustomerRewards(custPhone);
+  }
 }
 
 function switchCustomerTab(tabName) {
-  const tabs = ["invoices", "devices", "upgrades", "tickets"];
+  const tabs = ["invoices", "devices", "upgrades", "tickets", "rewards"];
   tabs.forEach(t => {
     const btn = document.getElementById("btn-tab-cust-" + t);
     const content = document.getElementById("cust-tab-" + t);
@@ -8882,6 +10274,7 @@ function switchCustomerTab(tabName) {
       if (content) content.classList.add("hidden");
     }
   });
+  if (tabName === "rewards") loadCustomerRewards();
 }
 
 function renderCustomerInvoices(invoices) {
@@ -9246,3 +10639,1076 @@ window.toggleMobileCategoryDrawer = toggleMobileCategoryDrawer;
 window.applyCatalogFilters = applyCatalogFilters;
 window.populateSidebarBrands = populateSidebarBrands;
 window.escapeHtml = escapeHtml;
+
+
+// =========================================================================
+// PRODUCT CARD HOVER IMAGE SLIDER & GALLERY SCRUBBING
+// =========================================================================
+let productHoverTimers = {};
+
+function handleProductGalleryHoverStart(id, el) {
+  let images = [];
+  try {
+    images = JSON.parse(el.getAttribute('data-images') || '[]');
+  } catch(e) { images = []; }
+  if (!images || images.length <= 1) return;
+
+  clearInterval(productHoverTimers[id]);
+  let currentIdx = parseInt(el.getAttribute('data-idx') || '0', 10);
+
+  productHoverTimers[id] = setInterval(() => {
+    currentIdx = (currentIdx + 1) % images.length;
+    setProductGalleryImage(id, el, images, currentIdx);
+  }, 900);
+}
+
+function handleProductGalleryHoverStop(id, el) {
+  clearInterval(productHoverTimers[id]);
+  delete productHoverTimers[id];
+
+  let images = [];
+  try {
+    images = JSON.parse(el.getAttribute('data-images') || '[]');
+  } catch(e) { images = []; }
+  if (!images || images.length <= 1) return;
+
+  setProductGalleryImage(id, el, images, 0);
+}
+
+function handleProductGalleryMouseMove(event, id, el) {
+  let images = [];
+  try {
+    images = JSON.parse(el.getAttribute('data-images') || '[]');
+  } catch(e) { images = []; }
+  if (!images || images.length <= 1) return;
+
+  const rect = el.getBoundingClientRect();
+  const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+  const segmentWidth = rect.width / images.length;
+  const targetIdx = Math.min(images.length - 1, Math.floor(x / segmentWidth));
+
+  const currentIdx = parseInt(el.getAttribute('data-idx') || '0', 10);
+  if (targetIdx !== currentIdx) {
+    if (productHoverTimers[id]) {
+      clearInterval(productHoverTimers[id]);
+      productHoverTimers[id] = setInterval(() => {
+        let cur = parseInt(el.getAttribute('data-idx') || '0', 10);
+        cur = (cur + 1) % images.length;
+        setProductGalleryImage(id, el, images, cur);
+      }, 900);
+    }
+    setProductGalleryImage(id, el, images, targetIdx);
+  }
+}
+
+function setProductGalleryImage(id, el, images, idx) {
+  el.setAttribute('data-idx', idx);
+  const imgEl = document.getElementById(`prod-img-${id}`);
+  if (imgEl && images[idx]) {
+    imgEl.src = images[idx];
+  }
+  const dots = el.querySelectorAll(`.prod-dot-${id}`);
+  dots.forEach((d, i) => {
+    if (i === idx) {
+      d.className = `prod-dot-${id} h-1.5 rounded-full transition-all duration-200 bg-amber-400 w-3`;
+    } else {
+      d.className = `prod-dot-${id} h-1.5 rounded-full transition-all duration-200 bg-white/60 w-1.5`;
+    }
+  });
+}
+
+window.handleProductGalleryHoverStart = handleProductGalleryHoverStart;
+window.handleProductGalleryHoverStop = handleProductGalleryHoverStop;
+window.handleProductGalleryMouseMove = handleProductGalleryMouseMove;
+
+
+// =========================================================================
+// MULTI-PHOTO UPLOAD & PREVIEWS FOR PRODUCT CREATION
+// =========================================================================
+function handleProductGallerySelected(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+
+  if (!state.newProductPendingImages) state.newProductPendingImages = [];
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      state.newProductPendingImages.push({
+        name: file.name,
+        data: evt.target.result
+      });
+      renderNewProductGalleryPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = "";
+}
+
+function removePendingProductImage(idx) {
+  if (state.newProductPendingImages) {
+    state.newProductPendingImages.splice(idx, 1);
+  }
+  renderNewProductGalleryPreviews();
+}
+
+function renderNewProductGalleryPreviews() {
+  const container = document.getElementById("p-gallery-previews");
+  if (!container) return;
+
+  if (!state.newProductPendingImages || state.newProductPendingImages.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = state.newProductPendingImages.map((img, idx) => `
+    <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-brand-600 shadow-sm' : 'border-slate-200'} group bg-white">
+      <img src="${img.data}" class="w-full h-full object-cover">
+      ${idx === 0 ? '<span class="absolute bottom-0 inset-x-0 bg-brand-600 text-white text-[8px] font-bold text-center py-0.5">Cover</span>' : ''}
+      <button type="button" onclick="removePendingProductImage(${idx})" class="absolute top-1 right-1 w-4 h-4 bg-slate-900/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] cursor-pointer">✕</button>
+    </div>
+  `).join("");
+}
+
+window.handleProductGallerySelected = handleProductGallerySelected;
+window.removePendingProductImage = removePendingProductImage;
+
+
+// =========================================================================
+// REFERRAL & POINTS CHECKOUT REDEMPTION
+// =========================================================================
+async function applyCartReferral() {
+  const input = document.getElementById("cart-referral-code");
+  const code = (input?.value || "").trim().toUpperCase();
+  const msgEl = document.getElementById("cart-referral-msg");
+
+  if (!code) {
+    if (msgEl) {
+      msgEl.textContent = "કૃપા કરીને રેફરલ કોડ દાખલ કરો.";
+      msgEl.className = "text-[11px] text-rose-600 block";
+    }
+    return;
+  }
+
+  const cartTotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const custPhone = (document.getElementById("order-phone")?.value || localStorage.getItem("pcware_customer_phone") || "").trim();
+
+  try {
+    const res = await apiPost("referral/validate", {
+      code: code,
+      cart_total: cartTotal,
+      customer_phone: custPhone
+    });
+
+    if (res && res.valid) {
+      state.appliedReferral = {
+        code: res.code,
+        discount_amount: res.discount_amount,
+        reward_points: res.reward_points,
+        owner_name: res.owner_name
+      };
+
+      document.getElementById("cart-referral-input-group")?.classList.add("hidden");
+      const badge = document.getElementById("cart-referral-applied-badge");
+      if (badge) badge.classList.remove("hidden");
+      const codeTxt = document.getElementById("cart-applied-code-text");
+      if (codeTxt) codeTxt.textContent = res.code;
+      const discTxt = document.getElementById("cart-applied-discount-text");
+      if (discTxt) discTxt.textContent = `(-₹${Number(res.discount_amount).toLocaleString('en-IN')})`;
+
+      if (msgEl) {
+        msgEl.textContent = res.message || `સફળ! ₹${res.discount_amount} ડિસ્કાઉન્ટ એપ્લાય થયું છે.`;
+        msgEl.className = "text-[11px] text-emerald-600 block";
+      }
+
+      showToast(`રેફરલ કોડ ${res.code} એપ્લાય થયો! (-₹${res.discount_amount})`, "success");
+      updateCartUI();
+    } else {
+      if (msgEl) {
+        msgEl.textContent = (res && res.error) || "અમાન્ય રેફરલ કોડ.";
+        msgEl.className = "text-[11px] text-rose-600 block";
+      }
+    }
+  } catch(err) {
+    if (msgEl) {
+      msgEl.textContent = "કોડ વેરિફાય કરતી વખતે ક્ષતિ સર્જાઈ.";
+      msgEl.className = "text-[11px] text-rose-600 block";
+    }
+  }
+}
+
+function removeCartReferral() {
+  state.appliedReferral = null;
+  document.getElementById("cart-referral-input-group")?.classList.remove("hidden");
+  document.getElementById("cart-referral-applied-badge")?.classList.add("hidden");
+  const msgEl = document.getElementById("cart-referral-msg");
+  if (msgEl) {
+    msgEl.textContent = "";
+    msgEl.classList.add("hidden");
+  }
+  const input = document.getElementById("cart-referral-code");
+  if (input) input.value = "";
+  updateCartUI();
+  showToast("રેફરલ કોડ દૂર કર્યો.");
+}
+
+function togglePointsRedemption(checked) {
+  state.redeemPoints = checked;
+  updateCartUI();
+}
+
+window.applyCartReferral = applyCartReferral;
+window.removeCartReferral = removeCartReferral;
+window.togglePointsRedemption = togglePointsRedemption;
+
+
+// =========================================================================
+// CUSTOMER SELF-SERVICE PORTAL REWARDS & REFERRAL LOADER
+// =========================================================================
+async function loadCustomerRewards(phone) {
+  if (!phone) {
+    phone = localStorage.getItem("pcware_customer_phone");
+  }
+  if (!phone) return;
+
+  try {
+    const data = await apiGet("customer/rewards?phone=" + encodeURIComponent(phone));
+    if (!data) return;
+
+    state.customerRewardBalance = data.balance || 0;
+    state.customerReferralCode = data.referral_code || "";
+
+    const balEl = document.getElementById("cust-reward-balance");
+    if (balEl) balEl.textContent = `${data.balance || 0} Pts`;
+
+    const inrEl = document.getElementById("cust-reward-inr");
+    if (inrEl) inrEl.textContent = `${data.balance || 0}`;
+
+    const codeEl = document.getElementById("cust-referral-code-display");
+    if (codeEl) codeEl.textContent = data.referral_code || "PCW200";
+
+    const totalRefEl = document.getElementById("cust-stat-total-ref");
+    if (totalRefEl) totalRefEl.textContent = (data.referral_stats && data.referral_stats.total_referrals) || 0;
+
+    const ptsEarnedEl = document.getElementById("cust-stat-pts-earned");
+    if (ptsEarnedEl) ptsEarnedEl.textContent = `${(data.referral_stats && data.referral_stats.points_earned) || 0} Pts`;
+
+    const ledgerBody = document.getElementById("cust-rewards-ledger-body");
+    if (ledgerBody) {
+      if (!data.transactions || data.transactions.length === 0) {
+        ledgerBody.innerHTML = `
+          <tr>
+            <td colspan="4" class="p-6 text-center text-slate-400">
+              હજુ સુધી કોઈ વ્યવહાર નથી. મિત્રોને રેફર કરી પોઇન્ટ્સ કમાઓ!
+            </td>
+          </tr>
+        `;
+      } else {
+        ledgerBody.innerHTML = data.transactions.map(t => {
+          const isCredit = t.points > 0;
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3 text-slate-500 whitespace-nowrap">${(t.created_at || '').slice(0, 16)}</td>
+              <td class="p-3 font-semibold text-slate-800">${escapeHtml(t.description || 'Reward Point Transaction')}</td>
+              <td class="p-3">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isCredit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                  ${isCredit ? 'ક્રેડિટ (Earned)' : 'ડેબિટ (Redeemed)'}
+                </span>
+              </td>
+              <td class="p-3 text-right font-black ${isCredit ? 'text-emerald-700' : 'text-rose-600'}">
+                ${isCredit ? '+' : ''}${t.points} Pts
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+    }
+
+    const cartPtsBadge = document.getElementById("cart-available-pts-badge");
+    if (cartPtsBadge) cartPtsBadge.textContent = `${data.balance || 0} Pts`;
+  } catch(err) {
+    console.error("Failed to load customer rewards:", err);
+  }
+}
+
+function copyCustomerReferralCode() {
+  const code = state.customerReferralCode || document.getElementById("cust-referral-code-display")?.textContent || "PCW200";
+  navigator.clipboard.writeText(code).then(() => {
+    showToast(`રેફરલ કોડ '${code}' ક્લિપબોર્ડ પર કોપી થયો!`, "success");
+  }).catch(() => {
+    showToast(`કોડ: ${code}`, "info");
+  });
+}
+
+function shareReferralWhatsApp() {
+  const code = state.customerReferralCode || document.getElementById("cust-referral-code-display")?.textContent || "PCW200";
+  const url = window.location.origin;
+  const msg = `નમસ્તે! PCWARE માંથી કમ્પ્યુટર હાર્ડવેર કે લેપટોપ ખરીદવા માટે મારો રેફરલ કોડ *${code}* વાપરો અને ઓર્ડર પર ફ્લેટ ₹100 નું તાત્કાલિક ડિસ્કાઉન્ટ મેળવો! શોપ કરો: ${url}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+window.loadCustomerRewards = loadCustomerRewards;
+window.copyCustomerReferralCode = copyCustomerReferralCode;
+window.shareReferralWhatsApp = shareReferralWhatsApp;
+
+
+// =========================================================================
+// ADMIN ERP REFERRAL & LOYALTY MANAGER
+// =========================================================================
+async function loadAdminReferrals() {
+  try {
+    const rules = await apiGet("referral/rules");
+    if (rules) {
+      if (document.getElementById("ref-rule-name")) document.getElementById("ref-rule-name").value = rules.rule_name || "PCWARE Smart Refer & Earn";
+      if (document.getElementById("ref-rule-pts")) document.getElementById("ref-rule-pts").value = rules.referrer_points || 200;
+      if (document.getElementById("ref-rule-disc")) document.getElementById("ref-rule-disc").value = rules.referee_discount || 100;
+      if (document.getElementById("ref-rule-rate")) document.getElementById("ref-rule-rate").value = rules.point_to_inr || 1.0;
+      if (document.getElementById("ref-rule-min-order")) document.getElementById("ref-rule-min-order").value = rules.min_order_val || 500;
+      if (document.getElementById("ref-rule-terms")) document.getElementById("ref-rule-terms").value = rules.terms_text || "";
+    }
+
+    const codes = await apiGet("referral/codes");
+    const tbody = document.getElementById("admin-referral-codes-body");
+    const countBadge = document.getElementById("admin-ref-count-badge");
+    if (countBadge && Array.isArray(codes)) countBadge.textContent = `${codes.length} Codes`;
+
+    if (tbody && Array.isArray(codes)) {
+      if (codes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">કોઈ રેફરલ કોડ ઉપલબ્ધ નથી.</td></tr>`;
+      } else {
+        tbody.innerHTML = codes.map(c => `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3 font-mono font-black text-indigo-700">
+              <span class="px-2 py-1 bg-indigo-50 border border-indigo-200 rounded-md tracking-wider">${escapeHtml(c.code)}</span>
+            </td>
+            <td class="p-3 font-bold text-slate-800">${escapeHtml(c.owner_name)}</td>
+            <td class="p-3 text-slate-600 font-mono">${escapeHtml(c.owner_phone || '-')}</td>
+            <td class="p-3 text-center font-bold text-indigo-700">${c.reward_points} Pts</td>
+            <td class="p-3 text-center font-bold text-emerald-700">₹${c.discount_amount}</td>
+            <td class="p-3 text-center font-bold text-slate-900">${c.usage_count} વાર</td>
+            <td class="p-3 text-center">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${c.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                ${c.status}
+              </span>
+            </td>
+          </tr>
+        `).join("");
+      }
+    }
+  } catch(err) {
+    console.error("Error loading admin referrals:", err);
+  }
+}
+
+async function handleSaveReferralRules(e) {
+  e.preventDefault();
+  const payload = {
+    rule_name: document.getElementById("ref-rule-name")?.value.trim(),
+    referrer_points: parseInt(document.getElementById("ref-rule-pts")?.value || 200, 10),
+    referee_discount: parseFloat(document.getElementById("ref-rule-disc")?.value || 100),
+    point_to_inr: parseFloat(document.getElementById("ref-rule-rate")?.value || 1.0),
+    min_order_val: parseFloat(document.getElementById("ref-rule-min-order")?.value || 500),
+    terms_text: document.getElementById("ref-rule-terms")?.value.trim()
+  };
+
+  const res = await apiPost("referral/rules", payload);
+  if (res && res.success) {
+    showToast("રેફરલ નિયમો સેવ થઈ ગયા!", "success");
+    loadAdminReferrals();
+  } else {
+    showToast("નિયમો સેવ કરવામાં ક્ષતિ.", "error");
+  }
+}
+
+async function handleCreateReferralCode(e) {
+  e.preventDefault();
+  const payload = {
+    code: document.getElementById("new-ref-code")?.value.trim().toUpperCase(),
+    owner_name: document.getElementById("new-ref-owner")?.value.trim(),
+    owner_phone: document.getElementById("new-ref-phone")?.value.trim(),
+    max_uses: parseInt(document.getElementById("new-ref-max-uses")?.value || 0, 10),
+    reward_points: parseInt(document.getElementById("new-ref-pts")?.value || 200, 10),
+    discount_amount: parseFloat(document.getElementById("new-ref-disc")?.value || 100),
+    status: "ACTIVE"
+  };
+
+  const res = await apiPost("referral/codes", payload);
+  if (res && res.success) {
+    showToast(`નવો રેફરલ કોડ '${payload.code}' બની ગયો!`, "success");
+    document.getElementById("new-ref-code").value = "";
+    document.getElementById("new-ref-owner").value = "";
+    document.getElementById("new-ref-phone").value = "";
+    loadAdminReferrals();
+  } else {
+    showToast((res && res.error) || "રેફરલ કોડ બનાવવામાં ક્ષતિ.", "error");
+  }
+}
+
+window.loadAdminReferrals = loadAdminReferrals;
+window.handleSaveReferralRules = handleSaveReferralRules;
+window.handleCreateReferralCode = handleCreateReferralCode;
+
+// ==========================================
+// ENTERPRISE BACKUP & RESTORE MODULE LOGIC
+// ==========================================
+
+state.backups = [];
+state.targetRestoreFile = null;
+state.currentBackupFilter = "all";
+
+async function loadAdminBackups() {
+  try {
+    const res = await fetch("/api/backups");
+    if (!res.ok) throw new Error("Failed to fetch backups");
+    const data = await res.json();
+    
+    state.backups = data.backups || [];
+    
+    // Update KPI Cards
+    const liveSizeEl = document.getElementById("stat-backup-live-size");
+    if (liveSizeEl) liveSizeEl.textContent = data.live_db_size_formatted || "-- KB";
+    
+    const dbSummaryEl = document.getElementById("stat-backup-db-summary");
+    if (dbSummaryEl && data.stats) {
+      dbSummaryEl.textContent = `${data.stats.products || 0} Products • ${data.stats.invoices || 0} Invoices • ${data.stats.customers || 0} Customers`;
+    }
+    
+    const dailyStatusEl = document.getElementById("stat-backup-daily-status");
+    if (dailyStatusEl) {
+      dailyStatusEl.textContent = data.today_backup_status || "Active";
+      dailyStatusEl.className = data.today_backup_status === "Active (Saved)" 
+        ? "text-2xl sm:text-3xl font-black text-emerald-600 mt-1" 
+        : "text-2xl sm:text-3xl font-black text-amber-500 mt-1";
+    }
+    
+    const dailyFileEl = document.getElementById("stat-backup-daily-file");
+    if (dailyFileEl) dailyFileEl.textContent = data.today_backup_file || "Automatic snapshot active";
+    
+    const totalCountEl = document.getElementById("stat-backup-total-count");
+    if (totalCountEl) totalCountEl.textContent = `${data.total_backups || 0} Files`;
+    
+    // Render Date & Time Snapshot Dropdown & Table
+    populateBackupSnapshotDropdown();
+    renderBackupsTable();
+    
+  } catch (err) {
+    console.error("Error loading admin backups:", err);
+    showToast("બેકઅપ લિસ્ટ લોડ કરવામાં ક્ષતિ.", "error");
+  }
+}
+
+function populateBackupSnapshotDropdown() {
+  const select = document.getElementById("backup-select-snapshot");
+  if (!select) return;
+  
+  const filtered = state.backups.filter(b => {
+    if (state.currentBackupFilter === "daily") return b.type === "daily";
+    if (state.currentBackupFilter === "manual") return b.type === "manual";
+    return true;
+  });
+  
+  if (filtered.length === 0) {
+    select.innerHTML = '<option value="">-- કોઈ સ્નેપશોટ ઉપલબ્ધ નથી (No snapshots available) --</option>';
+    updateSnapshotPreview(null);
+    return;
+  }
+  
+  select.innerHTML = filtered.map(b => {
+    return `<option value="${b.filename}">${b.date_formatted}, ${b.time_formatted} — ${b.type_label} (${b.size_formatted})</option>`;
+  }).join("");
+  
+  // Select first item by default
+  const defaultFile = filtered[0].filename;
+  select.value = defaultFile;
+  updateSnapshotPreview(filtered[0]);
+}
+
+function onSelectBackupSnapshot(filename) {
+  const backup = state.backups.find(b => b.filename === filename);
+  updateSnapshotPreview(backup);
+}
+
+function updateSnapshotPreview(backup) {
+  const dateEl = document.getElementById("selected-snapshot-date");
+  const timeEl = document.getElementById("selected-snapshot-time");
+  const sizeEl = document.getElementById("selected-snapshot-size");
+  const fileEl = document.getElementById("selected-snapshot-filename");
+  const badgeEl = document.getElementById("selected-snapshot-badge");
+  const restoreBtn = document.getElementById("btn-restore-selected");
+  const downloadBtn = document.getElementById("btn-download-selected");
+  
+  if (!backup) {
+    if (dateEl) dateEl.textContent = "--";
+    if (timeEl) timeEl.textContent = "--";
+    if (sizeEl) sizeEl.textContent = "--";
+    if (fileEl) fileEl.textContent = "--";
+    if (badgeEl) badgeEl.textContent = "None";
+    if (restoreBtn) restoreBtn.disabled = true;
+    if (downloadBtn) downloadBtn.disabled = true;
+    return;
+  }
+  
+  if (dateEl) dateEl.textContent = backup.date_formatted;
+  if (timeEl) timeEl.textContent = backup.time_formatted;
+  if (sizeEl) sizeEl.textContent = backup.size_formatted;
+  if (fileEl) fileEl.textContent = backup.filename;
+  if (badgeEl) {
+    badgeEl.textContent = backup.type_label;
+    badgeEl.className = `px-2.5 py-0.5 rounded-full text-[10px] font-black border ${backup.badge_class || 'bg-slate-100 text-slate-800'}`;
+  }
+  if (restoreBtn) restoreBtn.disabled = false;
+  if (downloadBtn) downloadBtn.disabled = false;
+}
+
+function filterBackupsType(type) {
+  state.currentBackupFilter = type;
+  const btns = ["all", "daily", "manual"];
+  btns.forEach(b => {
+    const el = document.getElementById("filter-btn-" + b);
+    if (el) {
+      if (b === type) {
+        el.className = "px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-900 text-white cursor-pointer transition";
+      } else {
+        el.className = "px-3 py-1.5 text-xs font-bold rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 cursor-pointer transition";
+      }
+    }
+  });
+  populateBackupSnapshotDropdown();
+  renderBackupsTable();
+}
+
+function renderBackupsTable() {
+  const tbody = document.getElementById("admin-backups-table-body");
+  if (!tbody) return;
+  
+  const searchInput = document.getElementById("backup-search-input")?.value.toLowerCase().trim() || "";
+  
+  const filtered = state.backups.filter(b => {
+    if (state.currentBackupFilter === "daily" && b.type !== "daily") return false;
+    if (state.currentBackupFilter === "manual" && b.type !== "manual") return false;
+    if (searchInput) {
+      const matchName = b.filename.toLowerCase().includes(searchInput);
+      const matchDate = b.date_formatted.toLowerCase().includes(searchInput);
+      const matchType = b.type_label.toLowerCase().includes(searchInput);
+      if (!matchName && !matchDate && !matchType) return false;
+    }
+    return true;
+  });
+  
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="p-8 text-center text-slate-400 font-medium">
+          કોઈ બેકઅપ ફાઇલ્સ મળી નથી. (No backups match your filter)
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map(b => {
+    return `
+      <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+        <td class="p-3.5 font-bold text-slate-800 whitespace-nowrap">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📅</span>
+            <span>${b.date_formatted}</span>
+          </div>
+        </td>
+        <td class="p-3.5 font-semibold text-slate-600 whitespace-nowrap">
+          <div class="flex items-center gap-1.5">
+            <span class="text-sm">⏰</span>
+            <span>${b.time_formatted}</span>
+          </div>
+        </td>
+        <td class="p-3.5 font-mono text-[11px] text-slate-700 max-w-[220px] truncate" title="${b.filename}">
+          ${b.filename}
+        </td>
+        <td class="p-3.5 text-center whitespace-nowrap">
+          <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black border ${b.badge_class || 'bg-slate-100 text-slate-700'}">
+            ${b.type_label}
+          </span>
+        </td>
+        <td class="p-3.5 text-center font-bold text-slate-700 whitespace-nowrap">
+          ${b.size_formatted}
+        </td>
+        <td class="p-3.5 text-right whitespace-nowrap">
+          <div class="inline-flex items-center gap-1.5">
+            <button type="button" onclick="downloadBackupFile('${b.filename}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition flex items-center gap-1 cursor-pointer" title="Download to PC">
+              <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+              <span>Download</span>
+            </button>
+            <button type="button" onclick="openRestoreModal('${b.filename}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] transition flex items-center gap-1 cursor-pointer" title="Restore to this state">
+              <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Restore</span>
+            </button>
+            <button type="button" onclick="deleteBackupFile('${b.filename}')" class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer" title="Delete backup">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function filterBackupsTable() {
+  renderBackupsTable();
+}
+
+async function createManualBackup() {
+  try {
+    showToast("નવો સ્નેપશોટ બની રહ્યો છે...", "info");
+    const res = await fetch("/api/backups/create", { method: "POST" });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast(`નવો બેકઅપ સ્નેપશોટ સફળતાપૂર્વક બન્યો! (${data.filename})`, "success");
+      loadAdminBackups();
+    } else {
+      showToast(data.error || "બેકઅપ બનાવવામાં નિષ્ફળતા.", "error");
+    }
+  } catch (err) {
+    console.error("Error creating backup:", err);
+    showToast("સર્વર કનેક્શન ક્ષતિ.", "error");
+  }
+}
+
+function downloadLiveDatabase() {
+  showToast("લાઇવ ડેટાબેઝ ડાઉનલોડ શરૂ થઈ રહ્યું છે...", "info");
+  window.location.href = "/api/backups/download-latest";
+}
+
+function downloadBackupFile(filename) {
+  if (!filename) return;
+  showToast(`${filename} ડાઉનલોડ થઈ રહ્યું છે...`, "info");
+  window.location.href = `/api/backups/download?file=${encodeURIComponent(filename)}`;
+}
+
+function downloadSelectedSnapshot() {
+  const select = document.getElementById("backup-select-snapshot");
+  if (select && select.value) {
+    downloadBackupFile(select.value);
+  } else {
+    showToast("કૃપા કરીને સ્નેપશોટ પસંદ કરો.", "error");
+  }
+}
+
+function restoreSelectedSnapshot() {
+  const select = document.getElementById("backup-select-snapshot");
+  if (select && select.value) {
+    openRestoreModal(select.value);
+  } else {
+    showToast("કૃપા કરીને સ્નેપશોટ પસંદ કરો.", "error");
+  }
+}
+
+function openRestoreModal(filename) {
+  const backup = state.backups.find(b => b.filename === filename);
+  state.targetRestoreFile = filename;
+  
+  const fileEl = document.getElementById("modal-restore-filename");
+  const dtEl = document.getElementById("modal-restore-datetime");
+  const szEl = document.getElementById("modal-restore-size");
+  const modal = document.getElementById("backup-restore-modal");
+  
+  if (fileEl) fileEl.textContent = filename;
+  if (dtEl) dtEl.textContent = backup ? `${backup.date_formatted} at ${backup.time_formatted}` : "Selected Snapshot";
+  if (szEl) szEl.textContent = backup ? backup.size_formatted : "--";
+  
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeRestoreModal() {
+  const modal = document.getElementById("backup-restore-modal");
+  if (modal) modal.classList.add("hidden");
+  state.targetRestoreFile = null;
+}
+
+async function executeRestoreDatabase() {
+  if (!state.targetRestoreFile) return;
+  
+  const spinner = document.getElementById("restore-btn-spinner");
+  const btnText = document.getElementById("restore-btn-text");
+  const confirmBtn = document.getElementById("btn-confirm-restore");
+  
+  if (spinner) spinner.classList.remove("hidden");
+  if (btnText) btnText.textContent = "ડેટા રીસ્ટોર થઈ રહ્યો છે...";
+  if (confirmBtn) confirmBtn.disabled = true;
+  
+  try {
+    const res = await fetch("/api/backups/restore", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: state.targetRestoreFile })
+    });
+    const data = await res.json();
+    
+    if (res.ok && data.success) {
+      showToast(`ડેટાબેઝ સફળતાપૂર્વક રીસ્ટોર થયો! સેફ્ટી સ્નેપશોટ: ${data.safety_backup || 'Saved'}`, "success");
+      closeRestoreModal();
+      
+      // Refresh all systems
+      setTimeout(() => {
+        loadAdminBackups();
+        loadProducts();
+        loadAdminStats();
+      }, 800);
+    } else {
+      showToast(data.error || "રીસ્ટોર કરવામાં ક્ષતિ આવી.", "error");
+    }
+  } catch (err) {
+    console.error("Restore error:", err);
+    showToast("સર્વર કનેક્શનમાં ક્ષતિ.", "error");
+  } finally {
+    if (spinner) spinner.classList.add("hidden");
+    if (btnText) btnText.textContent = "હા, ડેટા રીસ્ટોર કરો (Confirm Restore)";
+    if (confirmBtn) confirmBtn.disabled = false;
+  }
+}
+
+async function handleUploadRestore(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.name.endsWith(".db")) {
+    showToast("ફક્ત .db ફાઇલ જ માન્ય છે! (Only .db SQLite database files are supported)", "error");
+    event.target.value = "";
+    return;
+  }
+  
+  const proceed = confirm(`શું તમે ખરેખર '${file.name}' ફાઇલ અપલોડ કરીને ડેટાબેઝ રીસ્ટોર કરવા માંગો છો?\n\nરીસ્ટોર કરતાં પહેલાં આપોઆપ સેફ્ટી સ્નેપશોટ લેવાશે.`);
+  if (!proceed) {
+    event.target.value = "";
+    return;
+  }
+  
+  showToast("ફાઇલ અપલોડ અને રીસ્ટોર થઈ રહી છે...", "info");
+  
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64Data = e.target.result;
+    try {
+      const res = await fetch("/api/backups/upload-restore", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: file.name,
+          file_base64: base64Data
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast("અપલોડેડ ફાઇલમાંથી ડેટાબેઝ સફળતાપૂર્વક રીસ્ટોર થયો!", "success");
+        setTimeout(() => {
+          loadAdminBackups();
+          loadProducts();
+          loadAdminStats();
+        }, 800);
+      } else {
+        showToast(data.error || "અપલોડ રીસ્ટોરમાં ક્ષતિ.", "error");
+      }
+    } catch (err) {
+      console.error("Upload restore error:", err);
+      showToast("સર્વર કનેક્શન ક્ષતિ.", "error");
+    } finally {
+      event.target.value = "";
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function deleteBackupFile(filename) {
+  if (!confirm(`શું તમે ખરેખર '${filename}' બેકઅપ ફાઇલ કાઢી નાખવા માંગો છો?`)) return;
+  
+  try {
+    const res = await fetch(`/api/backups/delete?file=${encodeURIComponent(filename)}`, { method: "DELETE" });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast(`${filename} સફળતાપૂર્વક કાઢી નાખવામાં આવ્યું.`, "success");
+      loadAdminBackups();
+    } else {
+      showToast(data.error || "ફાઇલ કાઢવામાં ક્ષતિ.", "error");
+    }
+  } catch (err) {
+    console.error("Error deleting backup:", err);
+    showToast("સર્વર કનેક્શન ક્ષતિ.", "error");
+  }
+}
+
+// Global exports
+window.loadAdminBackups = loadAdminBackups;
+window.onSelectBackupSnapshot = onSelectBackupSnapshot;
+window.filterBackupsType = filterBackupsType;
+window.filterBackupsTable = filterBackupsTable;
+window.createManualBackup = createManualBackup;
+window.downloadLiveDatabase = downloadLiveDatabase;
+window.downloadBackupFile = downloadBackupFile;
+window.downloadSelectedSnapshot = downloadSelectedSnapshot;
+window.restoreSelectedSnapshot = restoreSelectedSnapshot;
+window.openRestoreModal = openRestoreModal;
+window.closeRestoreModal = closeRestoreModal;
+window.executeRestoreDatabase = executeRestoreDatabase;
+window.handleUploadRestore = handleUploadRestore;
+window.deleteBackupFile = deleteBackupFile;
+
+// =============================================================================
+// STAFF & ADMIN AUTHENTICATION CONTROLLER
+// =============================================================================
+
+let pendingStaffRedirect = "admin";
+
+function openStaffLoginModal(redirectTarget = "admin") {
+  pendingStaffRedirect = redirectTarget || "admin";
+  const modal = document.getElementById("modal-staff-login");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+
+  // Hide any previous error
+  const errBox = document.getElementById("staff-login-error");
+  if (errBox) errBox.classList.add("hidden");
+
+  // Focus ident input after short tick
+  setTimeout(() => {
+    const identInput = document.getElementById("staff-login-ident");
+    if (identInput) identInput.focus();
+  }, 100);
+}
+
+function closeStaffLoginModal() {
+  const modal = document.getElementById("modal-staff-login");
+  if (modal) modal.classList.add("hidden");
+}
+
+function toggleStaffPasswordVisibility() {
+  const input = document.getElementById("staff-login-secret");
+  const eye = document.getElementById("staff-pass-eye");
+  if (!input) return;
+  if (input.type === "password") {
+    input.type = "text";
+    if (eye) {
+      eye.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>';
+    }
+  } else {
+    input.type = "password";
+    if (eye) {
+      eye.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+    }
+  }
+}
+
+function fillStaffDemo(role) {
+  const identInput = document.getElementById("staff-login-ident");
+  const secretInput = document.getElementById("staff-login-secret");
+  const errBox = document.getElementById("staff-login-error");
+  if (errBox) errBox.classList.add("hidden");
+
+  if (role === "admin") {
+    if (identInput) identInput.value = "admin";
+    if (secretInput) secretInput.value = "admin123";
+  } else if (role === "hardik") {
+    if (identInput) identInput.value = "hardik";
+    if (secretInput) secretInput.value = "sales123";
+  } else if (role === "jignesh") {
+    if (identInput) identInput.value = "jignesh";
+    if (secretInput) secretInput.value = "lab123";
+  }
+}
+
+async function handleStaffLoginSubmit(e) {
+  if (e && typeof e.preventDefault === "function") e.preventDefault();
+
+  const identInput = document.getElementById("staff-login-ident");
+  const secretInput = document.getElementById("staff-login-secret");
+  const errBox = document.getElementById("staff-login-error");
+  const errText = document.getElementById("staff-login-error-text");
+  const submitBtn = document.getElementById("btn-staff-login-submit");
+  const spinner = document.getElementById("staff-login-spinner");
+  const btnText = document.getElementById("staff-login-btn-text");
+
+  if (!identInput || !secretInput) return;
+
+  const ident = identInput.value.trim();
+  const secret = secretInput.value.trim();
+
+  if (!ident || !secret) {
+    if (errText) errText.textContent = "કૃપા કરીને યુઝરનેમ/મોબાઇલ અને પાસવર્ડ/પિન દાખલ કરો.";
+    if (errBox) errBox.classList.remove("hidden");
+    return;
+  }
+
+  // Loading state
+  if (spinner) spinner.classList.remove("hidden");
+  if (btnText) btnText.textContent = "ચકાસણી ચાલુ છે... (Signing in...)";
+  if (submitBtn) submitBtn.disabled = true;
+  if (errBox) errBox.classList.add("hidden");
+
+  try {
+    const res = await fetch("/api/auth/staff-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username_or_phone: ident,
+        password: secret
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      state.staffToken = data.token;
+      state.currentStaff = data.user;
+      localStorage.setItem("pcware_staff_token", data.token);
+      localStorage.setItem("pcware_staff_user", JSON.stringify(data.user));
+
+      updateStaffHeaderUI();
+      closeStaffLoginModal();
+
+      showToast(`સ્વાગત છે, ${data.user.name} (${data.user.role})!`, "success");
+
+      // Switch to Admin ERP view
+      const targetView = pendingStaffRedirect || "admin";
+      state.currentView = null; // force rerender in switchView
+      switchView(targetView);
+    } else {
+      if (errText) errText.textContent = data.error || "ખોટો પાસવર્ડ અથવા યુઝરનેમ. ફરી પ્રયાસ કરો.";
+      if (errBox) errBox.classList.remove("hidden");
+    }
+  } catch (err) {
+    console.error("Staff login error:", err);
+    if (errText) errText.textContent = "સર્વર કનેક્શનમાં ક્ષતિ. કૃપા કરીને ફરી પ્રયાસ કરો.";
+    if (errBox) errBox.classList.remove("hidden");
+  } finally {
+    if (spinner) spinner.classList.add("hidden");
+    if (btnText) btnText.textContent = "Sign In to Admin ERP (લૉગિન કરો)";
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+async function logoutStaff() {
+  if (!confirm("શું તમે એડમિન ERP માંથી બહાર નીકળવા (Logout) માંગો છો?")) return;
+
+  try {
+    if (state.staffToken) {
+      await fetch("/api/auth/staff-logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + state.staffToken
+        },
+        body: JSON.stringify({ token: state.staffToken })
+      });
+    }
+  } catch (err) {
+    console.error("Staff logout error:", err);
+  }
+
+  state.staffToken = null;
+  state.currentStaff = null;
+  localStorage.removeItem("pcware_staff_token");
+  localStorage.removeItem("pcware_staff_user");
+
+  updateStaffHeaderUI();
+  showToast("તમે સફળતાપૂર્વક સ્ટાફ ERP માંથી લૉગઆઉટ થયા છો.", "info");
+
+  // Redirect to Storefront if currently on admin view
+  if (state.currentView === "admin") {
+    switchView("catalog");
+  }
+}
+
+async function initStaffAuth() {
+  const savedToken = localStorage.getItem("pcware_staff_token");
+  const savedUserStr = localStorage.getItem("pcware_staff_user");
+
+  if (savedToken) {
+    state.staffToken = savedToken;
+    if (savedUserStr) {
+      try {
+        state.currentStaff = JSON.parse(savedUserStr);
+        updateStaffHeaderUI();
+      } catch (e) {}
+    }
+
+    try {
+      const res = await fetch("/api/auth/me", {
+        headers: { "Authorization": "Bearer " + savedToken }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          state.currentStaff = data.user;
+          localStorage.setItem("pcware_staff_user", JSON.stringify(data.user));
+          updateStaffHeaderUI();
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Staff session validation failed:", err);
+    }
+
+    // Invalid session on server
+    state.currentStaff = null;
+    state.staffToken = null;
+    localStorage.removeItem("pcware_staff_token");
+    localStorage.removeItem("pcware_staff_user");
+    updateStaffHeaderUI();
+  } else {
+    state.currentStaff = null;
+    state.staffToken = null;
+    updateStaffHeaderUI();
+  }
+}
+
+function updateStaffHeaderUI() {
+  const badge = document.getElementById("admin-logged-staff-badge");
+  const nameEl = document.getElementById("admin-logged-staff-name");
+  const roleEl = document.getElementById("admin-logged-staff-role");
+  const navAdminBtn = document.getElementById("nav-admin");
+
+  if (state.currentStaff) {
+    if (badge) badge.classList.remove("hidden");
+    if (nameEl) nameEl.textContent = state.currentStaff.name;
+    if (roleEl) roleEl.textContent = `${state.currentStaff.role}`;
+
+    if (navAdminBtn) {
+      const firstName = (state.currentStaff.name || "Staff").split(" ")[0];
+      navAdminBtn.innerHTML = `
+        <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
+          👤
+        </div>
+        <div>
+          <span class="block text-[9px] text-emerald-400 font-black uppercase tracking-wider leading-tight">Staff: ${firstName}</span>
+          <span class="block text-xs font-bold text-slate-200 leading-tight whitespace-nowrap">Admin ERP</span>
+        </div>
+      `;
+    }
+  } else {
+    if (badge) badge.classList.add("hidden");
+    if (nameEl) nameEl.textContent = "Not Logged In";
+    if (roleEl) roleEl.textContent = "Please Login";
+
+    if (navAdminBtn) {
+      navAdminBtn.innerHTML = `
+        <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-slate-950 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <div>
+          <span class="block text-[9px] text-amber-400 font-black uppercase tracking-wider leading-tight">Staff Access</span>
+          <span class="block text-xs font-bold text-slate-200 leading-tight whitespace-nowrap">ERP Portal</span>
+        </div>
+      `;
+    }
+  }
+}
+
+// Window bindings for Staff Auth
+window.openStaffLoginModal = openStaffLoginModal;
+window.closeStaffLoginModal = closeStaffLoginModal;
+window.toggleStaffPasswordVisibility = toggleStaffPasswordVisibility;
+window.fillStaffDemo = fillStaffDemo;
+window.handleStaffLoginSubmit = handleStaffLoginSubmit;
+window.logoutStaff = logoutStaff;
+window.initStaffAuth = initStaffAuth;
+window.updateStaffHeaderUI = updateStaffHeaderUI;
+
+

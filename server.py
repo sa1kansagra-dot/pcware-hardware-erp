@@ -4,18 +4,151 @@ import json
 import urllib.parse
 import os
 import sqlite3
+import base64
+import uuid
 import re
-from datetime import datetime
+import shutil
+from datetime import datetime, timedelta
 
-PORT = 8080
+PORT = int(os.environ.get("PORT", 8080))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 DB_PATH = os.path.join(BASE_DIR, "hardware_erp.db")
+BACKUPS_DIR = os.path.join(BASE_DIR, "backups")
+os.makedirs(BACKUPS_DIR, exist_ok=True)
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+def ensure_daily_backup():
+    try:
+        if not os.path.exists(DB_PATH):
+            return
+        os.makedirs(BACKUPS_DIR, exist_ok=True)
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        daily_filename = f"daily_backup_{today_str}.db"
+        daily_path = os.path.join(BACKUPS_DIR, daily_filename)
+        if not os.path.exists(daily_path):
+            src_conn = sqlite3.connect(DB_PATH)
+            dst_conn = sqlite3.connect(daily_path)
+            src_conn.backup(dst_conn)
+            dst_conn.close()
+            src_conn.close()
+            print(f"[Backup] Daily automated backup saved: {daily_filename}")
+    except Exception as e:
+        print(f"[Backup Error] Daily backup failed: {e}")
+
+def create_backup_snapshot(prefix="manual"):
+    try:
+        if not os.path.exists(DB_PATH):
+            return None, "Database file not found"
+        os.makedirs(BACKUPS_DIR, exist_ok=True)
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"{prefix}_backup_{timestamp}.db"
+        target_path = os.path.join(BACKUPS_DIR, filename)
+        src_conn = sqlite3.connect(DB_PATH)
+        dst_conn = sqlite3.connect(target_path)
+        src_conn.backup(dst_conn)
+        dst_conn.close()
+        src_conn.close()
+        return filename, None
+    except Exception as e:
+        return None, str(e)
+
+def get_backups_metadata():
+    ensure_daily_backup()
+    os.makedirs(BACKUPS_DIR, exist_ok=True)
+    files = [f for f in os.listdir(BACKUPS_DIR) if f.endswith(".db")]
+    backups = []
+    
+    for f in files:
+        f_path = os.path.join(BACKUPS_DIR, f)
+        try:
+            stat = os.stat(f_path)
+            size_bytes = stat.st_size
+            size_kb = size_bytes / 1024
+            size_str = f"{size_kb:.1f} KB" if size_kb < 1024 else f"{size_kb/1024:.2f} MB"
+            
+            mtime = datetime.fromtimestamp(stat.st_mtime)
+            created_iso = mtime.isoformat()
+            date_formatted = mtime.strftime("%d %b %Y")
+            time_formatted = mtime.strftime("%I:%M %p")
+            
+            if f.startswith("daily_backup_"):
+                b_type = "daily"
+                b_type_label = "Daily Auto-Backup"
+                badge_class = "bg-emerald-100 text-emerald-800 border-emerald-300"
+            elif f.startswith("manual_backup_"):
+                b_type = "manual"
+                b_type_label = "Manual Snapshot"
+                badge_class = "bg-blue-100 text-blue-800 border-blue-300"
+            elif f.startswith("pre_restore_safety_backup_"):
+                b_type = "safety"
+                b_type_label = "Safety Checkpoint"
+                badge_class = "bg-amber-100 text-amber-800 border-amber-300"
+            elif f.startswith("uploaded_backup_"):
+                b_type = "uploaded"
+                b_type_label = "Uploaded Backup"
+                badge_class = "bg-purple-100 text-purple-800 border-purple-300"
+            else:
+                b_type = "other"
+                b_type_label = "Database Backup"
+                badge_class = "bg-slate-100 text-slate-800 border-slate-300"
+                
+            backups.append({
+                "filename": f,
+                "size_bytes": size_bytes,
+                "size_formatted": size_str,
+                "created_at": created_iso,
+                "date_formatted": date_formatted,
+                "time_formatted": time_formatted,
+                "timestamp": stat.st_mtime,
+                "type": b_type,
+                "type_label": b_type_label,
+                "badge_class": badge_class
+            })
+        except Exception:
+            continue
+            
+    backups.sort(key=lambda x: x["timestamp"], reverse=True)
+    
+    live_size_bytes = os.path.getsize(DB_PATH) if os.path.exists(DB_PATH) else 0
+    live_kb = live_size_bytes / 1024
+    live_size_formatted = f"{live_kb:.1f} KB" if live_kb < 1024 else f"{live_kb/1024:.2f} MB"
+    
+    p_count, inv_count, cust_count, ord_count = 0, 0, 0, 0
+    try:
+        conn = get_db()
+        c = conn.cursor()
+        p_count = c.execute("SELECT COUNT(*) FROM products").fetchone()[0]
+        inv_count = c.execute("SELECT COUNT(*) FROM invoices").fetchone()[0]
+        cust_count = c.execute("SELECT COUNT(*) FROM parties WHERE type='CUSTOMER'").fetchone()[0]
+        ord_count = c.execute("SELECT COUNT(*) FROM orders").fetchone()[0]
+        conn.close()
+    except Exception:
+        pass
+        
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    today_file = f"daily_backup_{today_str}.db"
+    today_exists = os.path.exists(os.path.join(BACKUPS_DIR, today_file))
+    
+    return {
+        "backups": backups,
+        "total_backups": len(backups),
+        "live_db_size_bytes": live_size_bytes,
+        "live_db_size_formatted": live_size_formatted,
+        "today_backup_status": "Active (Saved)" if today_exists else "Pending",
+        "today_backup_file": today_file if today_exists else None,
+        "stats": {
+            "products": p_count,
+            "invoices": inv_count,
+            "customers": cust_count,
+            "orders": ord_count
+        }
+    }
+
 
 def is_gujlish_or_gujarati(msg, lower_words):
     if any(ord(char) >= 0x0A80 and ord(char) <= 0x0AFF for char in msg):
@@ -611,6 +744,90 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 amcs = [dict(row) for row in cursor.execute("SELECT * FROM amc_contracts ORDER BY id DESC").fetchall()]
                 return self.send_json(amcs)
 
+            # 10.1 Referral & Loyalty Rules
+            if path == "/api/referral/rules":
+                rule = cursor.execute("SELECT * FROM referral_rules WHERE is_active = 1 ORDER BY id DESC LIMIT 1").fetchone()
+                return self.send_json(dict(rule) if rule else {
+                    "rule_name": "PCWARE Smart Refer & Earn",
+                    "referrer_points": 200,
+                    "referee_discount": 100.0,
+                    "point_to_inr": 1.0,
+                    "min_order_val": 500.0,
+                    "max_discount_pct": 50.0,
+                    "terms_text": "1. Refer friends and get 200 Reward Points on their first hardware purchase.\n2. Your friend gets instant discount on billing.\n3. 1 Reward Point = 1.00 INR.\n4. Only 1 referral code can be applied per order.\n5. Points are redeemed directly from net billing total."
+                })
+
+            # 10.2 All Referral Codes (Admin)
+            if path == "/api/referral/codes":
+                codes = [dict(row) for row in cursor.execute("SELECT * FROM referral_codes ORDER BY id DESC").fetchall()]
+                return self.send_json(codes)
+
+            # 10.3 Customer Rewards & Referral Profile
+            if path == "/api/customer/rewards":
+                phone = query.get("phone", [None])[0]
+                if not phone:
+                    return self.send_json({"error": "Phone number required"}, 400)
+
+                # Total points balance
+                points_row = cursor.execute("SELECT COALESCE(SUM(points), 0) FROM reward_transactions WHERE customer_phone = ?", (phone,)).fetchone()
+                balance = points_row[0] if points_row else 0
+
+                # Customer referral code
+                code_row = cursor.execute("SELECT * FROM referral_codes WHERE owner_phone = ?", (phone,)).fetchone()
+                if code_row:
+                    cust_code = dict(code_row)
+                else:
+                    cust_name = "Customer"
+                    party = cursor.execute("SELECT name FROM parties WHERE phone = ?", (phone,)).fetchone()
+                    if party and party["name"]:
+                        cust_name = party["name"]
+                    
+                    prefix = re.sub(r'[^A-Z]', '', cust_name.upper())[:4] or "PCW"
+                    clean_phone = re.sub(r'[^0-9]', '', phone)[-4:]
+                    generated_code = f"{prefix}{clean_phone}"
+
+                    existing = cursor.execute("SELECT id FROM referral_codes WHERE code = ?", (generated_code,)).fetchone()
+                    if existing:
+                        generated_code = f"{generated_code}{uuid.uuid4().hex[:2].upper()}"
+
+                    cursor.execute("""INSERT INTO referral_codes (code, owner_name, owner_phone, reward_points, discount_amount, usage_count, max_uses, status, notes) VALUES (?, ?, ?, 200, 100.0, 0, 0, 'ACTIVE', 'Auto-generated customer referral code')""", (generated_code, cust_name, phone))
+                    conn.commit()
+                    cust_code = {
+                        "code": generated_code,
+                        "owner_name": cust_name,
+                        "owner_phone": phone,
+                        "reward_points": 200,
+                        "discount_amount": 100.0,
+                        "usage_count": 0,
+                        "status": "ACTIVE"
+                    }
+
+                stats_row = cursor.execute("""SELECT COUNT(*), COALESCE(SUM(points), 0) FROM reward_transactions WHERE customer_phone = ? AND transaction_type = 'REFERRAL_BONUS'""", (phone,)).fetchone()
+                referral_count = stats_row[0] if stats_row else 0
+                referral_points_earned = stats_row[1] if stats_row else 0
+
+                ledger = [dict(row) for row in cursor.execute("""SELECT * FROM reward_transactions WHERE customer_phone = ? ORDER BY id DESC LIMIT 25""", (phone,)).fetchall()]
+
+                rule = cursor.execute("SELECT * FROM referral_rules WHERE is_active = 1 ORDER BY id DESC LIMIT 1").fetchone()
+                rule_dict = dict(rule) if rule else {
+                    "referrer_points": 200,
+                    "referee_discount": 100.0,
+                    "point_to_inr": 1.0,
+                    "min_order_val": 500.0
+                }
+
+                return self.send_json({
+                    "balance": balance,
+                    "referral_code": cust_code["code"],
+                    "referral_stats": {
+                        "total_referrals": referral_count,
+                        "points_earned": referral_points_earned,
+                        "usage_count": cust_code.get("usage_count", 0)
+                    },
+                    "transactions": ledger,
+                    "rule": rule_dict
+                })
+
             # 10. Orders
             if path == "/api/orders":
                 orders = [dict(row) for row in cursor.execute("SELECT * FROM orders ORDER BY id DESC").fetchall()]
@@ -926,6 +1143,82 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     }
                 })
 
+            # Backup & Restore Endpoints
+            if path == "/api/backups":
+                return self.send_json(get_backups_metadata())
+
+            if path == "/api/backups/download-latest":
+                if not os.path.exists(DB_PATH):
+                    return self.send_json({"error": "Database file not found"}, 404)
+                now_str = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+                dl_name = f"hardware_erp_live_{now_str}.db"
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Disposition", f'attachment; filename="{dl_name}"')
+                self.send_header("Content-Length", str(os.path.getsize(DB_PATH)))
+                self.end_headers()
+                with open(DB_PATH, "rb") as f:
+                    self.wfile.write(f.read())
+                return
+
+            if path == "/api/backups/download":
+                filename = query.get("file", [None])[0]
+                if not filename or os.path.basename(filename) != filename or not filename.endswith(".db"):
+                    return self.send_json({"error": "Invalid backup filename"}, 400)
+                file_path = os.path.join(BACKUPS_DIR, filename)
+                if not os.path.exists(file_path):
+                    return self.send_json({"error": "Backup file not found"}, 404)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+                self.send_header("Content-Length", str(os.path.getsize(file_path)))
+                self.end_headers()
+                with open(file_path, "rb") as f:
+                    self.wfile.write(f.read())
+                return
+
+            # Staff & Admin Auth Check
+            if path == "/api/auth/me":
+                auth_header = self.headers.get("Authorization", "")
+                token = None
+                if auth_header.startswith("Bearer "):
+                    token = auth_header[7:].strip()
+                if not token:
+                    token = query.get("token", [None])[0]
+                if not token:
+                    return self.send_json({"authenticated": False, "error": "No session token"}, 401)
+                
+                sess = cursor.execute("""
+                    SELECT s.*, m.name, m.role, m.department, m.phone, m.email, m.username, m.permissions, m.status
+                    FROM staff_sessions s
+                    JOIN staff_members m ON s.staff_id = m.id
+                    WHERE s.token = ? AND m.status = 'ACTIVE'
+                """, (token,)).fetchone()
+                
+                if not sess:
+                    return self.send_json({"authenticated": False, "error": "Invalid or expired session"}, 401)
+                
+                perms = ["*"]
+                if sess["permissions"]:
+                    try:
+                        perms = json.loads(sess["permissions"])
+                    except Exception:
+                        perms = ["*"]
+                        
+                return self.send_json({
+                    "authenticated": True,
+                    "user": {
+                        "id": sess["staff_id"],
+                        "name": sess["name"],
+                        "role": sess["role"],
+                        "department": sess["department"],
+                        "phone": sess["phone"],
+                        "email": sess["email"],
+                        "username": sess["username"],
+                        "permissions": perms
+                    }
+                })
+
             return self.send_json({"error": "API route not found"}, 404)
 
         finally:
@@ -984,13 +1277,117 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 conn.commit()
                 return self.send_json({"success": True, "id": new_id, "job_sheet_number": job_number}, 201)
 
+            # 0. Multi-Image Upload API
+            if path == "/api/upload":
+                upload_dir = os.path.join(STATIC_DIR, "uploads")
+                os.makedirs(upload_dir, exist_ok=True)
+                urls = []
+
+                images_payload = body.get("images", [])
+                if not images_payload and body.get("image"):
+                    images_payload = [{"name": body.get("filename", "upload.jpg"), "data": body.get("image")}]
+
+                for item in images_payload:
+                    data_uri = item.get("data", "")
+                    raw_name = item.get("name", "photo.jpg")
+                    safe_name = re.sub(r'[^a-zA-Z0-9_\.-]', '_', raw_name)
+                    unique_filename = f"img_{int(datetime.now().timestamp())}_{uuid.uuid4().hex[:6]}_{safe_name}"
+                    file_path = os.path.join(upload_dir, unique_filename)
+
+                    if "," in data_uri:
+                        base64_data = data_uri.split(",", 1)[1]
+                    else:
+                        base64_data = data_uri
+
+                    try:
+                        with open(file_path, "wb") as f_img:
+                            f_img.write(base64.b64decode(base64_data))
+                        urls.append(f"/static/uploads/{unique_filename}")
+                    except Exception as e:
+                        print(f"Error saving uploaded image: {e}")
+
+                return self.send_json({"success": True, "urls": urls}, 201)
+
+            # 0.1 Validate Referral Code (Checkout)
+            if path == "/api/referral/validate":
+                code_input = (body.get("code") or "").strip().upper()
+                cart_total = float(body.get("cart_total") or 0.0)
+                cust_phone = (body.get("customer_phone") or "").strip()
+
+                if not code_input:
+                    return self.send_json({"valid": False, "error": "કૃપા કરીને રેફરલ કોડ દાખલ કરો (Please enter code)."}, 400)
+
+                rule_row = cursor.execute("SELECT * FROM referral_rules WHERE is_active = 1 ORDER BY id DESC LIMIT 1").fetchone()
+                min_order = rule_row["min_order_val"] if rule_row else 500.0
+
+                if cart_total < min_order:
+                    return self.send_json({
+                        "valid": False, 
+                        "error": f"રેફરલ કોડ વાપરવા માટે ન્યૂનતમ ઓર્ડર રકમ ₹{min_order:,.0f} હોવી જરૂરી છે (Min order ₹{min_order:,.0f})."
+                    }, 400)
+
+                ref = cursor.execute("SELECT * FROM referral_codes WHERE UPPER(code) = ?", (code_input,)).fetchone()
+                if not ref:
+                    return self.send_json({"valid": False, "error": "અમાન્ય રેફરલ કોડ (Invalid referral code)."}, 404)
+
+                if ref["status"] != "ACTIVE":
+                    return self.send_json({"valid": False, "error": "આ રેફરલ કોડ હાલમાં બંધ છે (Code is not active)."}, 400)
+
+                if cust_phone and ref["owner_phone"] and cust_phone == ref["owner_phone"]:
+                    return self.send_json({
+                        "valid": False, 
+                        "error": "તમે તમારો પોતાનો જ રેફરલ કોડ વાપરી શકતા નથી (You cannot use your own referral code)."
+                    }, 400)
+
+                if ref["max_uses"] > 0 and ref["usage_count"] >= ref["max_uses"]:
+                    return self.send_json({"valid": False, "error": "આ રેફરલ કોડની મહત્તમ લિમિટ પૂરી થઈ ગઈ છે (Code limit reached)."}, 400)
+
+                discount_val = float(ref["discount_amount"] or 100.0)
+                return self.send_json({
+                    "valid": True,
+                    "code": ref["code"],
+                    "discount_amount": discount_val,
+                    "reward_points": ref["reward_points"],
+                    "owner_name": ref["owner_name"],
+                    "message": f"સફળ! ₹{discount_val:,.0f} ડિસ્કાઉન્ટ એપ્લાય થઈ ગયું છે."
+                })
+
+            # 0.2 Save Referral Rules (Admin)
+            if path == "/api/referral/rules":
+                cursor.execute("""INSERT INTO referral_rules (rule_name, referrer_points, referee_discount, point_to_inr, min_order_val, terms_text, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)""", (
+                    body.get("rule_name", "Custom Referral Program"),
+                    int(body.get("referrer_points", 200)),
+                    float(body.get("referee_discount", 100.0)),
+                    float(body.get("point_to_inr", 1.0)),
+                    float(body.get("min_order_val", 500.0)),
+                    body.get("terms_text", "")
+                ))
+                conn.commit()
+                return self.send_json({"success": True})
+
+            # 0.3 Create New Referral Code (Admin)
+            if path == "/api/referral/codes":
+                new_code = (body.get("code") or f"PCW{int(datetime.now().timestamp())%100000}").strip().upper()
+                cursor.execute("""INSERT INTO referral_codes (code, owner_name, owner_phone, reward_points, discount_amount, usage_count, max_uses, status, notes) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?)""", (
+                    new_code,
+                    body.get("owner_name", "PCWARE Partner").strip(),
+                    body.get("owner_phone", "").strip(),
+                    int(body.get("reward_points", 200)),
+                    float(body.get("discount_amount", 100.0)),
+                    int(body.get("max_uses", 0)),
+                    body.get("status", "ACTIVE"),
+                    body.get("notes", "Created via Admin Portal")
+                ))
+                conn.commit()
+                return self.send_json({"success": True, "code": new_code}, 201)
+
             # 2. Create Product
             if path == "/api/products":
                 cursor.execute("""
                 INSERT INTO products (
                     sku, name, category, brand, model, hsn_code, cost_price,
-                    selling_price, gst_rate, stock_quantity, low_stock_threshold, specs, wattage, image_url, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    selling_price, gst_rate, stock_quantity, low_stock_threshold, specs, wattage, image_url, gallery_images, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     body.get("sku", f"SKU-{int(datetime.now().timestamp())}"),
                     body.get("name", "").strip(),
@@ -1156,6 +1553,41 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     now_str
                 ))
                 new_id = cursor.lastrowid
+
+                # REFERRAL REWARD & REDEMPTION ENGINE
+                referral_code_used = (body.get("referral_code") or "").strip().upper()
+                cust_phone = (body.get("customer_phone") or "").strip()
+                cust_name = (body.get("customer_name") or "Valued Customer").strip()
+                points_redeemed = int(body.get("points_redeemed") or 0)
+
+                # A. Process Referral Code Bonus to Referrer
+                if referral_code_used:
+                    ref_match = cursor.execute("SELECT * FROM referral_codes WHERE UPPER(code) = ? AND status = 'ACTIVE'", (referral_code_used,)).fetchone()
+                    if ref_match:
+                        cursor.execute("UPDATE referral_codes SET usage_count = usage_count + 1 WHERE id = ?", (ref_match["id"],))
+                        ref_phone = ref_match["owner_phone"]
+                        if ref_phone and ref_phone != cust_phone:
+                            reward_pts = int(ref_match["reward_points"] or 200)
+                            cursor.execute("""INSERT INTO reward_transactions (customer_phone, customer_name, points, transaction_type, order_id, referral_code, referred_customer_phone, description) VALUES (?, ?, ?, 'REFERRAL_BONUS', ?, ?, ?, ?)""", (
+                                ref_phone,
+                                ref_match["owner_name"],
+                                reward_pts,
+                                new_id,
+                                referral_code_used,
+                                cust_phone,
+                                f"Referral reward for order {order_num} by {cust_name}"
+                            ))
+
+                # B. Process Reward Points Redemption by Customer
+                if points_redeemed > 0 and cust_phone:
+                    cursor.execute("""INSERT INTO reward_transactions (customer_phone, customer_name, points, transaction_type, order_id, referral_code, description) VALUES (?, ?, ?, 'REDEEMED_DISCOUNT', ?, ?, ?)""", (
+                        cust_phone,
+                        cust_name,
+                        -points_redeemed,
+                        new_id,
+                        referral_code_used,
+                        f"Points redeemed for instant discount on order {order_num}"
+                    ))
 
                 for item in body.get("items", []):
                     if item.get("id"):
@@ -1781,6 +2213,193 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     "whatsapp_url": whatsapp_url
                 }, 201)
 
+            # Backup & Restore POST Endpoints
+            if path == "/api/backups/create":
+                filename, err = create_backup_snapshot(prefix="manual")
+                if err:
+                    return self.send_json({"error": f"Failed to create backup: {err}"}, 500)
+                return self.send_json({
+                    "success": True,
+                    "filename": filename,
+                    "message": f"Manual backup {filename} created successfully"
+                }, 201)
+
+            if path == "/api/backups/restore":
+                filename = body.get("filename")
+                if not filename or os.path.basename(filename) != filename or not filename.endswith(".db"):
+                    return self.send_json({"error": "Invalid backup filename"}, 400)
+                backup_path = os.path.join(BACKUPS_DIR, filename)
+                if not os.path.exists(backup_path):
+                    return self.send_json({"error": "Target backup file does not exist"}, 404)
+                
+                # Step 1: Safety checkpoint of live database
+                safety_file, err = create_backup_snapshot(prefix="pre_restore_safety")
+                if err:
+                    return self.send_json({"error": f"Could not create safety snapshot before restore: {err}"}, 500)
+                
+                # Step 2: Restore from target backup to DB_PATH
+                try:
+                    src_conn = sqlite3.connect(backup_path)
+                    dst_conn = sqlite3.connect(DB_PATH)
+                    src_conn.backup(dst_conn)
+                    dst_conn.close()
+                    src_conn.close()
+                except Exception as e:
+                    return self.send_json({"error": f"Restore failed: {str(e)}"}, 500)
+                
+                return self.send_json({
+                    "success": True,
+                    "filename": filename,
+                    "safety_backup": safety_file,
+                    "message": f"Database restored successfully from {filename}! Safety checkpoint saved as {safety_file}."
+                })
+
+            if path == "/api/backups/upload-restore":
+                file_base64 = body.get("file_base64")
+                orig_filename = body.get("filename", "uploaded.db")
+                if not file_base64:
+                    return self.send_json({"error": "No file content received"}, 400)
+                
+                try:
+                    if "," in file_base64:
+                        file_base64 = file_base64.split(",", 1)[1]
+                    raw_bytes = base64.b64decode(file_base64)
+                except Exception:
+                    return self.send_json({"error": "Invalid base64 payload"}, 400)
+                
+                if not raw_bytes.startswith(b"SQLite format 3\x00"):
+                    return self.send_json({"error": "Invalid file. The uploaded file is not a valid SQLite database."}, 400)
+                
+                timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                save_filename = f"uploaded_backup_{timestamp}.db"
+                save_path = os.path.join(BACKUPS_DIR, save_filename)
+                with open(save_path, "wb") as f:
+                    f.write(raw_bytes)
+                
+                safety_file, err = create_backup_snapshot(prefix="pre_restore_safety")
+                
+                try:
+                    src_conn = sqlite3.connect(save_path)
+                    dst_conn = sqlite3.connect(DB_PATH)
+                    src_conn.backup(dst_conn)
+                    dst_conn.close()
+                    src_conn.close()
+                except Exception as e:
+                    return self.send_json({"error": f"Restore failed: {str(e)}"}, 500)
+                
+                return self.send_json({
+                    "success": True,
+                    "filename": save_filename,
+                    "safety_backup": safety_file,
+                    "message": f"Uploaded database successfully restored! Safety checkpoint saved as {safety_file}."
+                })
+
+            # Staff & Admin Login Endpoint
+            if path == "/api/auth/staff-login":
+                ident = str(body.get("username_or_phone", "")).strip()
+                secret = str(body.get("password", "")).strip()
+                if not ident or not secret:
+                    return self.send_json({"error": "કૃપા કરીને યુઝરનેમ/મોબાઇલ અને પાસવર્ડ/પિન દાખલ કરો."}, 400)
+                
+                clean_digits = "".join(ch for ch in ident if ch.isdigit())
+                phone_query = clean_digits[-10:] if len(clean_digits) >= 10 else None
+                
+                if phone_query:
+                    staff = cursor.execute("""
+                        SELECT * FROM staff_members 
+                        WHERE (username = ? OR phone LIKE ?) AND status = 'ACTIVE'
+                    """, (ident, f"%{phone_query}%")).fetchone()
+                else:
+                    staff = cursor.execute("""
+                        SELECT * FROM staff_members 
+                        WHERE (username = ? OR email = ?) AND status = 'ACTIVE'
+                    """, (ident, ident)).fetchone()
+                    
+                if not staff:
+                    return self.send_json({"error": "કોઈ સક્રિય સ્ટાફ એકાઉન્ટ મળ્યું નથી. યુઝરનેમ કે મોબાઇલ તપાસો."}, 401)
+                    
+                db_pwd = staff["password"] or ""
+                db_pin = staff["pin"] or "1234"
+                
+                if secret != db_pwd and secret != db_pin:
+                    return self.send_json({"error": "ખોટો પાસવર્ડ અથવા પિન. ફરી પ્રયાસ કરો."}, 401)
+                    
+                token = "stf_" + uuid.uuid4().hex
+                now = datetime.now()
+                expires = (now + timedelta(days=30)).strftime("%Y-%m-%d %H:%M:%S")
+                now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+                
+                cursor.execute("""
+                    INSERT INTO staff_sessions (token, staff_id, created_at, expires_at)
+                    VALUES (?, ?, ?, ?)
+                """, (token, staff["id"], now_str, expires))
+                
+                cursor.execute("UPDATE staff_members SET last_login = ? WHERE id = ?", (now_str, staff["id"]))
+                conn.commit()
+                
+                perms = ["*"]
+                if staff["permissions"]:
+                    try:
+                        perms = json.loads(staff["permissions"])
+                    except Exception:
+                        perms = ["*"]
+                        
+                user_data = {
+                    "id": staff["id"],
+                    "name": staff["name"],
+                    "role": staff["role"],
+                    "department": staff["department"],
+                    "phone": staff["phone"],
+                    "email": staff["email"],
+                    "username": staff["username"],
+                    "permissions": perms
+                }
+                return self.send_json({
+                    "success": True,
+                    "token": token,
+                    "user": user_data,
+                    "message": f"સ્વાગત છે, {staff['name']}!"
+                })
+
+            # Staff Logout Endpoint
+            if path == "/api/auth/staff-logout":
+                auth_header = self.headers.get("Authorization", "")
+                token = body.get("token")
+                if not token and auth_header.startswith("Bearer "):
+                    token = auth_header[7:].strip()
+                if token:
+                    cursor.execute("DELETE FROM staff_sessions WHERE token = ?", (token,))
+                    conn.commit()
+                return self.send_json({"success": True})
+
+            # Staff Credentials Update Endpoint
+            if path == "/api/staff/update-credentials":
+                staff_id = body.get("staff_id")
+                new_password = body.get("password")
+                new_pin = body.get("pin")
+                new_username = body.get("username")
+                
+                if not staff_id:
+                    return self.send_json({"error": "Staff ID required"}, 400)
+                    
+                updates = []
+                params = []
+                if new_password:
+                    updates.append("password = ?")
+                    params.append(new_password)
+                if new_pin:
+                    updates.append("pin = ?")
+                    params.append(new_pin)
+                if new_username:
+                    updates.append("username = ?")
+                    params.append(new_username)
+                    
+                if updates:
+                    params.append(staff_id)
+                    cursor.execute(f"UPDATE staff_members SET {', '.join(updates)} WHERE id = ?", params)
+                    conn.commit()
+                return self.send_json({"success": True, "message": "ક્રેડેન્શિયલ્સ સફળતાપૂર્વક અપડેટ થયા!"})
+
             return self.send_json({"error": "POST endpoint not recognized"}, 404)
 
         finally:
@@ -1937,6 +2556,20 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 conn.commit()
                 return self.send_json({"success": True})
 
+            if path.startswith("/api/backups"):
+                filename = path.replace("/api/backups/delete", "").replace("/api/backups/", "").lstrip("/")
+                if not filename or filename == "delete":
+                    parsed = urllib.parse.urlparse(self.path)
+                    q = urllib.parse.parse_qs(parsed.query)
+                    filename = q.get("file", [None])[0]
+                if not filename or os.path.basename(filename) != filename or not filename.endswith(".db"):
+                    return self.send_json({"error": "Invalid backup filename"}, 400)
+                target_path = os.path.join(BACKUPS_DIR, filename)
+                if os.path.exists(target_path):
+                    os.remove(target_path)
+                    return self.send_json({"success": True, "message": f"{filename} deleted successfully"})
+                return self.send_json({"error": "Backup file not found"}, 404)
+
             return self.send_json({"error": "DELETE endpoint not found"}, 404)
         finally:
             conn.close()
@@ -1944,6 +2577,8 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
 def run_server():
     os.chdir(BASE_DIR)
     os.makedirs(STATIC_DIR, exist_ok=True)
+    os.makedirs(BACKUPS_DIR, exist_ok=True)
+    ensure_daily_backup()
     # Bind to all interfaces (0.0.0.0) so browser can connect via localhost
     with socketserver.ThreadingTCPServer(("0.0.0.0", PORT), ERPRequestHandler) as httpd:
         httpd.allow_reuse_address = True

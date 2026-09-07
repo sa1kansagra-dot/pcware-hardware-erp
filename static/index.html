@@ -34,10 +34,10 @@
       body * {
         visibility: hidden;
       }
-      #print-area, #print-area * {
+      #print-area, #print-area *, #cto-printable-quotation, #cto-printable-quotation * {
         visibility: visible;
       }
-      #print-area {
+      #print-area, #cto-printable-quotation {
         position: absolute;
         left: 0;
         top: 0;
@@ -848,102 +848,462 @@
       </section>
 </section>
 
-    <!-- VIEW 2: INTERACTIVE CUSTOM PC BUILDER -->
+    <!-- VIEW 2: ENTERPRISE DELL CTO & CUSTOM PC BUILDER -->
     <section id="view-builder" class="hidden space-y-6">
       <!-- Executive PC Builder Header -->
-      <div class="relative overflow-hidden bg-gradient-to-r from-slate-950 via-[#0f172a] to-[#1e1b4b] text-white p-6 sm:p-7 rounded-3xl shadow-xl border border-indigo-500/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+      <div class="relative overflow-hidden bg-gradient-to-r from-slate-950 via-[#0a1128] to-[#1e1b4b] text-white p-6 sm:p-7 rounded-3xl shadow-xl border border-indigo-500/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
         <div class="space-y-1.5 z-10">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-400/15 px-3 py-1 rounded-full border border-amber-400/30 shadow-xs">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              Smart Hardware Configurator
+              Enterprise Hardware Studio
             </span>
-            <span class="text-xs text-slate-400 font-semibold">• Live Compatibility Engine</span>
+            <span class="text-xs text-indigo-300 font-bold bg-indigo-900/50 px-2.5 py-0.5 rounded-full border border-indigo-500/30">Dell Precision 9 T6 • CTO Engine</span>
+            <span class="text-xs text-slate-400 font-semibold">• Live Real-Time Differential Pricing</span>
           </div>
           <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight" data-i18n="builder_title">
-            Custom PC Rig Configurator
+            Custom Workstation & PC Configurator
           </h2>
-          <p class="text-xs sm:text-sm text-slate-300 max-w-xl" data-i18n="builder_desc">
-            Select CPUs, GPUs, motherboards and RAM with automatic pin & socket compatibility check, live wattage calculation, and free professional stress-tested assembly.
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl" data-i18n="builder_desc">
+            Configure enterprise Dell Precision 9 T6 AI Workstations or custom PC rigs with live component upgrades (Xeon, Windows 11 Pro for Workstations / Ubuntu Linux, RTX Ada GPUs, ECC DDR5 RAM, Gen4 SSDs), real-time price updates, and instant corporate PDF quotation.
           </p>
         </div>
-        <div class="flex items-center gap-3 z-10 shrink-0">
-          <button type="button" onclick="resetPCBuilder()" class="text-xs font-bold text-slate-300 hover:text-rose-400 py-2.5 px-4 rounded-xl border border-slate-700 hover:border-rose-500/50 bg-slate-800/80 hover:bg-slate-800 transition cursor-pointer flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <span data-i18n="builder_reset">Reset Build</span>
-          </button>
-          <button type="button" onclick="shareBuildWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition flex items-center gap-2 cursor-pointer">
+        <div class="flex items-center gap-2.5 z-10 shrink-0 flex-wrap">
+          <button type="button" onclick="shareCTOWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition flex items-center gap-2 cursor-pointer">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.941-.708-1.792s.448-1.27.607-1.444c.159-.175.348-.219.463-.219.116 0 .232.001.332.006.106.005.249-.04.39.299.144.348.491 1.199.534 1.287.043.087.072.19.014.305-.058.116-.087.188-.174.29-.087.102-.183.228-.261.306-.087.087-.178.182-.077.355.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.087.275.072.376-.044.101-.116.434-.506.549-.68.116-.174.232-.145.39-.087s1.011.477 1.184.564c.174.087.29.13.333.203.044.073.044.422-.1 1.027z"/></svg>
-            <span data-i18n="builder_whatsapp">Share on WhatsApp</span>
+            <span>WhatsApp Quotation</span>
+          </button>
+          <button type="button" onclick="openCTOQuotationModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Official PDF Quotation</span>
           </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-4" id="builder-steps-container">
-          <!-- Loaded via JS -->
+      <!-- DUAL-ENGINE MODE SWITCHER -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl w-full sm:w-auto">
+          <button type="button" id="btn-mode-cto" onclick="switchBuilderMode('cto')" class="flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-indigo-700 shadow-sm border border-indigo-200 cursor-pointer">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <span>Dell Precision 9 T6 / Enterprise CTO</span>
+            <span class="px-1.5 py-0.5 text-[9px] font-black uppercase rounded bg-indigo-100 text-indigo-800 tracking-wider">Dell Live Engine</span>
+          </button>
+          <button type="button" id="btn-mode-diy" onclick="switchBuilderMode('diy')" class="flex-1 sm:flex-none px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 cursor-pointer">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+            <span>DIY Custom Component Rig</span>
+          </button>
+        </div>
+        <div class="text-[11px] text-slate-600 font-medium px-3 hidden md:flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 font-black text-xs">✓</span>
+          <span>Configured to Order with 100% Genuine Dell OEM Parts & Factory Burn-In QC</span>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODE 1: DELL-STYLE ENTERPRISE CTO WORKSTATION CONFIGURATOR ENGINE        -->
+      <!-- ========================================================================= -->
+      <div id="builder-mode-cto" class="space-y-6">
+        
+        <!-- ONE-CLICK WORKLOAD PRESETS (INSTANT SMART CONFIGURATION) -->
+        <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 rounded-3xl p-5 sm:p-6 border border-indigo-500/30 text-white space-y-3 shadow-lg">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-400/15 px-3 py-1 rounded-full border border-amber-400/30">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1V3a1 1 0 10-2 0v1a3 3 0 003 3h1v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-1a1 1 0 10-2 0v1a3 3 0 003 3h1v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-1a1 1 0 10-2 0v1a3 3 0 003 3h1v2a1 1 0 102 0v-2h1a3 3 0 003-3v-1h1a1 1 0 100-2h-1v-1a3 3 0 00-3-3h-1V7h1a1 1 0 100-2h-1V3z"/></svg>
+                1-Click Quick Presets
+              </span>
+              <span class="text-xs text-slate-300 font-semibold">• Instant Professional Configurations</span>
+            </div>
+            <span class="text-xs text-indigo-300 font-medium">Click any preset to auto-populate optimal hardware</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+            <!-- Preset 1: AI & Deep Learning -->
+            <button type="button" onclick="applyCTOPreset('ai')" class="preset-card text-left p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 hover:border-amber-400/50 transition cursor-pointer space-y-1.5 group">
+              <div class="flex items-center justify-between">
+                <span class="text-xl">🤖</span>
+                <span class="text-[10px] font-black uppercase text-amber-300 bg-amber-400/20 px-2 py-0.5 rounded border border-amber-400/30">AI Model Pro</span>
+              </div>
+              <h4 class="font-black text-sm text-white group-hover:text-amber-300 transition">AI & Deep Learning Studio</h4>
+              <p class="text-[11px] text-slate-300">Xeon 24-Core • Ubuntu 24.04 • RTX 4000 Ada 20GB ECC • 64GB DDR5 • 2TB NVMe</p>
+            </button>
+
+            <!-- Preset 2: AutoCAD & Architecture -->
+            <button type="button" onclick="applyCTOPreset('cad')" class="preset-card text-left p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 hover:border-emerald-400/50 transition cursor-pointer space-y-1.5 group">
+              <div class="flex items-center justify-between">
+                <span class="text-xl">📐</span>
+                <span class="text-[10px] font-black uppercase text-emerald-300 bg-emerald-400/20 px-2 py-0.5 rounded border border-emerald-400/30">CAD Certified</span>
+              </div>
+              <h4 class="font-black text-sm text-white group-hover:text-emerald-300 transition">AutoCAD & Architecture Rig</h4>
+              <p class="text-[11px] text-slate-300">Core i9 6.0GHz • Win 11 Pro Workstations • RTX A400 • 32GB RAM • 1TB Gen4</p>
+            </button>
+
+            <!-- Preset 3: 8K Video & 3D VFX -->
+            <button type="button" onclick="applyCTOPreset('vfx')" class="preset-card text-left p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 hover:border-purple-400/50 transition cursor-pointer space-y-1.5 group">
+              <div class="flex items-center justify-between">
+                <span class="text-xl">🎬</span>
+                <span class="text-[10px] font-black uppercase text-purple-300 bg-purple-400/20 px-2 py-0.5 rounded border border-purple-400/30">VFX Beast</span>
+              </div>
+              <h4 class="font-black text-sm text-white group-hover:text-purple-300 transition">8K Video & 3D CGI Beast</h4>
+              <p class="text-[11px] text-slate-300">Xeon 56-Core • Win 11 Pro • RTX 5000 Ada 32GB • 128GB RAM • 2TB SSD + 4TB HDD</p>
+            </button>
+          </div>
         </div>
 
-        <div class="space-y-4">
-          <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-md space-y-5 sticky top-24">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
-              <h3 class="font-black text-lg text-slate-900 flex items-center gap-2" data-i18n="builder_summary_title">
-                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                <span>Build Summary</span>
-              </h3>
-              <span class="text-[11px] font-black text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">100% Tested</span>
+        <!-- BASE WORKSTATION ARCHITECTURE SELECTOR -->
+        <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-md border border-indigo-100">Step 1</span>
+              <h3 class="font-black text-lg text-slate-900 mt-1">Select Base Workstation Platform</h3>
+              <p class="text-xs text-slate-500">Pick an enterprise chassis platform to customize all components with real-time differential pricing.</p>
+            </div>
+            <span class="text-xs text-slate-400 font-semibold">SKU: <span id="cto-active-sku" class="font-mono text-slate-800 font-bold">PW9T6260-USX</span></span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="cto-models-container">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- 360° INTERACTIVE STUDIO VISUALIZER CARD -->
+        <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-7 border border-slate-800 shadow-xl space-y-5">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded border border-amber-400/20">Dell Pro Precision 9 T6 Architecture</span>
+                <span class="text-[11px] text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">ISV Certified</span>
+              </div>
+              <h3 id="cto-visual-title" class="text-xl sm:text-2xl font-black text-white tracking-tight">Dell Pro Precision 9 T6 AI Workstation</h3>
+              <p id="cto-visual-desc" class="text-xs text-slate-300 max-w-xl">Front Honeycomb mesh with ultra-quiet acoustic tunnels, dual USB-C 20Gbps, SD 4.0 card reader, and precision power button.</p>
             </div>
 
-            <!-- Wattage & PSU Box -->
-            <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 space-y-2.5">
-              <div class="flex justify-between items-center text-xs font-bold">
-                <span class="text-slate-700 flex items-center gap-1.5" data-i18n="builder_wattage_label">
-                  <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                  <span>Estimated Power Consumption (TDP):</span>
-                </span>
-                <span id="builder-wattage" class="text-brand-600 font-black text-sm">0 Watts</span>
-              </div>
-              <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                <div id="builder-watt-bar" class="bg-gradient-to-r from-emerald-500 to-amber-500 h-full w-0 transition-all duration-300"></div>
-              </div>
-              <p id="builder-psu-rec" class="text-[11px] text-slate-500">
-                Recommended Power Supply: <strong class="text-slate-800 font-bold">450W or higher</strong>
-              </p>
-            </div>
-
-            <!-- Selected Parts List -->
-            <div id="builder-chosen-list" class="space-y-2 text-xs divide-y divide-slate-100 max-h-60 overflow-y-auto pr-1">
-              <p class="text-slate-400 italic py-3 text-center">No components selected yet. Pick items above to configure your PC rig.</p>
-            </div>
-
-            <!-- Financial breakdown -->
-            <div class="border-t border-slate-200 pt-3.5 space-y-2 text-xs">
-              <div class="flex justify-between text-slate-600">
-                <span>Hardware Components Total:</span>
-                <span id="builder-subtotal" class="font-bold text-slate-800">₹0</span>
-              </div>
-              <div class="flex justify-between text-slate-600 items-center">
-                <span>Pro Assembly, Cable Routing & QC:</span>
-                <span class="text-emerald-700 font-black px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">FREE</span>
-              </div>
-              <div class="flex justify-between text-base font-black text-slate-900 pt-2.5 border-t border-slate-200 items-baseline">
-                <span data-i18n="builder_total_price">Grand Total (incl. GST):</span>
-                <span id="builder-grand-total" class="text-brand-600 font-black text-xl">₹0</span>
-              </div>
-            </div>
-
-            <!-- Add to Cart CTA -->
-            <div class="space-y-2 pt-1">
-              <button type="button" onclick="addPCBuildToCart()" class="w-full bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-black py-3.5 rounded-2xl shadow-lg shadow-brand-500/25 transition flex items-center justify-center gap-2.5 cursor-pointer text-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span data-i18n="builder_add_cart">Add Full PC Build to Cart</span>
+            <!-- Studio 360 Angle Switcher Buttons -->
+            <div class="flex items-center gap-1.5 p-1 bg-slate-800/90 rounded-2xl border border-slate-700/60 shrink-0">
+              <button type="button" onclick="changeCTOAngle('front')" id="btn-angle-front" class="px-3 py-1.5 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>Front View</span>
+              </button>
+              <button type="button" onclick="changeCTOAngle('interior')" id="btn-angle-interior" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                <span>Interior Dual-GPU</span>
+              </button>
+              <button type="button" onclick="changeCTOAngle('rear')" id="btn-angle-rear" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span>Rear 2400W I/O</span>
               </button>
             </div>
           </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <div class="md:col-span-5 h-64 sm:h-72 rounded-2xl bg-slate-950/70 border border-slate-800 p-4 flex items-center justify-center relative overflow-hidden group">
+              <img id="cto-chassis-image" src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=1000" alt="Dell Precision 9 T6 Workstation" class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105">
+              <span id="cto-angle-badge" class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur text-indigo-300 border border-indigo-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg">Front Acoustic Hexagon View</span>
+            </div>
+
+            <div class="md:col-span-7 space-y-3.5">
+              <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Enterprise Engineering Highlights:</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-1">
+                  <span class="text-amber-400 text-xs font-bold flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
+                    ISV Independent Certification
+                  </span>
+                  <p class="text-[11px] text-slate-300">Tested and certified for zero crash in AutoCAD, SolidWorks, Revit, Adobe Premiere, ANSYS & Maya.</p>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-1">
+                  <span class="text-indigo-400 text-xs font-bold flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Up to 2400W Platinum SMPS
+                  </span>
+                  <p class="text-[11px] text-slate-300">Hot-swap multi-rail modular power supplies ready for dual 300W Ada GPUs and 56-core Xeon chips.</p>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-1">
+                  <span class="text-emerald-400 text-xs font-bold flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    16x DDR5 ECC RDIMM Slots
+                  </span>
+                  <p class="text-[11px] text-slate-300">High-bandwidth Octa-channel error-correcting memory preventing data corruption during 48hr renders.</p>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-1">
+                  <span class="text-sky-400 text-xs font-bold flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+                    Dell ProSupport Guarantee
+                  </span>
+                  <p class="text-[11px] text-slate-300">Next Business Day onsite parts replacement and keep your defective hard drives for data security.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIVE WORKLOAD BENCHMARK HUD -->
+          <div class="border-t border-slate-800/80 pt-4 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+                Real-Time Workstation Workload Benchmark Score:
+              </span>
+              <span class="text-[11px] text-slate-400">Dynamic capability score updates automatically as you change components</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+              <!-- Score 1: AI & ML -->
+              <div class="bg-slate-950/70 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-slate-300 flex items-center gap-1.5">
+                    <span>🤖</span> AI & Tensor Compute
+                  </span>
+                  <strong id="bm-score-ai" class="text-amber-400 font-black text-sm">70%</strong>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bm-bar-ai" class="bg-gradient-to-r from-amber-500 to-amber-400 h-full w-[70%] transition-all duration-500"></div>
+                </div>
+                <p id="bm-desc-ai" class="text-[10px] text-slate-400">Entry inference & data analytics</p>
+              </div>
+
+              <!-- Score 2: 3D CAD & Modeling -->
+              <div class="bg-slate-950/70 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-slate-300 flex items-center gap-1.5">
+                    <span>📐</span> 3D CAD & Viewport
+                  </span>
+                  <strong id="bm-score-cad" class="text-emerald-400 font-black text-sm">85%</strong>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bm-bar-cad" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[85%] transition-all duration-500"></div>
+                </div>
+                <p id="bm-desc-cad" class="text-[10px] text-slate-400">Certified for SolidWorks & AutoCAD</p>
+              </div>
+
+              <!-- Score 3: 8K Video & VFX -->
+              <div class="bg-slate-950/70 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-slate-300 flex items-center gap-1.5">
+                    <span>🎬</span> 8K Video Export & CGI
+                  </span>
+                  <strong id="bm-score-vfx" class="text-indigo-400 font-black text-sm">75%</strong>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bm-bar-vfx" class="bg-gradient-to-r from-indigo-500 to-blue-400 h-full w-[75%] transition-all duration-500"></div>
+                </div>
+                <p id="bm-desc-vfx" class="text-[10px] text-slate-400">Smooth 4K Premiere & multi-layer timeline</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 9 COMPONENT GROUPS & STICKY SUMMARY RAIL -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          
+          <!-- LEFT 2 COLS: 9 COMPONENT GROUPS -->
+          <div class="lg:col-span-2 space-y-4">
+            <!-- ACCORDION CONTROLS & STATUS BAR -->
+            <div class="flex items-center justify-between gap-3 bg-white p-3 sm:p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">Step 2</span>
+                <span class="text-xs font-bold text-slate-800">Customize Enterprise Components</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="toggleAllCTOAccordions(true)" class="text-[11px] font-bold text-slate-600 hover:text-indigo-600 px-2.5 py-1 rounded-lg hover:bg-slate-100 transition cursor-pointer">Expand All</button>
+                <span class="text-slate-300">|</span>
+                <button type="button" onclick="toggleAllCTOAccordions(false)" class="text-[11px] font-bold text-slate-600 hover:text-indigo-600 px-2.5 py-1 rounded-lg hover:bg-slate-100 transition cursor-pointer">Collapse All</button>
+              </div>
+            </div>
+
+            <div class="space-y-4" id="cto-options-container">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- RIGHT 1 COL: DELL-STYLE STICKY SUMMARY RAIL -->
+          <div class="space-y-4">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-md space-y-5 sticky top-24">
+              
+              <!-- Sticky Header -->
+              <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">Dell Configurator</span>
+                  <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">100% Factory QC</span>
+                </div>
+                <h3 id="cto-summary-model-name" class="font-black text-lg text-slate-900 mt-2 leading-snug">Dell Pro Precision 9 T6 AI Workstation</h3>
+                <p id="cto-summary-sku" class="text-xs text-slate-500 font-mono mt-0.5">Base SKU: PW9T6260-USX</p>
+              </div>
+
+              <!-- Real-Time Grand Total Price Box -->
+              <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 text-white space-y-2">
+                <div class="flex justify-between items-baseline">
+                  <span class="text-xs text-slate-300 font-semibold">Live Configured Total:</span>
+                  <span class="text-[10px] text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">GST 18% Included</span>
+                </div>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-xs font-bold text-slate-400">₹</span>
+                  <span id="cto-grand-total" class="text-3xl font-black text-white tracking-tight leading-none">₹1,85,000</span>
+                </div>
+                <div class="pt-2.5 border-t border-slate-800 text-[11px] text-indigo-200 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-300 font-semibold">No-Cost EMI Tenure:</span>
+                    <div class="flex items-center gap-1" id="cto-emi-tenure-tabs">
+                      <button type="button" onclick="selectCTOEMITenure(3)" id="emi-tab-3" class="px-2 py-0.5 rounded text-[10px] font-bold text-slate-400 hover:text-white bg-slate-800 transition cursor-pointer">3 Mo</button>
+                      <button type="button" onclick="selectCTOEMITenure(6)" id="emi-tab-6" class="px-2 py-0.5 rounded text-[10px] font-bold text-slate-400 hover:text-white bg-slate-800 transition cursor-pointer">6 Mo</button>
+                      <button type="button" onclick="selectCTOEMITenure(12)" id="emi-tab-12" class="px-2 py-0.5 rounded text-[10px] font-black text-amber-300 bg-slate-800 border border-amber-400/40 transition cursor-pointer">12 Mo</button>
+                      <button type="button" onclick="selectCTOEMITenure(24)" id="emi-tab-24" class="px-2 py-0.5 rounded text-[10px] font-bold text-slate-400 hover:text-white bg-slate-800 transition cursor-pointer">24 Mo</button>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-400">Monthly Installment:</span>
+                    <strong id="cto-emi-est" class="text-amber-300 font-black text-sm">From ₹15,725/mo</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Price Breakdown Details -->
+              <div class="space-y-2 text-xs border-b border-slate-100 pb-3.5">
+                <div class="flex justify-between text-slate-600">
+                  <span>Base Workstation Architecture:</span>
+                  <span id="cto-base-price-breakdown" class="font-bold text-slate-900">₹1,85,000</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Selected Upgrades & Add-ons:</span>
+                  <span id="cto-addons-breakdown" class="font-bold text-indigo-600">+₹0</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Enterprise Burn-In & Stress Test:</span>
+                  <span class="font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">FREE (₹7,500 value)</span>
+                </div>
+                <div class="flex justify-between text-slate-500 text-[11px] pt-1 border-t border-slate-100">
+                  <span>Tax Breakdown (18% GST):</span>
+                  <span id="cto-tax-breakdown" class="font-semibold text-slate-700">₹28,220 (Input Credit Available)</span>
+                </div>
+              </div>
+
+              <!-- Live Selected Specs Checklist -->
+              <div class="space-y-2">
+                <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center justify-between">
+                  <span>Configuration Summary:</span>
+                  <button type="button" onclick="resetCTOToDefault()" class="text-[10px] text-rose-500 hover:text-rose-700 underline font-bold cursor-pointer">Reset to Base</button>
+                </h4>
+                <div id="cto-selected-specs-list" class="space-y-1.5 text-xs max-h-60 overflow-y-auto pr-1 divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+
+              <!-- Action CTAs -->
+              <div class="space-y-2.5 pt-2">
+                <button type="button" onclick="addCTOBuildToCart()" class="w-full bg-gradient-to-r from-indigo-600 via-indigo-700 to-blue-700 hover:from-indigo-700 hover:to-blue-800 text-white font-black py-3.5 px-4 rounded-2xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2.5 cursor-pointer text-sm">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                  <span>Add Configured Workstation to Cart</span>
+                </button>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <button type="button" onclick="openCTOQuotationModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-3 rounded-xl border border-slate-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>PDF Quotation</span>
+                  </button>
+
+                  <button type="button" onclick="shareCTOWhatsApp()" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 px-3 rounded-xl border border-emerald-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs">
+                    <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.941-.708-1.792s.448-1.27.607-1.444c.159-.175.348-.219.463-.219.116 0 .232.001.332.006.106.005.249-.04.39.299.144.348.491 1.199.534 1.287.043.087.072.19.014.305-.058.116-.087.188-.174.29-.087.102-.183.228-.261.306-.087.087-.178.182-.077.355.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.087.275.072.376-.044.101-.116.434-.506.549-.68.116-.174.232-.145.39-.087s1.011.477 1.184.564c.174.087.29.13.333.203.044.073.044.422-.1 1.027z"/></svg>
+                    <span>Lab WhatsApp</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
 
-      </section>
+            <!-- MOBILE FLOATING ACTION BAR (FOR CELLPHONES & TABLETS) -->
+      <div id="cto-mobile-floating-bar" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3 flex items-center justify-between gap-3 shadow-2xl">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase font-bold">Total Price (GST Incl.)</span>
+          <span id="cto-mobile-total" class="text-lg font-black text-white">₹1,85,000</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="document.getElementById('cto-selected-specs-list')?.scrollIntoView({behavior:'smooth'})" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs py-2 px-3 rounded-xl border border-slate-700 cursor-pointer">
+            Specs
+          </button>
+          <button type="button" onclick="addCTOBuildToCart()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs py-2 px-3.5 rounded-xl shadow-lg shadow-indigo-600/40 flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span>Add to Cart</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- MODE 2: DIY CUSTOM COMPONENT RIG BUILDER (LEGACY SOCKET COMPATIBILITY)   -->
+      <!-- ========================================================================= -->
+      <div id="builder-mode-diy" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4" id="builder-steps-container">
+            <!-- Loaded via JS -->
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-md space-y-5 sticky top-24">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                <h3 class="font-black text-lg text-slate-900 flex items-center gap-2" data-i18n="builder_summary_title">
+                  <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                  <span>Build Summary</span>
+                </h3>
+                <span class="text-[11px] font-black text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">100% Tested</span>
+              </div>
+
+              <!-- Wattage & PSU Box -->
+              <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 space-y-2.5">
+                <div class="flex justify-between items-center text-xs font-bold">
+                  <span class="text-slate-700 flex items-center gap-1.5" data-i18n="builder_wattage_label">
+                    <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <span>Estimated Power Consumption (TDP):</span>
+                  </span>
+                  <span id="builder-wattage" class="text-brand-600 font-black text-sm">0 Watts</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                  <div id="builder-watt-bar" class="bg-gradient-to-r from-emerald-500 to-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+                <p id="builder-psu-rec" class="text-[11px] text-slate-500">
+                  Recommended Power Supply: <strong class="text-slate-800 font-bold">450W or higher</strong>
+                </p>
+              </div>
+
+              <!-- Selected Parts List -->
+              <div id="builder-chosen-list" class="space-y-2 text-xs divide-y divide-slate-100 max-h-60 overflow-y-auto pr-1">
+                <p class="text-slate-400 italic py-3 text-center">No components selected yet. Pick items above to configure your PC rig.</p>
+              </div>
+
+              <!-- Financial breakdown -->
+              <div class="border-t border-slate-200 pt-3.5 space-y-2 text-xs">
+                <div class="flex justify-between text-slate-600">
+                  <span>Hardware Components Total:</span>
+                  <span id="builder-subtotal" class="font-bold text-slate-800">₹0</span>
+                </div>
+                <div class="flex justify-between text-slate-600 items-center">
+                  <span>Pro Assembly, Cable Routing & QC:</span>
+                  <span class="text-emerald-700 font-black px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">FREE</span>
+                </div>
+                <div class="flex justify-between text-base font-black text-slate-900 pt-2.5 border-t border-slate-200 items-baseline">
+                  <span data-i18n="builder_total_price">Grand Total (incl. GST):</span>
+                  <span id="builder-grand-total" class="text-brand-600 font-black text-xl">₹0</span>
+                </div>
+              </div>
+
+              <!-- Add to Cart CTA -->
+              <div class="space-y-2 pt-1">
+                <button type="button" onclick="addPCBuildToCart()" class="w-full bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-black py-3.5 rounded-2xl shadow-lg shadow-brand-500/25 transition flex items-center justify-center gap-2.5 cursor-pointer text-sm">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                  <span data-i18n="builder_add_cart">Add Full PC Build to Cart</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
 
     <!-- VIEW 3: PUBLIC REPAIR & JOB SHEET TRACKER -->
     <section id="view-track" class="hidden space-y-6 max-w-4xl mx-auto">
@@ -1099,8 +1459,25 @@
             </div>
           </div>
 
-          <!-- Right: Quick Portal Navigation Links -->
+          <!-- Right: Staff Profile & Quick Navigation -->
           <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+            <!-- Active Staff Profile Badge -->
+            <div id="admin-logged-staff-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700/80 text-xs shadow-inner">
+              <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-xs">
+                👤
+              </div>
+              <div class="text-left leading-tight">
+                <span id="admin-logged-staff-name" class="block font-black text-white text-xs">Nilesh Vaghasiya</span>
+                <span id="admin-logged-staff-role" class="block text-[10px] text-amber-400 font-medium">CEO &amp; Managing Director</span>
+              </div>
+            </div>
+
+            <!-- Logout Button -->
+            <button type="button" onclick="logoutStaff()" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 font-bold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-sm" title="Sign out of ERP">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+              <span>Logout</span>
+            </button>
+
             <button type="button" onclick="switchView('catalog')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition cursor-pointer flex items-center gap-2 border border-white/20 backdrop-blur-sm shadow-sm hover:scale-105 duration-150">
               <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
               <span>Storefront</span>
@@ -1170,6 +1547,14 @@
           <button type="button" onclick="switchAdminTab('amc')" id="tab-btn-amc" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
             <span>AMC Contracts</span>
+          </button>
+          <button type="button" onclick="switchAdminTab('referrals')" id="tab-btn-referrals" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Referral & Rewards</span>
+          </button>
+          <button type="button" onclick="switchAdminTab('backup_restore')" id="tab-btn-backup_restore" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
+            <span>Backup & Restore</span>
           </button>
         </div>
       </div>
@@ -2011,6 +2396,487 @@
         </div>
       </div>
 
+      <!-- TAB: REFERRAL & LOYALTY PROGRAM MANAGER -->
+      <div id="admin-tab-referrals" class="hidden space-y-6">
+        <!-- Top Banner -->
+        <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 text-white p-5 rounded-3xl border border-amber-500/30 shadow-xl flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-2xl shadow-inner">
+              <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-white flex items-center gap-2">
+                <span>PCWARE Referral & Customer Loyalty Program Manager</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-200 border border-amber-400/40">Enterprise Rewards</span>
+              </h3>
+              <p class="text-xs text-slate-300 mt-0.5">કસ્ટમ રેફરલ નિયમો, પોઇન્ટ-ટુ-રૂપિયો રેટ, રેફરલ કોડ જનરેટર અને નેટ બિલિંગ ડિસ્કાઉન્ટ કંટ્રોલ</p>
+            </div>
+          </div>
+          <button type="button" onclick="loadAdminReferrals()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition cursor-pointer flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Refresh Rewards Data</span>
+          </button>
+        </div>
+
+        <!-- 2 Column Layout: Rule Engine Settings + Create Custom Code -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Card 1: Referral Rule Settings -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h4 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <span>Program Rules & Policies (નિયમો)</span>
+                </h4>
+                <p class="text-xs text-slate-500">ગ્રાહકો માટે રેફરલ કમાણી અને ડિસ્કાઉન્ટના નિયમો સેટ કરો</p>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Active Rule</span>
+            </div>
+
+            <form id="form-referral-rules" onsubmit="handleSaveReferralRules(event)" class="space-y-3.5 text-xs">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">પ્રોગ્રામ નામ (Rule Name)</label>
+                <input type="text" id="ref-rule-name" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold bg-white" value="PCWARE Smart Refer & Earn">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">રેફરલ આપનારના પોઇન્ટ્સ</label>
+                  <div class="relative">
+                    <input type="number" id="ref-rule-pts" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-indigo-700 bg-white" value="200">
+                    <span class="absolute right-3 top-2 text-slate-400 font-bold text-[10px]">Points</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-0.5">મિત્ર ઓર્ડર કરે ત્યારે મળતા પોઇન્ટ્સ</p>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">નવા ગ્રાહકનું ડિસ્કાઉન્ટ (₹)</label>
+                  <div class="relative">
+                    <input type="number" id="ref-rule-disc" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-emerald-700 bg-white" value="100">
+                    <span class="absolute right-3 top-2 text-slate-400 font-bold text-[10px]">₹ INR</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-0.5">કોડ નાખનારને મળતી તાત્કાલિક છૂટ</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">૧ પોઇન્ટની કિંમત (₹ INR)</label>
+                  <input type="number" step="0.1" id="ref-rule-rate" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white" value="1.0">
+                  <p class="text-[10px] text-slate-400 mt-0.5">૧ પોઇન્ટ = ₹૧.૦૦ નેટ બિલિંગ ડિસ્કાઉન્ટ</p>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">ન્યૂનતમ ઓર્ડર રકમ (₹)</label>
+                  <input type="number" id="ref-rule-min-order" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white" value="500">
+                  <p class="text-[10px] text-slate-400 mt-0.5">રેફરલ કોડ વાપરવા માટે લઘુત્તમ કાર્ટ વેલ્યુ</p>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">નિયમો અને શરતો (Terms & Notes)</label>
+                <textarea id="ref-rule-terms" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-[11px]" placeholder="1. Only 1 referral code can be applied per order.&#10;2. Points redeemed directly from net billing total."></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>Save Rule Settings</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Card 2: Generate Custom Referral Code -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h4 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                  <span>Create Custom Referral Code</span>
+                </h4>
+                <p class="text-xs text-slate-500">નવો કસ્ટમ રેફરલ અથવા પ્રમોશનલ કોડ બનાવો</p>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">Multi-Code Engine</span>
+            </div>
+
+            <form id="form-create-referral-code" onsubmit="handleCreateReferralCode(event)" class="space-y-3.5 text-xs">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">રેફરલ કોડ (Code) *</label>
+                  <input type="text" id="new-ref-code" required placeholder="દા.ત. PCWARE500" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold uppercase tracking-wider bg-white">
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">કોડના માલિકનું નામ *</label>
+                  <input type="text" id="new-ref-owner" required placeholder="ગ્રાહક અથવા પાર્ટનરનું નામ" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold bg-white">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">માલિકનો મોબાઈલ નંબર *</label>
+                  <input type="tel" id="new-ref-phone" required placeholder="9825012345" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold bg-white">
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">મહત્તમ વપરાશ (Max Uses)</label>
+                  <input type="number" id="new-ref-max-uses" value="0" placeholder="0 = અમર્યાદિત" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold bg-white">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">માલિકને પોઇન્ટ્સ (Reward Pts)</label>
+                  <input type="number" id="new-ref-pts" value="200" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-indigo-700 bg-white">
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">ઓર્ડર પર છૂટ (Discount ₹)</label>
+                  <input type="number" id="new-ref-disc" value="100" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-emerald-700 bg-white">
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>Generate Referral Code</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Table: Active Referral Codes & Performance -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h4 class="font-black text-xs text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <span>સક્રિય રેફરલ કોડ્સ & વપરાશ હિસ્ટ્રી (Referral Directory)</span>
+              </h4>
+              <p class="text-[11px] text-slate-500">સિસ્ટમમાં ઉપલબ્ધ તમામ રેફરલ કોડ્સ અને ઓર્ડર વપરાશ વિગત</p>
+            </div>
+            <span class="text-xs font-bold text-slate-600" id="admin-ref-count-badge">0 Codes</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3">રેફરલ કોડ</th>
+                  <th class="p-3">કોડ માલિક / પાર્ટનર</th>
+                  <th class="p-3">મોબાઇલ નંબર</th>
+                  <th class="p-3 text-center">રેફરર પોઇન્ટ્સ</th>
+                  <th class="p-3 text-center">ફ્રેન્ડ ડિસ્કાઉન્ટ</th>
+                  <th class="p-3 text-center">કુલ વપરાશ</th>
+                  <th class="p-3 text-center">સ્ટેટસ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-referral-codes-body" class="divide-y divide-slate-100">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 13: BACKUP & RESTORE MODULE -->
+      <div id="admin-tab-backup_restore" class="hidden space-y-6">
+        <!-- HEADER HERO BANNER -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 p-6 sm:p-8 rounded-3xl text-white shadow-xl border border-slate-700/80 relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-10 -top-10 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-1.5"></span>
+                  Enterprise Data Shield
+                </span>
+                <span class="text-xs text-slate-400">Automatic Daily Snapshots</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
+                <span>Backup &amp; Restore Center</span>
+                <span class="text-base font-normal text-slate-400">(ડેટાબેઝ સુરક્ષા &amp; રીસ્ટોર)</span>
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                તમારા સંપૂર્ણ બિઝનેસ ડેટા (પ્રોડક્ટ્સ, જીએસટી ઇન્વૉઇસિસ, લેજર્સ, ગ્રાહકો) નો સર્વર પર દૈનિક ઓટોમેટિક બેકઅપ, ૧-ક્લિક લોકલ ડાઉનલોડ, અને ભૂતકાળના કોઈપણ દિવસ/સમયના સ્નેપશોટ પર ત્વરિત રીસ્ટોર.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" onclick="createManualBackup()" class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/30 transition flex items-center gap-2 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <span>Create Backup Now (હમણાં જ બેકઅપ લો)</span>
+              </button>
+              <button type="button" onclick="downloadLiveDatabase()" class="px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs sm:text-sm border border-slate-600 transition flex items-center gap-2 cursor-pointer">
+                <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                <span>Download Live DB</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 EXECUTIVE KPI METRIC CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Live DB Size -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">લાઈવ ડેટાબેઝ સાઈઝ</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1" id="stat-backup-live-size">-- KB</h3>
+                <p class="text-[11px] text-slate-500 mt-1" id="stat-backup-db-summary">hardware_erp.db</p>
+              </div>
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-xl">
+                💾
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <span class="text-emerald-700 font-bold flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                Database Healthy
+              </span>
+              <span class="text-slate-400">SQLite Engine</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Today Daily Backup -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">આજનો દૈનિક બેકઅપ</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1" id="stat-backup-daily-status">Checking...</h3>
+                <p class="text-[11px] text-slate-500 mt-1 truncate max-w-[180px]" id="stat-backup-daily-file">daily_backup_*.db</p>
+              </div>
+              <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center text-xl">
+                📅
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <span class="text-blue-600 font-semibold">સર્વર પર ઓટોમેટિક સેવ</span>
+              <span class="text-slate-500">દરરોજ 00:00 AM</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Total Snapshots -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">સર્વર પર સંગ્રહિત બેકઅપ્સ</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-indigo-600 mt-1" id="stat-backup-total-count">0 Files</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Daily + Manual + Safety</p>
+              </div>
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center text-xl">
+                🗄️
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <span class="text-indigo-600 font-semibold">સંપૂર્ણ હિસ્ટ્રી ઉપલબ્ધ</span>
+              <span class="text-slate-500">100% Retained</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Safety Protection -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">રીસ્ટોર સેફ્ટી શિલ્ડ</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">100% Safe</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Auto Pre-Restore Checkpoint</p>
+              </div>
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center text-xl">
+                🛡️
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <span class="text-amber-700 font-bold">Zero Data Loss Policy</span>
+              <span class="text-slate-400">Auto Safety Snapshot</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPECIAL SECTION: DATE & TIME SNAPSHOT PICKER (USER SPECIAL REQUEST) -->
+        <div class="bg-gradient-to-br from-brand-50/60 via-white to-indigo-50/40 p-6 sm:p-7 rounded-3xl border-2 border-brand-300 shadow-md">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-brand-100">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-brand-100 text-brand-800 mb-2">
+                <span>📅 Select Date &amp; Time to Restore</span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-black text-slate-900">
+                કઈ તારીખ અને સમયનું બેકઅપ રીસ્ટોર કરવું છે તે પસંદ કરો
+              </h3>
+              <p class="text-xs text-slate-600 mt-1">
+                નીચે આપેલા લિસ્ટમાંથી જૂની તારીખ/સમય સિલેક્ટ કરીને ૧-ક્લિકમાં તે સમયના ડેટા પર પાછા જાઓ. રીસ્ટોર કરતાં પહેલાં વર્તમાન ડેટાની સેફ્ટી કોપી ઓટોમેટિક બનશે.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="filterBackupsType('all')" id="filter-btn-all" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-900 text-white cursor-pointer transition">All (તમામ)</button>
+              <button type="button" onclick="filterBackupsType('daily')" id="filter-btn-daily" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 cursor-pointer transition">Daily (દૈનિક)</button>
+              <button type="button" onclick="filterBackupsType('manual')" id="filter-btn-manual" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 cursor-pointer transition">Manual</button>
+            </div>
+          </div>
+
+          <!-- Date & Time Selector Interactive Control -->
+          <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div class="lg:col-span-7 space-y-3">
+              <label class="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                પસંદ કરો: તારીખ, સમય અને બેકઅપ ફાઇલ (Available Snapshots)
+              </label>
+              <div class="relative">
+                <select id="backup-select-snapshot" onchange="onSelectBackupSnapshot(this.value)" class="w-full appearance-none px-4 py-3.5 pr-10 rounded-2xl bg-white border-2 border-brand-500 font-bold text-slate-900 text-sm shadow-sm focus:ring-4 focus:ring-brand-500/20 outline-none cursor-pointer">
+                  <option value="">-- લોડ થઈ રહ્યું છે (Loading snapshots...) --</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-brand-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-500">
+                💡 ટીપ: ડ્રોપડાઉનમાંથી તારીખ અને સમય પસંદ કરતાં જ જમણી બાજુ તેની સંપૂર્ણ માહિતી દેખાશે.
+              </p>
+            </div>
+
+            <!-- Preview Card of Selected Snapshot -->
+            <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-brand-200 shadow-sm space-y-3.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-slate-500 uppercase">પસંદ કરેલ સ્નેપશોટ વિગત</span>
+                <span id="selected-snapshot-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">Daily Auto-Backup</span>
+              </div>
+              
+              <div class="space-y-1.5 text-xs">
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>📅 તારીખ (Date):</span>
+                  <strong class="text-slate-900" id="selected-snapshot-date">--</strong>
+                </div>
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>⏰ સમય (Time):</span>
+                  <strong class="text-slate-900" id="selected-snapshot-time">--</strong>
+                </div>
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>📦 સાઈઝ (File Size):</span>
+                  <strong class="text-slate-900" id="selected-snapshot-size">--</strong>
+                </div>
+                <div class="flex items-center justify-between text-slate-600 truncate">
+                  <span>📄 ફાઇલ:</span>
+                  <span class="font-mono text-[10px] text-slate-700 truncate max-w-[180px]" id="selected-snapshot-filename">--</span>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
+                <button type="button" id="btn-restore-selected" onclick="restoreSelectedSnapshot()" class="flex-1 py-2.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md shadow-rose-600/20 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>Restore This Snapshot</span>
+                </button>
+                <button type="button" id="btn-download-selected" onclick="downloadSelectedSnapshot()" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 FAST ACTION CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Action 1: Instant Manual Snapshot -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                ⚡
+              </div>
+              <h4 class="text-sm font-black text-slate-900">૧-ક્લિક ઇન્સ્ટન્ટ બેકઅપ (Snapshot)</h4>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                કોઈપણ મોટા ફેરફાર કે બિલિંગ પહેલાં વર્તમાન સ્થિતિનો નવો સ્નેપશોટ તાત્કાલિક સર્વર પર સેવ કરો.
+              </p>
+            </div>
+            <div class="mt-5">
+              <button type="button" onclick="createManualBackup()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>Take Snapshot Now</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Action 2: Download Live DB to PC -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                📥
+              </div>
+              <h4 class="text-sm font-black text-slate-900">કમ્પ્યુટરમાં ડાઉનલોડ કરો (Offline PC Copy)</h4>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                આખો લાઈવ ડેટાબેઝ ( ફાઇલ) તમારા લેપટોપ, કમ્પ્યુટર કે પેનડ્રાઇવમાં સેવ કરવા માટે સીધો ડાઉનલોડ કરો.
+              </p>
+            </div>
+            <div class="mt-5">
+              <button type="button" onclick="downloadLiveDatabase()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Download Live Database</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Action 3: Upload & Restore from PC -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+                📤
+              </div>
+              <h4 class="text-sm font-black text-slate-900">કમ્પ્યુટરમાંથી ફાઇલ અપલોડ કરી રીસ્ટોર</h4>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                તમારા PC માં સેવ કરેલી કોઈ જૂની  ફાઇલ પસંદ કરીને ડેટાબેઝને પાછલા સ્ટેટ પર રીસ્ટોર કરો.
+              </p>
+            </div>
+            <div class="mt-5">
+              <input type="file" id="backup-file-upload-input" accept=".db" class="hidden" onchange="handleUploadRestore(event)">
+              <button type="button" onclick="document.getElementById('backup-file-upload-input').click()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                <span>Choose .db File &amp; Restore</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FULL HISTORICAL BACKUPS TABLE -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 sm:p-5 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h4 class="font-black text-xs sm:text-sm text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <span>સર્વર બેકઅપ હિસ્ટ્રી (Server Backups Directory)</span>
+              </h4>
+              <p class="text-xs text-slate-500 mt-0.5">
+                સર્વર પર ઉપલબ્ધ તમામ દૈનિક અને મેન્યુઅલ બેકઅપ્સની તારીખ અને સમયવાર યાદી
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <input type="text" id="backup-search-input" onkeyup="filterBackupsTable()" placeholder="Search backups..." class="px-3.5 py-1.5 pl-8 text-xs rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-brand-500 outline-none w-48 sm:w-60">
+                <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </div>
+              <button type="button" onclick="loadAdminBackups()" class="p-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-600 transition cursor-pointer" title="Refresh list">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-100 text-slate-700 font-black uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">તારીખ (Date)</th>
+                  <th class="p-3.5">સમય (Time)</th>
+                  <th class="p-3.5">ફાઇલનું નામ (Backup File)</th>
+                  <th class="p-3.5 text-center">પ્રકાર (Type)</th>
+                  <th class="p-3.5 text-center">સાઈઝ (Size)</th>
+                  <th class="p-3.5 text-right">એક્શન્સ (Actions)</th>
+                </tr>
+              </thead>
+              <tbody id="admin-backups-table-body" class="divide-y divide-slate-100">
+                <!-- Dynamically rendered via loadAdminBackups() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+        </div>
+      </div>
+
     </section>
   </main>
 
@@ -2109,17 +2975,72 @@
         </div>
 
         <div class="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
+          <!-- Referral Code Input & Validation -->
+          <div class="bg-indigo-50/70 p-3 rounded-xl border border-indigo-100 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                <span>રેફરલ કોડ (Referral Code)</span>
+              </span>
+              <span class="text-[10px] text-slate-500 font-medium">(ઓર્ડર દીઠ ૧ જ કોડ માન્ય)</span>
+            </div>
+            <div id="cart-referral-input-group" class="flex gap-1.5">
+              <input type="text" id="cart-referral-code" placeholder="કોડ નાખો (દા.ત. DIPEN200)" class="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs uppercase font-bold tracking-wider outline-none bg-white">
+              <button type="button" onclick="applyCartReferral()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg shadow-xs transition cursor-pointer flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>Apply</span>
+              </button>
+            </div>
+            <div id="cart-referral-applied-badge" class="hidden p-2 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="font-bold text-emerald-800" id="cart-applied-code-text">DIPEN200</span>
+                <span class="text-emerald-700 font-semibold" id="cart-applied-discount-text">(-₹100)</span>
+              </div>
+              <button type="button" onclick="removeCartReferral()" class="text-rose-600 hover:text-rose-800 text-[11px] font-bold underline cursor-pointer">Remove</button>
+            </div>
+            <p id="cart-referral-msg" class="text-[11px] hidden"></p>
+          </div>
+
+          <!-- Reward Points Redemption Option -->
+          <div id="cart-points-box" class="p-2.5 rounded-xl border border-slate-200 bg-white space-y-1 text-xs">
+            <label class="flex items-center justify-between cursor-pointer">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="cart-redeem-points-cb" onchange="togglePointsRedemption(this.checked)" class="w-4 h-4 text-brand-600 rounded">
+                <span class="font-bold text-slate-800">રીવોર્ડ પોઇન્ટ્સ વાપરો (Redeem Points)</span>
+              </div>
+              <span class="text-xs font-black text-amber-600" id="cart-available-pts-badge">0 Pts</span>
+            </label>
+            <p class="text-[10px] text-slate-500 pl-6">૧ પોઇન્ટ = ₹૧.૦૦ નેટ બિલિંગમાંથી બાદ મળશે.</p>
+          </div>
+
           <div class="space-y-1 text-xs">
             <div class="flex justify-between text-slate-600">
               <span data-i18n="cart_subtotal_lbl">સબ-ટોટલ:</span>
               <span id="cart-subtotal" class="font-semibold text-slate-900">₹0</span>
+            </div>
+            <!-- Referral Discount Row -->
+            <div id="cart-row-referral-disc" class="hidden flex justify-between text-emerald-700 font-bold">
+              <span class="flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                <span>રેફરલ ડિસ્કાઉન્ટ:</span>
+              </span>
+              <span id="cart-referral-disc-val">-₹0</span>
+            </div>
+            <!-- Points Redeemed Row -->
+            <div id="cart-row-points-disc" class="hidden flex justify-between text-emerald-700 font-bold">
+              <span class="flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>રીવોર્ડ પોઇન્ટ્સ બાદ:</span>
+              </span>
+              <span id="cart-points-disc-val">-₹0</span>
             </div>
             <div class="flex justify-between text-slate-600">
               <span data-i18n="cart_gst_lbl">GST (18% સમાવિષ્ટ):</span>
               <span class="text-emerald-600 font-bold" data-i18n="cart_gst_val">Included</span>
             </div>
             <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-2 border-t border-slate-200">
-              <span data-i18n="cart_total_lbl">કુલ રકમ:</span>
+              <span>નેટ બિલિંગ / ચૂકવવાપાત્ર રકમ:</span>
               <span id="cart-grand-total" class="text-brand-600 font-black text-lg">₹0</span>
             </div>
           </div>
@@ -2441,6 +3362,29 @@
           <div>
             <label class="font-semibold text-slate-700">સ્પેસિફિકેશન / વિગત</label>
             <input type="text" id="p-specs" placeholder="10 Cores, 4.6GHz, 3 Years Warranty" class="w-full px-3 py-2 border border-slate-300 rounded-lg mt-1 outline-none">
+          </div>
+
+          <!-- Multi-Image Upload Section (Strictly Photo/Camera SVG, NO Mail Icon) -->
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-bold text-slate-800 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>પ્રોડક્ટ ફોટોઝ (Multiple Photo Upload)</span>
+              </label>
+              <span class="text-[10px] text-slate-500">ગ્રાહક હોવર કરે ત્યારે સ્લાઇડ થશે</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input type="file" id="p-gallery-files" multiple accept="image/*" class="hidden" onchange="handleProductGallerySelected(event)">
+              <button type="button" onclick="document.getElementById('p-gallery-files').click()" class="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-xl font-bold flex items-center gap-2 shadow-xs transition cursor-pointer">
+                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span>Upload Photos</span>
+              </button>
+              <input type="text" id="p-image-url" placeholder="અથવા ફોટો URL પેસ્ટ કરો (https://...)" class="flex-1 px-3 py-2 border border-slate-300 rounded-lg outline-none bg-white text-xs">
+            </div>
+
+            <!-- Uploaded Image Previews Strip -->
+            <div id="p-gallery-previews" class="flex flex-wrap gap-2 pt-1 empty:hidden"></div>
           </div>
 
           <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -3526,6 +4470,10 @@
               <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"/></svg>
               <span>Service Tickets</span>
             </button>
+            <button type="button" onclick="switchCustomerTab('rewards')" id="btn-tab-cust-rewards" class="px-4 py-2 border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-2">
+              <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h17.25"/></svg>
+              <span>Refer & Earn & Rewards</span>
+            </button>
           </div>
 
           <!-- Tab Contents Body -->
@@ -3730,11 +4678,408 @@
               </div>
             </div>
 
+            <!-- TAB 5: REFER & EARN & REWARD PASSBOOK -->
+            <div id="cust-tab-rewards" class="space-y-5 hidden">
+              <!-- Top Highlight Banner -->
+              <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white p-5 rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white">PCWARE Customer Rewards</span>
+                  <h4 class="text-lg font-black mt-1">મિત્રોને રેફર કરો અને રોકડ પોઇન્ટ્સ કમાઓ</h4>
+                  <p class="text-xs text-amber-100">તમારા મિત્રને ₹100 ડિસ્કાઉન્ટ મળશે અને તમને 200 પોઇન્ટ્સ (₹200) તમારા ખાતામાં જમા મળશે!</p>
+                </div>
+                <div class="text-right bg-black/15 p-3 rounded-xl border border-white/20">
+                  <span class="text-[10px] font-bold text-amber-200 block uppercase">તમારા ઉપલબ્ધ રીવોર્ડ પોઇન્ટ્સ</span>
+                  <span class="text-2xl font-black text-white" id="cust-reward-balance">0 Pts</span>
+                  <span class="text-[10px] text-amber-100 block mt-0.5">₹<span id="cust-reward-inr">0</span> નેટ બિલિંગમાં વાપરી શકાય</span>
+                </div>
+              </div>
+
+              <!-- Referral Code Box with Copy & WhatsApp Share -->
+              <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div>
+                    <h5 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                      <span>તમારો યુનિક રેફરલ કોડ (Your Referral Code)</span>
+                    </h5>
+                    <p class="text-xs text-slate-500">આ કોડ તમારા મિત્રો સાથે શેર કરો:</p>
+                  </div>
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">1 Code Active</span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                  <div class="p-3 bg-slate-50 border-2 border-dashed border-indigo-300 rounded-xl flex items-center gap-3">
+                    <span class="font-mono text-lg font-black text-indigo-700 tracking-wider" id="cust-referral-code-display">PCW200</span>
+                    <button type="button" onclick="copyCustomerReferralCode()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition cursor-pointer flex items-center gap-1">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                      <span>Copy Code</span>
+                    </button>
+                  </div>
+
+                  <button type="button" onclick="shareReferralWhatsApp()" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.941-.708-1.792s.448-1.27.607-1.444c.159-.175.348-.219.463-.219.116 0 .232.001.332.006.106.005.249-.04.39.299.144.348.491 1.199.534 1.287.043.087.072.19.014.305-.058.116-.087.188-.174.29-.087.102-.183.228-.261.306-.087.087-.178.182-.077.355.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.087.275.072.376-.044.101-.116.434-.506.549-.68.116-.174.232-.145.39-.087s1.011.477 1.184.564c.174.087.29.13.333.203.044.073.044.422-.1 1.027z"/></svg>
+                    <span>Share on WhatsApp</span>
+                  </button>
+                </div>
+
+                <!-- Stats summary -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                  <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-slate-500 font-bold block text-[10px] uppercase">કુલ રેફરલ્સ</span>
+                    <span class="text-base font-black text-slate-900" id="cust-stat-total-ref">0</span>
+                  </div>
+                  <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-slate-500 font-bold block text-[10px] uppercase">કુલ કમાયેલા પોઇન્ટ્સ</span>
+                    <span class="text-base font-black text-indigo-700" id="cust-stat-pts-earned">0 Pts</span>
+                  </div>
+                  <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <span class="text-slate-500 font-bold block text-[10px] uppercase">નેટ બિલિંગ ડિસ્કાઉન્ટ રેટ</span>
+                    <span class="text-base font-black text-emerald-700">1 Pt = ₹1.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rules & How It Works -->
+              <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 text-xs space-y-2">
+                <h5 class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>રેફરલ પોઇન્ટ્સના નિયમો (Referral Guidelines):</span>
+                </h5>
+                <ul class="space-y-1 text-slate-600 pl-5 list-disc text-[11px] leading-relaxed">
+                  <li>તમારો રેફરલ કોડ તમારા કોઈપણ મિત્ર અથવા સગા-સંબંધીને આપી શકો છો.</li>
+                  <li>જ્યારે તમારા મિત્ર ₹500 કે તેથી વધુનો સામાન ઓર્ડર કરશે ત્યારે તેમને તાત્કાલિક ₹100 ડિસ્કાઉન્ટ મળશે.</li>
+                  <li>ઓર્ડર કન્ફર્મ થતાં જ તમારા ખાતામાં ૨૦૦ રીવોર્ડ પોઇન્ટ્સ (₹200) સીધા જમા થઈ જશે.</li>
+                  <li>ઓર્ડર ચેકઆઉટ વખતે તમે એકસાથે ફક્ત ૧ જ રેફરલ કોડ વાપરી શકો છો.</li>
+                  <li>તમે તમારા રીવોર્ડ પોઇન્ટ્સ નવા ઓર્ડર વખતે નેટ બિલિંગમાંથી સીધા બાદ મેળવી શકો છો.</li>
+                </ul>
+              </div>
+
+              <!-- Transaction Passbook Ledger -->
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                  <h5 class="font-bold text-xs text-slate-800 uppercase tracking-wider">રીવોર્ડ પોઇન્ટ્સ પાસબુક (Points History)</h5>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                      <tr>
+                        <th class="p-3">તારીખ</th>
+                        <th class="p-3">વિગત (Transaction)</th>
+                        <th class="p-3">પ્રકાર</th>
+                        <th class="p-3 text-right">પોઇન્ટ્સ (+/-)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="cust-rewards-ledger-body" class="divide-y divide-slate-100">
+                      <!-- Dynamically populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
 
       </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- OFFICIAL DELL & PCWARE CORPORATE PDF QUOTATION MODAL                      -->
+  <!-- ========================================================================= -->
+  <div id="cto-quotation-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-8">
+      
+      <!-- Top Action Bar (Print / Close) -->
+      <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between no-print">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 text-white font-black text-sm">PC</span>
+          <div>
+            <h4 class="font-bold text-sm">Official Commercial Quotation</h4>
+            <p class="text-[11px] text-slate-400">Dell Precision 9 T6 / Enterprise Workstation</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span>Print / Save as PDF</span>
+          </button>
+          <button type="button" onclick="closeCTOQuotationModal()" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Document Paper -->
+      <div class="p-8 sm:p-10 space-y-6 text-slate-800 bg-white" id="cto-printable-quotation">
+        
+        <!-- Header: Company & Quotation Details -->
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 border-b-2 border-slate-900 pb-6">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl font-black text-slate-900 tracking-tight">PCWARE INFOTECH</span>
+              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 border border-indigo-200">Authorized Reseller</span>
+            </div>
+            <p class="text-xs text-slate-600 font-medium">Enterprise Workstations • High-Performance Computing • Chip-Level Labs</p>
+            <p class="text-xs text-slate-500">Dr. Yagnik Road, Opp. Imperial Palace, Rajkot, Gujarat - 360001</p>
+            <p class="text-xs text-slate-500">GSTIN: <strong class="font-mono text-slate-800">24AAFFP9876Q1Z3</strong> | Email: support@pcware.in | Phone: +91 70167 37271</p>
+          </div>
+
+          <div class="text-right sm:border-l sm:border-slate-200 sm:pl-6 space-y-1">
+            <span class="text-xs font-black uppercase text-indigo-700 tracking-wider">COMMERCIAL ESTIMATE</span>
+            <h2 id="quo-number" class="text-lg font-mono font-black text-slate-900">PCW/QUO/2026/CTO-8821</h2>
+            <div class="text-xs text-slate-500 space-y-0.5">
+              <div>Date: <strong id="quo-date" class="text-slate-800">05-Sep-2026</strong></div>
+              <div>Validity: <strong class="text-emerald-700">15 Days from date of issue</strong></div>
+              <div>Payment: <strong class="text-slate-800">100% Against PO / Delivery</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client Information Block -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Customer / Organization:</span>
+            <h4 id="quo-cust-name" class="font-bold text-slate-900 text-sm">Enterprise Client / IT Department</h4>
+            <p id="quo-cust-phone" class="text-slate-600 mt-0.5">+91 98980 00000</p>
+            <p id="quo-cust-address" class="text-slate-500">Rajkot & Gujarat Corporate Delivery</p>
+          </div>
+          <div class="sm:text-right">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">System Architecture:</span>
+            <h4 id="quo-system-name" class="font-bold text-indigo-900 text-sm">Dell Pro Precision 9 T6 AI Workstation</h4>
+            <p id="quo-system-sku" class="font-mono text-slate-600 mt-0.5">Model Code: PW9T6260-USX</p>
+            <p class="text-emerald-700 font-semibold">100% Certified OEM Workstation Architecture</p>
+          </div>
+        </div>
+
+        <!-- Technical Specification BOM Table -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-900">Itemized Bill of Materials & Technical Specifications:</h4>
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                  <th class="py-2.5 px-3 w-12 text-center">#</th>
+                  <th class="py-2.5 px-3 w-40">Component Category</th>
+                  <th class="py-2.5 px-3">Selected Component Specifications</th>
+                  <th class="py-2.5 px-3 text-right w-28">Upgrade Delta</th>
+                </tr>
+              </thead>
+              <tbody id="quo-bom-tbody" class="divide-y divide-slate-100">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pricing Breakdown & Commercial Totals -->
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 pt-2">
+          <div class="max-w-md text-[11px] text-slate-500 space-y-1.5">
+            <h5 class="font-bold text-slate-800 uppercase tracking-wider text-xs">Standard Commercial Terms:</h5>
+            <p>1. Warranty: Backed by Dell Official ProSupport & PCWARE Express Chip-Level Lab Guarantee.</p>
+            <p>2. Taxes: GST @ 18% is included. Tax invoice with GST input credit will be provided upon dispatch.</p>
+            <p>3. Delivery: Ready stock units dispatch within 24 hours. Custom CTO builds delivered within 3-5 working days.</p>
+            <p>4. Assembly & Burn-In: Includes 24-Hour thermal stress test and ISV certification check.</p>
+          </div>
+
+          <div class="w-full sm:w-72 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>Base Workstation:</span>
+              <span id="quo-base-price" class="font-bold text-slate-800">₹1,85,000</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Component Upgrades:</span>
+              <span id="quo-addons-price" class="font-bold text-indigo-600">+₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Pro Assembly & QC:</span>
+              <span class="font-black text-emerald-700">FREE</span>
+            </div>
+            <div class="flex justify-between text-slate-500 text-[11px] border-t border-slate-200 pt-2">
+              <span>Taxable Value:</span>
+              <span id="quo-taxable-val" class="font-semibold text-slate-700">₹1,56,780</span>
+            </div>
+            <div class="flex justify-between text-slate-500 text-[11px]">
+              <span>CGST (9%) + SGST (9%):</span>
+              <span id="quo-gst-val" class="font-semibold text-slate-700">₹28,220</span>
+            </div>
+            <div class="flex justify-between text-sm font-black text-slate-900 border-t-2 border-slate-900 pt-2 items-baseline">
+              <span>Grand Total (INR):</span>
+              <span id="quo-grand-total" class="text-indigo-700 font-black text-lg">₹1,85,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signatures and Company Stamp -->
+        <div class="pt-8 border-t border-slate-200 flex justify-between items-end text-xs">
+          <div class="space-y-1">
+            <div class="w-24 h-12 border-2 border-dashed border-emerald-400 rounded-lg flex items-center justify-center text-[10px] font-black uppercase text-emerald-800 rotate-[-5deg] bg-emerald-50">
+              PCWARE LAB SEAL
+            </div>
+            <p class="text-[10px] text-slate-400">Electronically Generated Official Quotation</p>
+          </div>
+          <div class="text-right space-y-1">
+            <div class="font-serif italic font-bold text-slate-800 text-sm">Kishan B. / Lab Lead</div>
+            <p class="text-slate-500 font-semibold">Authorized Signatory</p>
+            <p class="text-[10px] text-slate-400">PCWARE Hardware Solutions & Systems</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- BACKUP RESTORE SAFETY CONFIRMATION MODAL -->
+  <div id="backup-restore-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-5 animate-scale-up">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex-shrink-0 flex items-center justify-center text-2xl">
+          ⚠️
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-lg font-black text-slate-900">ડેટાબેઝ રીસ્ટોર કન્ફર્મેશન (Restore Confirmation)</h3>
+          <p class="text-xs text-slate-500">
+            શું તમે ખરેખર નીચે દર્શાવેલ તારીખ અને સમયના ડેટાબેઝ સ્નેપશોટ પર સિસ્ટમને રીસ્ટોર કરવા માંગો છો?
+          </p>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-2 text-xs">
+        <div class="flex justify-between">
+          <span class="text-rose-800 font-medium">સિલેક્ટેડ બેકઅપ ફાઇલ:</span>
+          <strong class="font-mono text-rose-950" id="modal-restore-filename">--</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-rose-800 font-medium">તારીખ &amp; સમય:</span>
+          <strong class="text-rose-950" id="modal-restore-datetime">--</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-rose-800 font-medium">ફાઇલ સાઈઝ:</span>
+          <strong class="text-rose-950" id="modal-restore-size">--</strong>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+        <span class="text-base">🛡️</span>
+        <div class="leading-relaxed">
+          <strong>તમારો વર્તમાન ડેટા ૧૦૦% સુરક્ષિત રહેશે:</strong><br>
+          રીસ્ટોર કરતાં પહેલાં સિસ્ટમ આપોઆપ હાલના ડેટાબેઝનો એક સેફ્ટી સ્નેપશોટ (<code class="text-[10px] font-mono bg-emerald-100 px-1 py-0.5 rounded">pre_restore_safety_backup_*.db</code>) સર્વર પર સેવ કરી લેશે.
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button type="button" onclick="closeRestoreModal()" class="px-5 py-2.5 rounded-xl border border-slate-300 font-bold text-xs text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+          Cancel (રદ કરો)
+        </button>
+        <button type="button" id="btn-confirm-restore" onclick="executeRestoreDatabase()" class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow-lg shadow-rose-600/30 transition flex items-center gap-2 cursor-pointer">
+          <span id="restore-btn-spinner" class="hidden animate-spin">🔄</span>
+          <span id="restore-btn-text">હા, ડેટા રીસ્ટોર કરો (Confirm Restore)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: STAFF & ADMIN ERP LOGIN -->
+  <div id="modal-staff-login" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
+    <div class="bg-slate-900 border border-slate-700/80 text-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5 animate-scale-up relative overflow-hidden">
+      <!-- Ambient Glow Behind Modal -->
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Header with Shield & Close Button -->
+      <div class="flex items-start justify-between relative z-10">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0 font-black">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-black text-white tracking-tight">
+              Staff &amp; Admin ERP Login
+            </h3>
+            <p class="text-xs text-amber-400 font-bold">સ્ટાફ અને એડમિન પોર્ટલ લૉગિન</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeStaffLoginModal()" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed relative z-10">
+        PCWARE એન્ટરપ્રાઇઝ મેનેજમેન્ટ, બિલિંગ, ઇન્વેન્ટરી અને સર્વિસ ERP માં પ્રવેશવા માટે તમારું યુઝરનેમ અથવા મોબાઇલ નંબર અને પાસવર્ડ દાખલ કરો.
+      </p>
+
+      <!-- Error Alert Box -->
+      <div id="staff-login-error" class="hidden p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+        <svg class="w-4 h-4 shrink-0 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <span id="staff-login-error-text">ખોટો પાસવર્ડ અથવા યુઝરનેમ.</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-staff-login" onsubmit="handleStaffLoginSubmit(event)" class="space-y-4 text-xs relative z-10">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+            <span>Username or Mobile (યૂઝરનેમ અથવા મોબાઇલ)</span>
+            <span class="text-[10px] text-slate-400 font-normal">e.g. admin or 9426183934</span>
+          </label>
+          <div class="relative">
+            <input type="text" id="staff-login-ident" required placeholder="Enter username or 10-digit mobile" class="w-full px-4 py-3 pl-11 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-sm">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+            <span>Password or 4-Digit PIN (પાસવર્ડ અથવા ૪-આંકડાનો પિન)</span>
+            <span class="text-[10px] text-slate-400 font-normal">e.g. admin123 or 1234</span>
+          </label>
+          <div class="relative">
+            <input type="password" id="staff-login-secret" required placeholder="Enter password or PIN" class="w-full px-4 py-3 pl-11 pr-11 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-sm">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <button type="button" onclick="toggleStaffPasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white cursor-pointer" title="Toggle password visibility">
+              <svg id="staff-pass-eye" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-staff-login-submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl shadow-lg shadow-amber-500/25 transition flex items-center justify-center gap-2 cursor-pointer text-sm mt-2">
+          <span id="staff-login-spinner" class="hidden animate-spin">🔄</span>
+          <span id="staff-login-btn-text">Sign In to Admin ERP (લૉગિન કરો)</span>
+        </button>
+      </form>
+
+      <!-- Quick Demo 1-Click Fill Chips -->
+      <div class="pt-3 border-t border-slate-800 space-y-2 relative z-10">
+        <div class="flex items-center justify-between text-[11px] text-slate-400">
+          <span class="font-bold uppercase tracking-wider text-slate-500">Quick 1-Click Demo Login:</span>
+          <span class="text-slate-500">PIN: 1234</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <button type="button" onclick="fillStaffDemo('admin')" class="py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-indigo-950 hover:border-indigo-500 border border-slate-700 text-indigo-300 font-bold transition cursor-pointer flex flex-col items-center">
+            <span class="text-base">👑</span>
+            <span class="text-[11px] font-black text-white">Admin (CEO)</span>
+            <span class="text-[9px] text-slate-400">Nilesh V.</span>
+          </button>
+          <button type="button" onclick="fillStaffDemo('hardik')" class="py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-emerald-950 hover:border-emerald-500 border border-slate-700 text-emerald-300 font-bold transition cursor-pointer flex flex-col items-center">
+            <span class="text-base">💼</span>
+            <span class="text-[11px] font-black text-white">Sales Team</span>
+            <span class="text-[9px] text-slate-400">Hardik P.</span>
+          </button>
+          <button type="button" onclick="fillStaffDemo('jignesh')" class="py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-amber-950 hover:border-amber-500 border border-slate-700 text-amber-300 font-bold transition cursor-pointer flex flex-col items-center">
+            <span class="text-base">🔬</span>
+            <span class="text-[11px] font-black text-white">Lab Engineer</span>
+            <span class="text-[9px] text-slate-400">Jignesh M.</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 

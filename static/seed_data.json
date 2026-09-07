@@ -1299,6 +1299,26 @@
       "memory_type": null,
       "image_url": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400",
       "created_at": "2026-09-04 16:16:14"
+    },
+    {
+      "id": 66,
+      "sku": "WKS-DELL-T6",
+      "name": "Dell Pro Precision 9 T6 Desktop AI Workstation (Intel Xeon 654 18-Core, RTX Ada, DDR5 ECC, 2400W Multi-GPU)",
+      "category": "workstation",
+      "brand": "Dell",
+      "model": "Precision 9 T6",
+      "hsn_code": "8471",
+      "cost_price": 158000.0,
+      "selling_price": 185000.0,
+      "gst_rate": 18.0,
+      "stock_quantity": 5,
+      "low_stock_threshold": 1,
+      "specs": "Intel Xeon 654 18-Core, 16GB DDR5 5600 ECC RDIMM, 512GB NVMe Gen4 SED, RTX A400 4GB, 1400W Platinum PSU, ISV Certified Workstation",
+      "wattage": 650,
+      "socket": null,
+      "memory_type": "DDR5",
+      "image_url": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800",
+      "created_at": "2026-09-05 13:40:00"
     }
   ],
   "serials": [

@@ -324,9 +324,23 @@ def init_db(force_reseed=False):
         department TEXT NOT NULL,
         phone TEXT NOT NULL,
         email TEXT,
+        username TEXT UNIQUE,
+        password TEXT,
+        pin TEXT DEFAULT '1234',
+        permissions TEXT,
+        last_login TEXT,
         active_leads_count INTEGER DEFAULT 0,
         status TEXT DEFAULT 'ACTIVE',
         created_at TEXT
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS staff_sessions (
+        token TEXT PRIMARY KEY,
+        staff_id INTEGER,
+        created_at TEXT,
+        expires_at TEXT
     )
     """)
 
