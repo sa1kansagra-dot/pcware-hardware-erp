@@ -11727,9 +11727,7 @@ async function handleStaffLoginSubmit(e) {
   } finally {
     if (spinner) spinner.classList.add("hidden");
     if (btnText) btnText.textContent = "Sign In to Admin ERP (લૉગિન કરો)";
-    if (submitBtn) submitBtn.disabled = false;
   }
-}
 }
 
 async function logoutStaff() {
