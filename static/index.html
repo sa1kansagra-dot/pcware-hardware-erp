@@ -1551,6 +1551,17 @@
               <svg id="erp-sync-icon" class="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-180 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               <span id="erp-sync-text">Live Sync</span>
             </button>
+
+            <!-- Google Contacts Sync Button -->
+            <button type="button" onclick="openGoogleContactsModal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-sm" title="Google Contacts Merge & Sync">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Google Contacts</span>
+            </button>
             <span class="text-[10px] bg-slate-800/90 text-slate-300 px-2.5 py-1 rounded-xl font-mono font-semibold border border-slate-700/60 hidden sm:inline-block">૧૩ મોડ્યુલ્સ</span>
           </div>
         </div>
@@ -2302,6 +2313,15 @@
                 <button type="button" onclick="loadAccountsAndLedger('CUSTOMER')" class="px-3 py-1.5 rounded-lg font-bold text-xs text-blue-700 hover:bg-blue-50 cursor-pointer flex items-center gap-1.5 transition"><svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span>Customers</span></button>
                 <button type="button" onclick="loadAccountsAndLedger('SUPPLIER')" class="px-3 py-1.5 rounded-lg font-bold text-xs text-purple-700 hover:bg-purple-50 cursor-pointer flex items-center gap-1.5 transition"><svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span>Suppliers</span></button>
               </div>
+              <button type="button" onclick="openGoogleContactsModal()" class="bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs py-2 px-3.5 rounded-xl border border-slate-300 shadow-sm transition flex items-center gap-2 cursor-pointer active:scale-95">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Google Contacts Sync</span>
+              </button>
               <button type="button" onclick="openNewPartyModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>+ Add Party Account</span>
@@ -5057,6 +5077,124 @@
           <span id="restore-btn-text">હા, ડેટા રીસ્ટોર કરો (Confirm Restore)</span>
         </button>
       </div>
+    </div>
+  <!-- MODAL: GOOGLE CONTACTS INTEGRATION & SYNC -->
+  <div id="modal-google-contacts" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden">
+    <div class="bg-white border border-slate-200 text-slate-900 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden animate-fade-in max-h-[90vh] overflow-y-auto">
+      
+      <!-- Top Decorative Google Gradient Bar -->
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#4285F4] via-[#EA4335] via-[#FBBC05] to-[#34A853]"></div>
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between gap-3 pt-1">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center shadow-xs shrink-0">
+            <svg class="w-7 h-7" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">
+              <span>Google Contacts Sync &amp; Merge</span>
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200 uppercase">Live Engine</span>
+            </h3>
+            <p class="text-xs text-slate-500">ગ્રાહકો, પાર્ટીઓ અને રિપેર લેબના નંબર્સ તમારા Gmail / Android / iPhone માં ૧-ક્લિકમાં સિંક કરો</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeGoogleContactsModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition cursor-pointer text-sm font-bold">✕</button>
+      </div>
+
+      <!-- Live Sync Status Banner -->
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg shadow-sm">
+            👥
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-black text-blue-950" id="gcontacts-total-count">-- Contact Records</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
+            <p class="text-xs text-blue-700 font-medium" id="gcontacts-breakdown-text">Parties, Repair Job Sheets &amp; Customer Inquiries</p>
+          </div>
+        </div>
+        <button type="button" onclick="refreshGoogleContactsStats()" class="px-3 py-1.5 rounded-xl bg-white border border-blue-200 hover:bg-blue-100 text-blue-800 font-bold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95">
+          <span>🔄 Refresh Stats</span>
+        </button>
+      </div>
+
+      <!-- Two Main 1-Click Export Methods -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Method 1: vCard (.vcf) for Mobile 1-Tap -->
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition flex flex-col justify-between space-y-3">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xl">📲</span>
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Best for Mobile</span>
+            </div>
+            <h4 class="text-sm font-black text-slate-900">Android / iPhone ૧-ક્લિક ઇમ્પોર્ટ</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              <strong>vCard (.vcf)</strong> ફાઇલ ડાઉનલોડ કરી WhatsApp કે Gmail પર ખોલતાં જ ફોનમાં બધા જ નંબર ૧ સેકન્ડમાં સેવ થઈ જશે.
+            </p>
+          </div>
+          <button type="button" onclick="downloadGoogleContacts('vcf')" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Download Mobile .vcf File</span>
+          </button>
+        </div>
+
+        <!-- Method 2: Google Contacts Official CSV -->
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition flex flex-col justify-between space-y-3">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xl">🌐</span>
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">contacts.google.com</span>
+            </div>
+            <h4 class="text-sm font-black text-slate-900">Google Contacts વેબ ફાઇલ (CSV)</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              ગૂગલ કોન્ટેક્ટ્સ વેબસાઇટ (contacts.google.com) પર સીધી ઇમ્પોર્ટ કરવા માટેની સત્તાવાર <strong>Google CSV Format</strong> ફાઇલ.
+            </p>
+          </div>
+          <button type="button" onclick="downloadGoogleContacts('csv')" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Download Google CSV File</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section: Reverse Import from Google Contacts into ERP -->
+      <div class="bg-amber-50/60 border border-amber-200/90 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📥</span>
+            <h4 class="text-xs font-black text-amber-950 uppercase tracking-wider">ગૂગલમાંથી કોન્ટેક્ટ્સ ERP માં લાવો (Import to ERP)</h4>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-200 text-amber-900">Reverse Sync</span>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          જો તમારા Google Contacts માં અગાઉથી ગ્રાહકોના નંબર સેવ હોય, તો તેની CSV ફાઇલ અહીં અપલોડ કરી તરત ERP પાર્ટી ડિરેક્ટરીમાં સેવ કરી શકો છો:
+        </p>
+        <div class="flex items-center gap-3">
+          <input type="file" id="input-google-contacts-file" accept=".csv,.vcf" class="hidden" onchange="handleGoogleContactsFileSelect(event)">
+          <button type="button" onclick="document.getElementById('input-google-contacts-file').click()" class="py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm active:scale-95">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Upload Google Contacts (.csv / .vcf)</span>
+          </button>
+          <span id="google-import-status" class="text-xs text-slate-500 font-medium">કોઈ ફાઇલ પસંદ નથી</span>
+        </div>
+      </div>
+
+      <!-- Footer Quick Guide -->
+      <div class="p-3.5 bg-slate-100 rounded-xl text-[11px] text-slate-600 space-y-1">
+        <p class="font-bold text-slate-800">💡 મોબાઇલમાં સિંક કરવાની સૌથી સરળ રીત:</p>
+        <p>૧. ઉપરથી <strong>Download Mobile .vcf File</strong> બટન દબાવો.</p>
+        <p>૨. તે ફાઇલ તમારા WhatsApp કે Gmail માં મોકલો અને ફોન પર ટચ કરો -&gt; તરત બધા નંબર સેવ થઈ જશે!</p>
+      </div>
+
     </div>
   </div>
 

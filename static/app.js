@@ -11792,5 +11792,86 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// ==========================================
+// Google Contacts Integration & Merge Engine
+// ==========================================
+
+async function openGoogleContactsModal() {
+  const modal = document.getElementById("modal-google-contacts");
+  if (modal) modal.classList.remove("hidden");
+  await refreshGoogleContactsStats();
+}
+
+function closeGoogleContactsModal() {
+  const modal = document.getElementById("modal-google-contacts");
+  if (modal) modal.classList.add("hidden");
+}
+
+async function refreshGoogleContactsStats() {
+  const countEl = document.getElementById("gcontacts-total-count");
+  const textEl = document.getElementById("gcontacts-breakdown-text");
+  try {
+    const stats = await apiGet("google-contacts/stats");
+    if (stats && countEl) {
+      countEl.textContent = `${stats.total_contacts} Active Contact Records`;
+      if (textEl) {
+        textEl.textContent = `${stats.parties_count} Parties • ${stats.jobs_count} Repair Lab Clients • ${stats.inquiries_count} Inquiries`;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load Google Contacts stats:", err);
+  }
+}
+
+function downloadGoogleContacts(format) {
+  const fmt = format || "vcf";
+  const url = `/api/google-contacts/export?format=${fmt}`;
+  
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `pcware_google_contacts_${new Date().toISOString().slice(0,10)}.${fmt}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  showToast(`Google Contacts (${fmt.toUpperCase()}) ફાઇલ ડાઉનલોડ શરૂ થઈ.`, "info");
+}
+
+async function handleGoogleContactsFileSelect(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById("google-import-status");
+  if (statusEl) statusEl.textContent = `અપલોડ થઈ રહ્યું છે: ${file.name}...`;
+
+  const reader = new FileReader();
+  reader.onload = async function(evt) {
+    const text = evt.target.result;
+    try {
+      const res = await apiPost("google-contacts/import", { file_content: text, filename: file.name });
+      if (res && res.success) {
+        showToast(res.message, "success");
+        if (statusEl) statusEl.textContent = `✅ ${res.imported_count} નવા સંપર્ક ઉમેરાયા`;
+        await refreshGoogleContactsStats();
+        if (typeof loadAccountsAndLedger === "function") loadAccountsAndLedger();
+      } else {
+        showToast((res && res.error) || "ઇમ્પોર્ટ કરવામાં ક્ષતિ આવી.", "error");
+        if (statusEl) statusEl.textContent = "ઇમ્પોર્ટ નિષ્ફળ";
+      }
+    } catch (err) {
+      console.error("Google contact import error:", err);
+      showToast("ફાઇલ પ્રોસેસ કરવામાં એરર આવી.", "error");
+      if (statusEl) statusEl.textContent = "એરર";
+    }
+  };
+  reader.readAsText(file);
+}
+
+window.openGoogleContactsModal = openGoogleContactsModal;
+window.closeGoogleContactsModal = closeGoogleContactsModal;
+window.refreshGoogleContactsStats = refreshGoogleContactsStats;
+window.downloadGoogleContacts = downloadGoogleContacts;
+window.handleGoogleContactsFileSelect = handleGoogleContactsFileSelect;
+
+
 
 

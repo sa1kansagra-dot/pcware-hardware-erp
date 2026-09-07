@@ -8,6 +8,8 @@ import base64
 import uuid
 import re
 import shutil
+import csv
+import io
 from datetime import datetime, timedelta
 
 PORT = int(os.environ.get("PORT", 8080))
@@ -513,6 +515,87 @@ def handle_gemini_interaction(user_msg, prods, api_key, gemini_model, history=No
             pass
 
     return run_builtin_pcware_ai(user_msg, prods)
+
+def get_all_google_contacts(cursor):
+    parties = cursor.execute("SELECT name, contact_person, phone, email, address, party_type, gstin, current_balance FROM parties").fetchall()
+    jobs = cursor.execute("SELECT customer_name, customer_phone, customer_email, customer_address, job_sheet_number, device_brand, device_model FROM job_sheets").fetchall()
+    inqs = cursor.execute("SELECT customer_name, customer_phone, customer_email, customer_address, requirement_type, inquiry_number FROM inquiries").fetchall()
+
+    contacts_by_phone = {}
+
+    def clean_phone(p):
+        if not p:
+            return ""
+        digits = "".join(filter(str.isdigit, str(p)))
+        if len(digits) == 10:
+            return "+91" + digits
+        elif len(digits) > 10 and digits.startswith("91"):
+            return "+" + digits
+        elif len(digits) > 0:
+            return digits
+        return ""
+
+    for p in parties:
+        phone = clean_phone(p["phone"])
+        if not phone:
+            continue
+        name = p["name"] or p["contact_person"] or "Customer"
+        ptype = p["party_type"] or "Customer"
+        bal = round(p["current_balance"] or 0)
+        gst = p["gstin"] or "N/A"
+        contacts_by_phone[phone] = {
+            "name": name,
+            "phone": phone,
+            "email": p["email"] or "",
+            "address": p["address"] or "",
+            "organization": "PCWARE Computer Hardware & ERP",
+            "title": f"{ptype} Client",
+            "notes": f"PCWARE ERP | Type: {ptype} | Balance: Rs.{bal} | GST: {gst}",
+            "group": "PCWARE ERP Clients"
+        }
+
+    for j in jobs:
+        phone = clean_phone(j["customer_phone"])
+        if not phone:
+            continue
+        js_no = j["job_sheet_number"]
+        brand = j["device_brand"]
+        model = j["device_model"]
+        if phone in contacts_by_phone:
+            contacts_by_phone[phone]["notes"] += f" | Lab Job: {js_no} ({brand} {model})"
+        else:
+            contacts_by_phone[phone] = {
+                "name": j["customer_name"] or "Repair Customer",
+                "phone": phone,
+                "email": j["customer_email"] or "",
+                "address": j["customer_address"] or "",
+                "organization": "PCWARE Computer Hardware & ERP",
+                "title": "Repair Client",
+                "notes": f"PCWARE Lab Client | Job: {js_no} ({brand} {model})",
+                "group": "PCWARE ERP Clients"
+            }
+
+    for i in inqs:
+        phone = clean_phone(i["customer_phone"])
+        if not phone:
+            continue
+        rtype = i["requirement_type"] or "Inquiry"
+        ino = i["inquiry_number"] or ""
+        if phone in contacts_by_phone:
+            contacts_by_phone[phone]["notes"] += f" | Inq: {ino} ({rtype})"
+        else:
+            contacts_by_phone[phone] = {
+                "name": i["customer_name"] or "Inquiry Lead",
+                "phone": phone,
+                "email": i["customer_email"] or "",
+                "address": i["customer_address"] or "",
+                "organization": "PCWARE Computer Hardware & ERP",
+                "title": "Inquiry Lead",
+                "notes": f"PCWARE Lead | Inq: {ino} ({rtype})",
+                "group": "PCWARE ERP Clients"
+            }
+
+    return list(contacts_by_phone.values())
 
 class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
     def end_headers(self):
@@ -1189,6 +1272,80 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 with open(file_path, "rb") as f:
                     self.wfile.write(f.read())
                 return
+
+            # Google Contacts Integration & Sync Endpoints
+            if path == "/api/google-contacts/stats":
+                contacts = get_all_google_contacts(cursor)
+                parties_cnt = cursor.execute("SELECT COUNT(*) FROM parties").fetchone()[0]
+                jobs_cnt = cursor.execute("SELECT COUNT(*) FROM job_sheets").fetchone()[0]
+                inqs_cnt = cursor.execute("SELECT COUNT(*) FROM inquiries").fetchone()[0]
+                return self.send_json({
+                    "total_contacts": len(contacts),
+                    "parties_count": parties_cnt,
+                    "jobs_count": jobs_cnt,
+                    "inquiries_count": inqs_cnt,
+                    "sample_contacts": contacts[:5]
+                })
+
+            if path == "/api/google-contacts/export":
+                fmt = query.get("format", ["vcf"])[0].lower()
+                contacts = get_all_google_contacts(cursor)
+                date_str = datetime.now().strftime("%Y-%m-%d")
+
+                if fmt == "csv":
+                    out = io.StringIO()
+                    writer = csv.writer(out)
+                    writer.writerow([
+                        "Name", "Given Name", "Family Name", "E-mail 1 - Type", "E-mail 1 - Value",
+                        "Phone 1 - Type", "Phone 1 - Value", "Address 1 - Type", "Address 1 - Formatted",
+                        "Organization 1 - Name", "Organization 1 - Title", "Notes", "Group Membership"
+                    ])
+                    for c in contacts:
+                        parts = c["name"].split(" ", 1)
+                        given = parts[0]
+                        family = parts[1] if len(parts) > 1 else ""
+                        writer.writerow([
+                            c["name"], given, family, "Work", c["email"],
+                            "Mobile", c["phone"], "Work", c["address"],
+                            c["organization"], c["title"], c["notes"], c["group"]
+                        ])
+                    csv_bytes = out.getvalue().encode("utf-8-sig")
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/csv; charset=utf-8")
+                    self.send_header("Content-Disposition", f'attachment; filename="pcware_google_contacts_{date_str}.csv"')
+                    self.send_header("Content-Length", str(len(csv_bytes)))
+                    self.end_headers()
+                    self.wfile.write(csv_bytes)
+                    return
+                else:
+                    # Default vCard 3.0
+                    vcf_lines = []
+                    for c in contacts:
+                        vcf_lines.append("BEGIN:VCARD")
+                        vcf_lines.append("VERSION:3.0")
+                        vcf_lines.append(f"FN:{c['name']}")
+                        vcf_lines.append(f"TEL;TYPE=CELL,VOICE:{c['phone']}")
+                        if c.get("email"):
+                            vcf_lines.append(f"EMAIL;TYPE=INTERNET,WORK:{c['email']}")
+                        if c.get("address"):
+                            clean_addr = c['address'].replace('\n', ' ').replace(';', ',')
+                            vcf_lines.append(f"ADR;TYPE=WORK:;;{clean_addr};Rajkot;Gujarat;360001;India")
+                        vcf_lines.append(f"ORG:{c['organization']}")
+                        vcf_lines.append(f"TITLE:{c['title']}")
+                        clean_notes = c['notes'].replace('\n', ' ')
+                        vcf_lines.append(f"NOTE:{clean_notes}")
+                        vcf_lines.append(f"CATEGORIES:{c['group']}")
+                        vcf_lines.append("END:VCARD")
+                    
+                    vcf_bytes = "\r\n".join(vcf_lines).encode("utf-8")
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/vcard; charset=utf-8")
+                    self.send_header("Content-Disposition", f'attachment; filename="pcware_google_contacts_{date_str}.vcf"')
+                    self.send_header("Content-Length", str(len(vcf_bytes)))
+                    self.end_headers()
+                    self.wfile.write(vcf_bytes)
+                    return
+
 
             # Staff & Admin Auth Check
             if path == "/api/auth/me":
@@ -2306,6 +2463,108 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     "safety_backup": safety_file,
                     "message": f"Uploaded database successfully restored! Safety checkpoint saved as {safety_file}."
                 })
+
+            # Google Contacts Import & Settings Endpoints
+            if path == "/api/google-contacts/import":
+                contacts_list = body.get("contacts", [])
+                file_text = body.get("file_content", "")
+
+                if file_text and not contacts_list:
+                    file_text_str = str(file_text).strip()
+                    if "BEGIN:VCARD" in file_text_str:
+                        # Parse vCard (.vcf)
+                        try:
+                            cards = file_text_str.split("END:VCARD")
+                            for card in cards:
+                                lines = [l.strip() for l in card.splitlines() if l.strip()]
+                                if not lines:
+                                    continue
+                                c = {"name": "", "phone": "", "email": "", "address": ""}
+                                for l in lines:
+                                    if l.startswith("FN:"):
+                                        c["name"] = l.split(":", 1)[1].strip()
+                                    elif not c["name"] and l.startswith("N:"):
+                                        c["name"] = " ".join([p for p in l.split(":", 1)[1].split(";") if p]).strip()
+                                    elif (l.startswith("TEL:") or l.startswith("TEL;")):
+                                        c["phone"] = l.split(":", 1)[1].strip()
+                                    elif (l.startswith("EMAIL:") or l.startswith("EMAIL;")):
+                                        c["email"] = l.split(":", 1)[1].strip()
+                                    elif (l.startswith("ADR:") or l.startswith("ADR;")):
+                                        raw_adr = l.split(":", 1)[1]
+                                        c["address"] = " ".join([p for p in raw_adr.split(";") if p]).strip()
+                                if c["name"] and c["phone"]:
+                                    contacts_list.append(c)
+                        except Exception as v_ex:
+                            print("VCF parse error:", v_ex)
+                    else:
+                        # Parse Google Contacts CSV
+                        try:
+                            reader = csv.reader(io.StringIO(file_text_str))
+                            rows = list(reader)
+                            if len(rows) > 1:
+                                header = [h.strip().lower() for h in rows[0]]
+                                name_idx = next((i for i, h in enumerate(header) if "name" in h and "given" not in h and "family" not in h), 0)
+                                phone_idx = next((i for i, h in enumerate(header) if "phone" in h or "mobile" in h or "cell" in h), 1)
+                                email_idx = next((i for i, h in enumerate(header) if "email" in h or "e-mail" in h), -1)
+                                addr_idx = next((i for i, h in enumerate(header) if "address" in h), -1)
+
+                                for r in rows[1:]:
+                                    if len(r) > max(name_idx, phone_idx):
+                                        c_name = r[name_idx].strip()
+                                        c_phone = r[phone_idx].strip()
+                                        c_email = r[email_idx].strip() if email_idx != -1 and len(r) > email_idx else ""
+                                        c_addr = r[addr_idx].strip() if addr_idx != -1 and len(r) > addr_idx else ""
+                                        if c_name and c_phone:
+                                            contacts_list.append({
+                                                "name": c_name, "phone": c_phone,
+                                                "email": c_email, "address": c_addr
+                                            })
+                        except Exception as ex:
+                            print("CSV parse error:", ex)
+
+                imported = 0
+                skipped = 0
+                now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                for c in contacts_list:
+                    c_name = str(c.get("name", "")).strip()
+                    c_phone = str(c.get("phone", "")).strip()
+                    c_email = str(c.get("email", "")).strip()
+                    c_addr = str(c.get("address", "")).strip()
+
+                    if not c_name or not c_phone:
+                        continue
+
+                    digits = "".join(filter(str.isdigit, c_phone))
+                    c_phone_clean = digits[-10:] if len(digits) >= 10 else digits
+
+                    exists = cursor.execute("SELECT id FROM parties WHERE phone LIKE ?", (f"%{c_phone_clean}%",)).fetchone()
+                    if exists:
+                        skipped += 1
+                    else:
+                        cursor.execute("""
+                            INSERT INTO parties (party_type, name, contact_person, phone, email, address, opening_balance, current_balance, created_at)
+                            VALUES ('CUSTOMER', ?, ?, ?, ?, ?, 0.0, 0.0, ?)
+                        """, (c_name, c_name, c_phone, c_email, c_addr, now_str))
+                        imported += 1
+
+                conn.commit()
+                return self.send_json({
+                    "success": True,
+                    "imported_count": imported,
+                    "skipped_existing": skipped,
+                    "message": f"સફળતાપૂર્વક {imported} નવા ગ્રાહક કોન્ટેક્ટ્સ ERP માં ઉમેરાયા ({skipped} અગાઉથી હાજર હતા)."
+                })
+
+            if path == "/api/google-contacts/settings":
+                client_id = str(body.get("google_client_id", "")).strip()
+                api_key = str(body.get("google_api_key", "")).strip()
+                webhook_url = str(body.get("google_webhook_url", "")).strip()
+                
+                for k, v in [("google_client_id", client_id), ("google_api_key", api_key), ("google_webhook_url", webhook_url)]:
+                    cursor.execute("INSERT OR REPLACE INTO store_settings (key, value) VALUES (?, ?)", (k, v))
+                conn.commit()
+                return self.send_json({"success": True, "message": "Google Contacts સેટિંગ્સ સફળતાપૂર્વક સેવ થયા."})
 
             # Staff & Admin Login Endpoint
             if path == "/api/auth/staff-login":
