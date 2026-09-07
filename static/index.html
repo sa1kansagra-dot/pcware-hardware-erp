@@ -78,9 +78,31 @@
     .animate-fade-in {
       animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
+    /* Mobile Touch & iOS Safari Ergonomics */
+    html {
+      -webkit-tap-highlight-color: transparent;
+      scroll-behavior: smooth;
+    }
+    @media (max-width: 640px) {
+      input, select, textarea {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+      }
+    }
+    .touch-scroll {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="min-h-full flex flex-col font-sans antialiased bg-slate-50 selection:bg-brand-500 selection:text-white">
+<body class="min-h-full flex flex-col font-sans antialiased bg-slate-50 selection:bg-brand-500 selection:text-white pb-16 md:pb-0">
 
   <!-- Top Announcement Bar (Amazon Utility Strip) -->
   <div class="bg-[#0b0e14] text-slate-300 text-xs py-1.5 px-3 sm:px-6 border-b border-slate-800">
@@ -115,7 +137,9 @@
   <!-- Amazon-Style Primary Dark Header -->
   <header class="sticky top-0 z-40 bg-[#131921] text-white shadow-lg border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 sm:h-[68px] gap-2 sm:gap-4">
+      
+      <!-- DESKTOP HEADER ROW (sm and up) -->
+      <div class="hidden sm:flex items-center justify-between h-16 sm:h-[68px] gap-3 sm:gap-4">
         
         <!-- Brand Logo & Deliver-To Widget -->
         <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
@@ -144,7 +168,7 @@
         <div class="flex-1 max-w-2xl mx-1 sm:mx-2">
           <form onsubmit="handleAmazonSearch(event)" class="flex items-center w-full h-10 sm:h-11 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#f90] shadow-sm">
             <!-- Category Dropdown on Left -->
-            <select id="header-search-cat" onchange="handleAmazonCatChange()" class="hidden sm:block h-full bg-[#e6e6e6] hover:bg-[#d4d4d4] text-slate-900 text-xs font-semibold px-3 border-r border-slate-300 outline-none cursor-pointer max-w-[135px]">
+            <select id="header-search-cat" onchange="handleAmazonCatChange()" class="h-full bg-[#e6e6e6] hover:bg-[#d4d4d4] text-slate-900 text-xs font-semibold px-3 border-r border-slate-300 outline-none cursor-pointer max-w-[135px]">
               <option value="all">All Categories</option>
               <option value="laptop">Laptops</option>
               <option value="desktop">Desktop PCs</option>
@@ -175,7 +199,7 @@
         <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
           
           <!-- Language Toggle Switcher -->
-          <div class="hidden sm:flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-xs font-bold">
+          <div class="flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-xs font-bold">
             <button type="button" id="btn-lang-en" onclick="setLanguage('en')" class="px-2 py-1 rounded transition cursor-pointer bg-[#232f3e] text-amber-400 font-bold text-xs">EN</button>
             <button type="button" id="btn-lang-gu" onclick="setLanguage('gu')" class="px-2 py-1 rounded transition cursor-pointer text-slate-300 hover:text-white text-xs font-semibold">GU</button>
           </div>
@@ -220,13 +244,66 @@
         </div>
 
       </div>
+
+      <!-- MOBILE 2-TIER HEADER (screens < sm) -->
+      <div class="sm:hidden py-2 space-y-2">
+        <!-- Row 1: Menu + Logo + Customer Icon + Cart -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <!-- Mobile Hamburger Menu Button -->
+            <button type="button" onclick="openMobileNavDrawer()" class="p-1.5 rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition cursor-pointer active:scale-95" title="Open Categories Menu">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+            </button>
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-1.5 cursor-pointer" onclick="switchView('catalog')">
+              <img src="/static/logo.svg" alt="PCWARE" class="h-8 w-auto object-contain">
+              <div class="font-black text-base tracking-tight text-white flex items-center gap-1 leading-none">
+                <span>PCWARE</span>
+                <span class="text-[8px] font-bold px-1 py-0.2 rounded bg-amber-400 text-slate-950 uppercase">STORE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Mobile Actions: Language + Account + Cart -->
+          <div class="flex items-center gap-1.5">
+            <!-- Mobile Language Switcher -->
+            <div class="flex items-center bg-slate-800 p-0.5 rounded-md border border-slate-700 text-[10px] font-bold">
+              <button type="button" id="btn-lang-en-mob" onclick="setLanguage('en')" class="px-1.5 py-0.5 rounded bg-[#232f3e] text-amber-400 font-bold">EN</button>
+              <button type="button" id="btn-lang-gu-mob" onclick="setLanguage('gu')" class="px-1.5 py-0.5 rounded text-slate-300">GU</button>
+            </div>
+
+            <!-- Customer Portal Icon -->
+            <button type="button" onclick="openCustomerPortalModal()" class="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition cursor-pointer" title="Customer Portal">
+              <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            </button>
+
+            <!-- Cart Button -->
+            <button type="button" onclick="toggleCartDrawer(true)" class="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition cursor-pointer relative" title="Shopping Cart">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <span id="cart-badge-mob" class="absolute -top-0.5 -right-0.5 bg-[#f08804] text-slate-950 font-black text-[10px] rounded-full w-4 h-4 flex items-center justify-center shadow-xs">0</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Row 2: Mobile Full-Width Search Bar -->
+        <form onsubmit="handleAmazonSearch(event)" class="flex items-center w-full h-10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#f90] shadow-sm">
+          <input type="text" id="header-search-input-mob" oninput="debounceProductSearch(this.value)" placeholder="Search Laptops, CPUs, SSDs, RTX 4060..." class="flex-1 h-full px-3 text-xs text-slate-900 bg-white outline-none placeholder:text-slate-400">
+          <button type="submit" class="h-full bg-[#febd69] hover:bg-[#f3a847] text-slate-950 px-3.5 flex items-center justify-center transition cursor-pointer shrink-0 font-bold" title="Search">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </button>
+        </form>
+      </div>
+
     </div>
 
     <!-- Amazon Secondary Sub-Header Ribbon (#232f3e) -->
     <div class="bg-[#232f3e] text-slate-100 text-xs font-medium border-t border-slate-700/60 shadow-inner">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-4 py-1.5 overflow-x-auto scrollbar-none">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 py-1.5 overflow-x-auto no-scrollbar touch-scroll">
         <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-          <button type="button" onclick="toggleMobileCategoryDrawer()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-white/10 font-bold transition cursor-pointer">
+          <button type="button" onclick="openMobileNavDrawer()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-white/10 font-bold transition cursor-pointer whitespace-nowrap">
             <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
             <span>All Categories</span>
           </button>
@@ -302,6 +379,136 @@
       </div>
     </div>
   </header>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE SLIDE-OVER NAVIGATION DRAWER (ALL CATEGORIES & QUICK ACCESS)       -->
+  <!-- ========================================================================= -->
+  <div id="mobile-nav-drawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-modal="true">
+    <!-- Dark Backdrop -->
+    <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity" onclick="closeMobileNavDrawer()"></div>
+    
+    <div class="fixed inset-y-0 left-0 max-w-full flex">
+      <div class="w-screen max-w-xs bg-slate-900 text-white shadow-2xl flex flex-col justify-between">
+        
+        <!-- Drawer Top User Info / Header -->
+        <div class="p-4 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 border-b border-slate-800 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-lg shadow-md">
+              👤
+            </div>
+            <div>
+              <h3 class="font-extrabold text-sm text-white flex items-center gap-1.5">
+                <span>હેલો! Sign In</span>
+              </h3>
+              <p class="text-[11px] text-slate-400">PCWARE હાર્ડવેર સ્ટોર &amp; સર્વિસ</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeMobileNavDrawer()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer text-base font-bold">
+            ✕
+          </button>
+        </div>
+
+        <!-- Drawer Scrollable Links Container -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-5 text-xs touch-scroll">
+          
+          <!-- Category Quick Links -->
+          <div class="space-y-1.5">
+            <h4 class="text-[11px] font-black uppercase tracking-wider text-amber-400 px-2 pb-1 border-b border-slate-800">
+              Department Categories (કેટેગરીઝ)
+            </h4>
+            <div class="space-y-0.5 pt-1">
+              <button type="button" onclick="filterCategory('laptop', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>💻</span><span>Laptops (૫૬ મોડેલ્સ)</span></span>
+                <span class="text-[10px] text-amber-400 font-bold">Hot</span>
+              </button>
+              <button type="button" onclick="filterCategory('desktop', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🖥️</span><span>Desktop PCs (૨૫ મોડેલ્સ)</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('aio', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🖥️</span><span>All-in-One PCs (૨૦ મોડેલ્સ)</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('screen_accessory', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🖥️</span><span>Monitors &amp; Acc (૩૦ મોડેલ્સ)</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('processor', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>⚡</span><span>Processors (Intel &amp; AMD)</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('antivirus_software', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🛡️</span><span>Antivirus &amp; CyberSecurity</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('gpu', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🎮</span><span>Graphic Cards (RTX 40-Series)</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('storage', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>💾</span><span>NVMe SSDs &amp; RAM</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('motherboard', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🔌</span><span>Motherboards &amp; Cabinets</span></span>
+              </button>
+              <button type="button" onclick="filterCategory('workstation', null); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition flex items-center justify-between cursor-pointer">
+                <span class="flex items-center gap-2"><span>🏢</span><span>Enterprise Workstations</span></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Services & Portals -->
+          <div class="space-y-1.5 pt-2 border-t border-slate-800">
+            <h4 class="text-[11px] font-black uppercase tracking-wider text-indigo-400 px-2 pb-1 border-b border-slate-800">
+              Special Tools &amp; Services
+            </h4>
+            <div class="space-y-0.5 pt-1">
+              <button type="button" onclick="switchView('builder'); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold transition flex items-center gap-2 cursor-pointer border border-amber-500/20">
+                <span>⚙️</span>
+                <span>Custom PC &amp; CTO Configurator</span>
+              </button>
+              <button type="button" onclick="switchView('track'); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 font-bold transition flex items-center gap-2 cursor-pointer">
+                <span>🔬</span>
+                <span>Repair Lab &amp; Job Sheet Tracker</span>
+              </button>
+              <button type="button" onclick="openCustomerPortalModal(); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-indigo-300 font-bold transition flex items-center gap-2 cursor-pointer">
+                <span>👤</span>
+                <span>Customer Portal (Invoices &amp; Warranty)</span>
+              </button>
+              <button type="button" onclick="openGoogleContactsModal(); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/10 text-emerald-400 font-bold transition flex items-center gap-2 cursor-pointer">
+                <span>📲</span>
+                <span>Google Contacts 1-Click Sync</span>
+              </button>
+              <button type="button" onclick="switchView('admin'); closeMobileNavDrawer();" class="w-full text-left px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold transition flex items-center gap-2 cursor-pointer border border-slate-700">
+                <span>🔐</span>
+                <span>Staff &amp; Admin ERP Portal</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Store Contact Quick Sheet -->
+          <div class="p-3 bg-slate-950/60 rounded-2xl border border-slate-800 text-[11px] space-y-2">
+            <p class="font-bold text-slate-300 flex items-center gap-1.5">
+              <span>📍</span>
+              <span>Suvarnabhumi Complex, Rajkot</span>
+            </p>
+            <p class="text-slate-400">
+              Store &amp; Chip-Level Lab: 10:00 AM - 8:30 PM
+            </p>
+            <div class="flex gap-2 pt-1">
+              <a href="https://wa.me/919426183934" target="_blank" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-center rounded-lg transition">
+                CEO WhatsApp
+              </a>
+              <a href="tel:918000780704" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-center rounded-lg transition border border-slate-700">
+                Call Lab
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="p-3 border-t border-slate-800 text-[10px] text-slate-500 text-center shrink-0">
+          PCWARE Enterprise Hardware Engine • 100% Genuine
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Main Content Body -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -647,8 +854,25 @@
         <!-- RIGHT COLUMN: PRODUCTS CATALOG & STATS -->
         <div class="lg:col-span-3 space-y-4">
           
-          <!-- Catalog Sort & Count Top Bar -->
-          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <!-- MOBILE FILTER & QUICK SORT BAR (Visible on mobile/tablet, hidden on lg desktop) -->
+          <div class="lg:hidden bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between gap-2.5">
+            <button type="button" onclick="openMobileFilterModal()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer active:scale-95 border border-slate-200 shadow-2xs">
+              <svg class="w-4 h-4 text-brand-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+              <span>Filters (બ્રાન્ડ / કિંમત)</span>
+              <span id="mob-filter-count-badge" class="hidden text-[10px] font-black px-1.5 py-0.5 bg-brand-600 text-white rounded-full">1</span>
+            </button>
+
+            <select id="catalog-sort-mob" onchange="handleCatalogSort(this.value)" class="flex-1 text-xs font-semibold py-2 px-2.5 rounded-xl border border-slate-300 bg-white outline-none cursor-pointer">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
+          </div>
+
+          <!-- Catalog Sort & Count Top Bar (Desktop) -->
+          <div class="hidden lg:flex bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex-wrap items-center justify-between gap-3">
             <div class="text-xs text-slate-600">
               <span id="catalog-count-label" class="font-bold text-slate-900">Showing all hardware products</span>
               <span class="hidden sm:inline text-slate-400"> • All prices include 18% GST</span>
@@ -1566,74 +1790,99 @@
           </div>
         </div>
 
-        <!-- All 13 Admin Module Buttons with Live Counter Badges -->
-        <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 relative z-10">
-          <button type="button" onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab active px-3.5 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md shadow-brand-600/30 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+        <!-- Mobile Quick Module Selector (< sm screens) -->
+        <div class="sm:hidden relative z-10">
+          <label class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Select ERP Module (મોડ્યુલ પસંદ કરો):</label>
+          <div class="relative">
+            <select id="mobile-erp-module-select" onchange="switchAdminTab(this.value)" class="w-full bg-slate-800 text-white font-bold text-xs p-3 rounded-xl border border-slate-700 outline-none appearance-none pr-8 cursor-pointer shadow-inner">
+              <option value="overview">📊 Overview &amp; Executive KPIs</option>
+              <option value="inquiries_orders">📋 Inquiries &amp; Customer Orders</option>
+              <option value="purchase_shortage">🛒 Purchase &amp; Shortage Planning</option>
+              <option value="accounts_ledger">📑 Party Accounts &amp; Ledgers</option>
+              <option value="jobsheets">🔬 Job Sheets &amp; Chip-Level Lab</option>
+              <option value="inventory">📦 Stock Inventory &amp; Parts</option>
+              <option value="serials">🏷️ Serial Registry &amp; Warranty</option>
+              <option value="billing">📄 GST Invoicing &amp; Billing</option>
+              <option value="staff">👥 Staff Team &amp; Roles</option>
+              <option value="warehouses">🏢 Warehouses &amp; Multi-Godown</option>
+              <option value="amc">🛡️ AMC Corporate Contracts</option>
+              <option value="referrals">🎁 Referral &amp; Reward Points</option>
+              <option value="backup_restore">💾 Backup &amp; Disaster Recovery</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- All 13 Admin Module Buttons with Live Counter Badges (Horizontal touch scroll on mobile, flex-wrap on desktop) -->
+        <div class="flex overflow-x-auto sm:flex-wrap items-center gap-2 sm:gap-2.5 relative z-10 no-scrollbar touch-scroll py-1">
+          <button type="button" onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab active shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md shadow-brand-600/30 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
             <span>Overview</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('inquiries_orders')" id="tab-btn-inquiries_orders" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('inquiries_orders')" id="tab-btn-inquiries_orders" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span>Inquiries & Orders</span>
             <span id="tab-badge-inquiries" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">0</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('purchase_shortage')" id="tab-btn-purchase_shortage" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('purchase_shortage')" id="tab-btn-purchase_shortage" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
             <span>Stock & Shortage</span>
             <span id="tab-badge-shortage" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">Alert</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('accounts_ledger')" id="tab-btn-accounts_ledger" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('accounts_ledger')" id="tab-btn-accounts_ledger" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
             <span>Accounts & Ledger</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('jobsheets')" id="tab-btn-jobsheets" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('jobsheets')" id="tab-btn-jobsheets" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233l2.802-2.803a3.75 3.75 0 00-5.304-5.303l-2.802 2.802m4.102 4.102l-4.102-4.102"/></svg>
             <span>Job Sheets / Lab</span>
             <span id="tab-badge-jobsheets" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('inventory')" id="tab-btn-inventory" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('inventory')" id="tab-btn-inventory" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
             <span>Stock Inventory</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('serials')" id="tab-btn-serials" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('serials')" id="tab-btn-serials" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
             <span>Serial Registry</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('billing')" id="tab-btn-billing" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('billing')" id="tab-btn-billing" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
             <span>GST Invoicing</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('staff')" id="tab-btn-staff" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('staff')" id="tab-btn-staff" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
             <span>Staff Team</span>
             <span id="tab-badge-staff" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">8</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('warehouses')" id="tab-btn-warehouses" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('warehouses')" id="tab-btn-warehouses" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
             <span>Warehouses</span>
             <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">3</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('amc')" id="tab-btn-amc" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('amc')" id="tab-btn-amc" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
             <span>AMC Contracts</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('referrals')" id="tab-btn-referrals" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('referrals')" id="tab-btn-referrals" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span>Referral & Rewards</span>
           </button>
 
-          <button type="button" onclick="switchAdminTab('backup_restore')" id="tab-btn-backup_restore" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+          <button type="button" onclick="switchAdminTab('backup_restore')" id="tab-btn-backup_restore" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
             <span>Backup & Restore</span>
             <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Safe</span>
@@ -1763,8 +2012,8 @@
               <h4 class="font-bold text-slate-900 text-sm">તાજેતરની જોબ શીટ્સ (Recent Job Sheets)</h4>
               <button type="button" onclick="switchAdminTab('jobsheets')" class="text-xs text-brand-600 hover:text-brand-800 font-bold hover:underline cursor-pointer inline-flex items-center gap-1"><span>View All</span><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto touch-scroll">
+              <table class="min-w-[440px] w-full text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-100 text-slate-500 font-semibold">
                     <th class="py-2">ટોકન #</th>
@@ -1788,8 +2037,8 @@
               </h4>
               <button type="button" onclick="switchAdminTab('inventory')" class="text-xs text-brand-600 hover:text-brand-800 font-bold hover:underline cursor-pointer inline-flex items-center gap-1"><span>Stock Manager</span><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto touch-scroll">
+              <table class="min-w-[440px] w-full text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-100 text-slate-500 font-semibold">
                     <th class="py-2">આઇટમ નામ</th>
@@ -1827,8 +2076,9 @@
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">જોબ # / તારીખ</th>
@@ -1873,8 +2123,9 @@
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">SKU & HSN</th>
@@ -1907,8 +2158,9 @@
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">સીરીયલ નંબર</th>
@@ -1941,8 +2193,9 @@
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">ઇન્વૉઇસ # / તારીખ</th>
@@ -1976,8 +2229,9 @@
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">કોન્ટ્રેક્ટ #</th>
@@ -2080,8 +2334,9 @@
               <span>+ New Customer Inquiry</span>
             </button>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">ઇન્ક્વાયરી #</th>
@@ -2111,8 +2366,9 @@
               <span>+ Create Quotation</span>
             </button>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">ક્વોટેશન #</th>
@@ -2139,8 +2395,9 @@
               <p class="text-xs text-slate-500">ઓનલાઇન શોપ & ક્વોટેશન દ્વારા કન્ફર્મ થયેલા ઓર્ડર્સ - ડિસપેચ & બિલિંગ</p>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">ઓર્ડર #</th>
@@ -2216,8 +2473,9 @@
               <p class="text-xs text-slate-500">સિસ્ટમ દ્વારા ઓટોમેટિક કેલ્ક્યુલેટેડ: સ્ટોક લેવલ ઘટતાં જ સપ્લાયરને PO આપવા માટે સીધું બટન</p>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">પ્રોડક્ટનું નામ / SKU</th>
@@ -2250,8 +2508,9 @@
               </button>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">PO # / તારીખ</th>
@@ -2328,8 +2587,9 @@
               </button>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th class="py-3 px-4">પાર્ટીનું નામ / શહેર</th>
@@ -2467,8 +2727,9 @@
           <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
             <h4 class="font-bold text-xs text-slate-800 uppercase tracking-wider">તાજેતરના સ્ટોક ટ્રાન્સફર લોગ્સ (Movement History)</h4>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                   <th class="p-3">ટ્રાન્સફર No.</th>
@@ -2645,8 +2906,9 @@
             <span class="text-xs font-bold text-slate-600" id="admin-ref-count-badge">0 Codes</span>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs border-collapse">
               <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th class="p-3">રેફરલ કોડ</th>
@@ -2950,8 +3212,9 @@
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
+          <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs border-collapse">
               <thead class="bg-slate-100 text-slate-700 font-black uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th class="p-3.5">તારીખ (Date)</th>
@@ -3725,8 +3988,8 @@
               <h4 class="font-bold text-slate-800">ક્વોટેશનમાં આઇટમ્સ (Line Items)</h4>
               <button type="button" onclick="addQuotationLineRow()" class="text-xs font-semibold text-brand-600 hover:underline cursor-pointer">+ Add Item Row</button>
             </div>
-            <div class="overflow-x-auto bg-white rounded-lg border border-slate-200">
-              <table class="w-full text-left text-xs" id="quotation-items-table">
+            <div class="overflow-x-auto touch-scroll bg-white rounded-lg border border-slate-200">
+              <table class="min-w-[560px] w-full text-left text-xs" id="quotation-items-table">
                 <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                   <tr>
                     <th class="py-2 px-2">પ્રોડક્ટનું નામ</th>
@@ -3814,8 +4077,8 @@
               <h4 class="font-bold text-slate-800">ઓર્ડર કરવાની આઇટમ્સ (Requisition Items)</h4>
               <button type="button" onclick="addPOLineRow()" class="text-xs font-semibold text-brand-600 hover:underline cursor-pointer">+ Add Item Row</button>
             </div>
-            <div class="overflow-x-auto bg-white rounded-lg border border-slate-200">
-              <table class="w-full text-left text-xs" id="po-items-table">
+            <div class="overflow-x-auto touch-scroll bg-white rounded-lg border border-slate-200">
+              <table class="min-w-[560px] w-full text-left text-xs" id="po-items-table">
                 <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                   <tr>
                     <th class="py-2 px-2">પ્રોડક્ટનું નામ</th>
@@ -3898,8 +4161,9 @@
         </div>
 
         <!-- Statement Table -->
-        <div class="overflow-x-auto border border-slate-200 rounded-xl max-h-96">
-          <table class="w-full text-left text-xs">
+        <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+        <div class="overflow-x-auto touch-scroll border border-slate-200 rounded-xl max-h-96">
+          <table class="min-w-[680px] w-full text-left text-xs">
             <thead class="bg-slate-100 text-slate-600 font-bold uppercase sticky top-0 border-b border-slate-200">
               <tr>
                 <th class="py-2.5 px-3">તારીખ</th>
@@ -4078,7 +4342,7 @@
   <script src="./app.js"></script>
 
   <!-- FLOATING GOOGLE GEMINI AI ASSISTANT WIDGET -->
-  <div id="pcware-ai-widget" class="fixed bottom-6 right-6 z-40">
+  <div id="pcware-ai-widget" class="fixed bottom-20 md:bottom-6 right-3 sm:right-6 z-40">
     <button type="button" onclick="toggleAIChatWindow()" class="relative group flex items-center gap-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold text-xs py-3 px-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer border-2 border-white/20">
       <svg class="w-5 h-5 text-amber-300 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 011 1v3a1 1 0 01-1 1h-1v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1H2a1 1 0 01-1-1v-3a1 1 0 011-1h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2M7.5 13A2.5 2.5 0 005 15.5a2.5 2.5 0 002.5 2.5 2.5 2.5 0 002.5-2.5A2.5 2.5 0 007.5 13m9 0a2.5 2.5 0 00-2.5 2.5 2.5 2.5 0 002.5 2.5 2.5 2.5 0 002.5-2.5 2.5 2.5 0 00-2.5-2.5z"/></svg>
       <span class="tracking-wide">PCWARE AI</span>
@@ -4087,7 +4351,7 @@
   </div>
 
   <!-- AI CHAT WINDOW POPUP -->
-  <div id="pcware-ai-chat-window" class="fixed bottom-20 right-6 z-50 w-[92vw] max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col hidden transition-all duration-300" style="height: 540px;">
+  <div id="pcware-ai-chat-window" class="fixed bottom-20 md:bottom-24 right-2 sm:right-6 left-2 sm:left-auto w-auto sm:w-[400px] max-h-[75vh] sm:max-h-[540px] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col hidden transition-all duration-300 z-50" style="height: 540px;">
     <!-- Chat Header -->
     <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 flex items-center justify-between shadow-md">
       <div class="flex items-center gap-2.5">
@@ -4856,8 +5120,9 @@
                 <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                   <h5 class="font-bold text-xs text-slate-800 uppercase tracking-wider">રીવોર્ડ પોઇન્ટ્સ પાસબુક (Points History)</h5>
                 </div>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left text-xs border-collapse">
+                <div class="block md:hidden bg-slate-50 text-[11px] text-slate-500 py-1.5 px-3 border-b border-slate-200 text-center font-medium select-none">👈 આંગળીથી ડાબે-જમણે સ્ક્રોલ કરો (Swipe horizontally) 👉</div>
+          <div class="overflow-x-auto touch-scroll">
+            <table class="min-w-[680px] w-full text-left text-xs border-collapse">
                     <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                       <tr>
                         <th class="p-3">તારીખ</th>
@@ -4954,8 +5219,8 @@
         <!-- Technical Specification BOM Table -->
         <div class="space-y-2">
           <h4 class="text-xs font-black uppercase tracking-wider text-slate-900">Itemized Bill of Materials & Technical Specifications:</h4>
-          <div class="overflow-x-auto rounded-xl border border-slate-200">
-            <table class="w-full text-left text-xs border-collapse">
+          <div class="overflow-x-auto touch-scroll rounded-xl border border-slate-200">
+            <table class="min-w-[560px] w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <th class="py-2.5 px-3 w-12 text-center">#</th>
@@ -5295,6 +5560,121 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE STICKY BOTTOM APP BAR (NATIVE APP FEEL FOR MOBILE BROWSERS)        -->
+  <!-- ========================================================================= -->
+  <nav id="mobile-bottom-app-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800 text-slate-400 py-1.5 px-2 flex items-center justify-around shadow-2xl pb-[max(0.5rem,env(safe-area-inset-bottom))] select-none">
+    <!-- Tab 1: Store Catalog -->
+    <button type="button" onclick="switchView('catalog')" id="mob-nav-btn-catalog" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-amber-400 font-bold transition cursor-pointer active:scale-90">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+      <span class="text-[10px] mt-0.5">Store</span>
+    </button>
+
+    <!-- Tab 2: Custom PC Builder -->
+    <button type="button" onclick="switchView('builder')" id="mob-nav-btn-builder" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl hover:text-white transition cursor-pointer active:scale-90">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+      <span class="text-[10px] mt-0.5">Custom PC</span>
+    </button>
+
+    <!-- Tab 3: Track Repair -->
+    <button type="button" onclick="switchView('track')" id="mob-nav-btn-track" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl hover:text-white transition cursor-pointer active:scale-90">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233l2.802-2.803a3.75 3.75 0 00-5.304-5.303l-2.802 2.802m4.102 4.102l-4.102-4.102"/></svg>
+      <span class="text-[10px] mt-0.5">Track Lab</span>
+    </button>
+
+    <!-- Tab 4: My Account / Customer Portal -->
+    <button type="button" onclick="openCustomerPortalModal()" id="mob-nav-btn-account" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl hover:text-white transition cursor-pointer active:scale-90">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+      <span class="text-[10px] mt-0.5">Account</span>
+    </button>
+
+    <!-- Tab 5: Cart with live badge -->
+    <button type="button" onclick="toggleCartDrawer(true)" id="mob-nav-btn-cart" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl hover:text-white transition cursor-pointer active:scale-90 relative">
+      <div class="relative">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <span id="mob-bar-cart-badge" class="absolute -top-1.5 -right-2 bg-[#f08804] text-slate-950 font-black text-[9px] rounded-full w-4 h-4 flex items-center justify-center shadow-xs">0</span>
+      </div>
+      <span class="text-[10px] mt-0.5">Cart</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE FILTER BOTTOM SHEET MODAL (FOR PHONES & TABLETS)                  -->
+  <!-- ========================================================================= -->
+  <div id="modal-mobile-filter" class="fixed inset-0 z-50 overflow-hidden hidden" aria-modal="true">
+    <!-- Dark Backdrop -->
+    <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity" onclick="closeMobileFilterModal()"></div>
+    
+    <div class="fixed inset-x-0 bottom-0 max-h-[88vh] bg-white rounded-t-3xl shadow-2xl flex flex-col z-50 overflow-hidden animate-slide-up">
+      <!-- Handle & Header -->
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🎯</span>
+          <h3 class="font-extrabold text-sm text-slate-900">Filters &amp; Brand Selection</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="resetAllFilters(); closeMobileFilterModal();" class="text-xs font-bold text-brand-600 hover:underline cursor-pointer">Reset</button>
+          <button type="button" onclick="closeMobileFilterModal()" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold cursor-pointer">✕</button>
+        </div>
+      </div>
+
+      <!-- Filter Body -->
+      <div class="p-5 overflow-y-auto space-y-5 text-xs touch-scroll flex-1">
+        <!-- Category Filter -->
+        <div class="space-y-2">
+          <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Department Category</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="filterCategory('all', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">All Categories</button>
+            <button type="button" onclick="filterCategory('laptop', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">💻 Laptops</button>
+            <button type="button" onclick="filterCategory('desktop', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">🖥️ Desktop PCs</button>
+            <button type="button" onclick="filterCategory('aio', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">🖥️ All-in-One</button>
+            <button type="button" onclick="filterCategory('screen_accessory', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">🖥️ Monitors &amp; Acc</button>
+            <button type="button" onclick="filterCategory('processor', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">⚡ Processors (CPU)</button>
+            <button type="button" onclick="filterCategory('antivirus_software', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">🛡️ Antivirus</button>
+            <button type="button" onclick="filterCategory('gpu', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">🎮 Graphics Cards</button>
+            <button type="button" onclick="filterCategory('storage', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">💾 NVMe SSDs &amp; RAM</button>
+            <button type="button" onclick="filterCategory('workstation', null); closeMobileFilterModal();" class="p-2.5 rounded-xl border border-slate-200 text-left font-bold hover:bg-slate-100 transition cursor-pointer">🏢 Workstations</button>
+          </div>
+        </div>
+
+        <!-- Brand Filter -->
+        <div class="space-y-2 pt-3 border-t border-slate-100">
+          <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Top Brands</h4>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="handleBrandFilter('Apple'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Apple</button>
+            <button type="button" onclick="handleBrandFilter('Dell'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Dell</button>
+            <button type="button" onclick="handleBrandFilter('HP'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">HP</button>
+            <button type="button" onclick="handleBrandFilter('Lenovo'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Lenovo</button>
+            <button type="button" onclick="handleBrandFilter('ASUS'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">ASUS</button>
+            <button type="button" onclick="handleBrandFilter('Intel'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Intel</button>
+            <button type="button" onclick="handleBrandFilter('AMD'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">AMD</button>
+            <button type="button" onclick="handleBrandFilter('Quick Heal'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Quick Heal</button>
+            <button type="button" onclick="handleBrandFilter('Samsung'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Samsung</button>
+            <button type="button" onclick="handleBrandFilter('Logitech'); closeMobileFilterModal();" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">Logitech</button>
+          </div>
+        </div>
+
+        <!-- Price Ranges -->
+        <div class="space-y-2 pt-3 border-t border-slate-100">
+          <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Price Range (બજેટ)</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="handlePriceFilter(0, 25000); closeMobileFilterModal();" class="p-2 rounded-xl border border-slate-200 bg-slate-50 text-left font-bold">Under ₹25,000</button>
+            <button type="button" onclick="handlePriceFilter(25000, 50000); closeMobileFilterModal();" class="p-2 rounded-xl border border-slate-200 bg-slate-50 text-left font-bold">₹25,000 - ₹50,000</button>
+            <button type="button" onclick="handlePriceFilter(50000, 100000); closeMobileFilterModal();" class="p-2 rounded-xl border border-slate-200 bg-slate-50 text-left font-bold">₹50,000 - ₹1,00,000</button>
+            <button type="button" onclick="handlePriceFilter(100000, 9999999); closeMobileFilterModal();" class="p-2 rounded-xl border border-slate-200 bg-slate-50 text-left font-bold">Above ₹1,00,000</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50 shrink-0">
+        <button type="button" onclick="closeMobileFilterModal()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition cursor-pointer shadow-md text-xs">
+          View Results
+        </button>
+      </div>
     </div>
   </div>
 

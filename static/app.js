@@ -4878,6 +4878,25 @@ function switchView(viewName) {
     });
   });
 
+  // Mobile Bottom App Bar active state
+  const bottomNavBtns = {
+    catalog: document.getElementById("mob-nav-btn-catalog"),
+    builder: document.getElementById("mob-nav-btn-builder"),
+    track: document.getElementById("mob-nav-btn-track")
+  };
+  Object.entries(bottomNavBtns).forEach(([k, btn]) => {
+    if (!btn) return;
+    if (k === viewName) {
+      btn.className = "flex flex-col items-center justify-center py-1 px-3 rounded-xl text-amber-400 font-bold transition cursor-pointer active:scale-90";
+    } else {
+      btn.className = "flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-400 hover:text-white transition cursor-pointer active:scale-90";
+    }
+  });
+
+  if (typeof closeMobileNavDrawer === "function") {
+    closeMobileNavDrawer();
+  }
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (viewName === "catalog") loadProducts();
@@ -5414,6 +5433,13 @@ async function updateInquiryFulfillment(inqId, mode, trackingNo = "") {
 
 function switchAdminTab(tabName) {
   state.adminTab = tabName;
+
+  // Sync mobile module dropdown if present
+  const mobErpSel = document.getElementById("mobile-erp-module-select");
+  if (mobErpSel && mobErpSel.value !== tabName) {
+    mobErpSel.value = tabName;
+  }
+
   const tabs = ["overview", "inquiries_orders", "purchase_shortage", "accounts_ledger", "jobsheets", "inventory", "serials", "billing", "staff", "warehouses", "amc", "referrals", "backup_restore"];
   tabs.forEach(t => {
     const panel = document.getElementById("admin-tab-" + t);
@@ -5429,9 +5455,9 @@ function switchAdminTab(tabName) {
     }
     if (btn) {
       if (t === tabName) {
-        btn.className = "admin-tab active px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg shadow-brand-500/25 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95";
+        btn.className = "admin-tab active shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg shadow-brand-500/25 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95";
       } else {
-        btn.className = "admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5";
+        btn.className = "admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5";
       }
     }
   });
@@ -5997,6 +6023,26 @@ function toggleCartDrawer(open) {
   }
 }
 
+function openMobileNavDrawer() {
+  const drawer = document.getElementById("mobile-nav-drawer");
+  if (drawer) drawer.classList.remove("hidden");
+}
+
+function closeMobileNavDrawer() {
+  const drawer = document.getElementById("mobile-nav-drawer");
+  if (drawer) drawer.classList.add("hidden");
+}
+
+function openMobileFilterModal() {
+  const modal = document.getElementById("modal-mobile-filter");
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeMobileFilterModal() {
+  const modal = document.getElementById("modal-mobile-filter");
+  if (modal) modal.classList.add("hidden");
+}
+
 function addToCart(productId) {
   const product = state.products.find(p => p.id === productId);
   if (!product) return;
@@ -6047,6 +6093,12 @@ function updateCartUI() {
   const badge = document.getElementById("cart-badge");
   const totalCount = state.cart.reduce((sum, i) => sum + i.qty, 0);
   if (badge) badge.textContent = totalCount;
+
+  // Sync Mobile Header and Mobile Bottom Bar Cart Badges
+  const mobBadge = document.getElementById("cart-badge-mob");
+  if (mobBadge) mobBadge.textContent = totalCount;
+  const mobBarBadge = document.getElementById("mob-bar-cart-badge");
+  if (mobBarBadge) mobBarBadge.textContent = totalCount;
 
   const container = document.getElementById("cart-items-container");
   const subtotalEl = document.getElementById("cart-subtotal");
@@ -10074,6 +10126,10 @@ window.debounceProductSearch = debounceProductSearch;
 window.addToCart = addToCart;
 window.updateCartQty = updateCartQty;
 window.toggleCartDrawer = toggleCartDrawer;
+window.openMobileNavDrawer = openMobileNavDrawer;
+window.closeMobileNavDrawer = closeMobileNavDrawer;
+window.openMobileFilterModal = openMobileFilterModal;
+window.closeMobileFilterModal = closeMobileFilterModal;
 window.placeOrder = placeOrder;
 window.selectPCComponent = selectPCComponent;
 window.resetPCBuilder = resetPCBuilder;
