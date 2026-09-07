@@ -22,3 +22,9 @@ scratch/
 # OS
 .DS_Store
 Thumbs.db
+
+# Backups and temporary deployment archives
+backups/
+pcware.db
+*.zip
+static/uploads/

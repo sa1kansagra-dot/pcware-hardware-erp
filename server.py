@@ -620,6 +620,13 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 revenue_row = cursor.execute("SELECT SUM(grand_total) FROM invoices").fetchone()[0]
                 total_revenue = revenue_row if revenue_row else 0.0
 
+                pending_inquiries = cursor.execute("SELECT COUNT(*) FROM inquiries WHERE status = 'PENDING'").fetchone()[0]
+                total_orders = cursor.execute("SELECT COUNT(*) FROM orders").fetchone()[0]
+                total_parties = cursor.execute("SELECT COUNT(*) FROM parties").fetchone()[0]
+                total_staff = cursor.execute("SELECT COUNT(*) FROM staff_members WHERE status = 'ACTIVE'").fetchone()[0]
+                total_serials = cursor.execute("SELECT COUNT(*) FROM serial_numbers").fetchone()[0]
+                total_invoices = cursor.execute("SELECT COUNT(*) FROM invoices").fetchone()[0]
+
                 recent_jobs = [dict(row) for row in cursor.execute("SELECT * FROM job_sheets ORDER BY id DESC LIMIT 5").fetchall()]
                 recent_orders = [dict(row) for row in cursor.execute("SELECT * FROM orders ORDER BY id DESC LIMIT 5").fetchall()]
                 low_stock_items = [dict(row) for row in cursor.execute("SELECT * FROM products WHERE stock_quantity <= low_stock_threshold LIMIT 5").fetchall()]
@@ -632,6 +639,12 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     "active_amc": active_amc,
                     "amc_expiring": amc_expiring,
                     "total_revenue": total_revenue,
+                    "pending_inquiries": pending_inquiries,
+                    "total_orders": total_orders,
+                    "total_parties": total_parties,
+                    "total_staff": total_staff,
+                    "total_serials": total_serials,
+                    "total_invoices": total_invoices,
                     "recent_jobs": recent_jobs,
                     "recent_orders": recent_orders,
                     "low_stock_items": low_stock_items

@@ -5421,17 +5421,17 @@ function switchAdminTab(tabName) {
     if (panel) {
       if (t === tabName) {
         panel.classList.remove("hidden");
+        panel.classList.add("animate-fade-in");
       } else {
         panel.classList.add("hidden");
+        panel.classList.remove("animate-fade-in");
       }
     }
     if (btn) {
       if (t === tabName) {
-        btn.classList.add("bg-brand-600", "text-white");
-        btn.classList.remove("bg-slate-800", "text-slate-300");
+        btn.className = "admin-tab active px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg shadow-brand-500/25 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95";
       } else {
-        btn.classList.remove("bg-brand-600", "text-white");
-        btn.classList.add("bg-slate-800", "text-slate-300");
+        btn.className = "admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5";
       }
     }
   });
@@ -7846,6 +7846,27 @@ async function loadAdminStats() {
   if (readyEl) readyEl.textContent = stats.repairs_ready;
   if (lowStockEl) lowStockEl.textContent = stats.low_stock_count;
   if (revEl) revEl.textContent = "₹" + Math.round(stats.total_revenue).toLocaleString('en-IN');
+
+  // Update real-time micro badges on Admin module tabs
+  const badgeRepairs = document.getElementById("tab-badge-jobsheets");
+  if (badgeRepairs) badgeRepairs.textContent = stats.active_repairs || "0";
+
+  const badgeShortage = document.getElementById("tab-badge-shortage");
+  if (badgeShortage) {
+    if (stats.low_stock_count > 0) {
+      badgeShortage.textContent = stats.low_stock_count + " Alert";
+      badgeShortage.className = "text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 animate-pulse";
+    } else {
+      badgeShortage.textContent = "OK";
+      badgeShortage.className = "text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+    }
+  }
+
+  const badgeInq = document.getElementById("tab-badge-inquiries");
+  if (badgeInq) badgeInq.textContent = stats.pending_inquiries !== undefined ? stats.pending_inquiries : (stats.total_orders || "0");
+
+  const badgeStaff = document.getElementById("tab-badge-staff");
+  if (badgeStaff) badgeStaff.textContent = stats.total_staff || "8";
 
   const jobsTbody = document.getElementById("overview-jobs-tbody");
   if (jobsTbody && stats.recent_jobs) {
@@ -11710,5 +11731,48 @@ window.handleStaffLoginSubmit = handleStaffLoginSubmit;
 window.logoutStaff = logoutStaff;
 window.initStaffAuth = initStaffAuth;
 window.updateStaffHeaderUI = updateStaffHeaderUI;
+
+// Real-Time ERP Synchronization Engine
+async function syncERPData() {
+  const icon = document.getElementById("erp-sync-icon");
+  const text = document.getElementById("erp-sync-text");
+  if (icon) icon.classList.add("animate-spin");
+  if (text) text.textContent = "Syncing...";
+
+  try {
+    await loadAdminStats();
+    const active = state.adminTab || "overview";
+    if (active === "inquiries_orders" && typeof loadInquiriesAndOrders === "function") await loadInquiriesAndOrders();
+    else if (active === "purchase_shortage" && typeof loadPurchaseAndShortage === "function") await loadPurchaseAndShortage();
+    else if (active === "accounts_ledger" && typeof loadAccountsAndLedger === "function") await loadAccountsAndLedger();
+    else if (active === "jobsheets" && typeof loadJobSheets === "function") await loadJobSheets();
+    else if (active === "inventory" && typeof loadInventoryTable === "function") await loadInventoryTable();
+    else if (active === "serials" && typeof loadSerialsTable === "function") await loadSerialsTable();
+    else if (active === "billing" && typeof loadInvoicesTable === "function") await loadInvoicesTable();
+    else if (active === "amc" && typeof loadAMCTable === "function") await loadAMCTable();
+    else if (active === "staff" && typeof renderStaffTab === "function") renderStaffTab();
+    else if (active === "warehouses" && typeof loadWarehousesAndStocks === "function") await loadWarehousesAndStocks();
+    else if (active === "referrals" && typeof loadAdminReferrals === "function") await loadAdminReferrals();
+    else if (active === "backup_restore" && typeof loadAdminBackups === "function") await loadAdminBackups();
+
+    showToast("✅ તમામ ERP ડેટા અને કાઉન્ટર સફળતાપૂર્વક Live સિંક થયા!", "success");
+  } catch (err) {
+    console.error("ERP sync error:", err);
+    showToast("ERP ડેટા સિંક કરવામાં ક્ષતિ આવી.", "error");
+  } finally {
+    if (icon) icon.classList.remove("animate-spin");
+    if (text) text.textContent = "Live Sync";
+  }
+}
+window.syncERPData = syncERPData;
+
+// Global Escape key listener to close any active modal
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const openModals = document.querySelectorAll(".fixed.inset-0:not(.hidden)");
+    openModals.forEach(m => m.classList.add("hidden"));
+  }
+});
+
 
 

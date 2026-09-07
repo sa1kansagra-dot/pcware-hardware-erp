@@ -71,6 +71,13 @@
       background: #cbd5e1;
       border-radius: 4px;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
   </style>
 </head>
 <body class="min-h-full flex flex-col font-sans antialiased bg-slate-50 selection:bg-brand-500 selection:text-white">
@@ -1490,71 +1497,101 @@
         </div>
       </div>
 
-      <!-- ERP Sub Navigation Bar (Multi-Row Wrapped - No Horizontal Slider) -->
-      <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-xl border border-slate-800 space-y-3.5">
+      <!-- ERP Sub Navigation Bar (Ultra-Modern Glassmorphism Multi-Row Command Bar) -->
+      <div class="bg-slate-900/95 backdrop-blur-xl text-white p-4 sm:p-5 rounded-3xl shadow-2xl border border-slate-700/80 space-y-3.5 relative overflow-hidden">
+        <!-- Subtle Ambient Background Glow -->
+        <div class="absolute -right-16 -top-16 w-48 h-48 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
         <!-- Top Status Bar Inside Card -->
-        <div class="flex items-center justify-between border-b border-slate-800/90 pb-2.5">
-          <div class="flex items-center gap-2 text-xs font-bold text-slate-200">
-            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="font-mono uppercase tracking-wider text-emerald-400 font-bold">Live Hardware ERP Engine</span>
-            <span class="hidden sm:inline text-[11px] text-slate-400 font-normal">| ૮ સ્ટાફ & CEO કન્ટ્રોલ પેનલ</span>
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-800/90 pb-3 gap-2 relative z-10">
+          <div class="flex items-center gap-2.5 text-xs font-bold text-slate-200">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-md shadow-emerald-400/50"></span>
+            <span class="font-mono uppercase tracking-wider text-emerald-400 font-black">Live Enterprise ERP Engine</span>
+            <span class="hidden sm:inline text-[11px] text-slate-400 font-normal">| સેન્ટ્રલ કમાન્ડ કંટ્રોલ પેનલ</span>
           </div>
-          <span class="text-[10px] bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-mono font-semibold border border-slate-700/60">૧૧ મોડ્યુલ્સ (ઓલ-ઇન-વન સ્ક્રીન)</span>
+
+          <div class="flex items-center gap-2">
+            <!-- Real-Time Auto Sync Interactive Button -->
+            <button type="button" onclick="syncERPData()" id="btn-erp-sync" class="px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700/90 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-sm group" title="Click to refresh all statistics & live ERP tables">
+              <svg id="erp-sync-icon" class="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-180 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span id="erp-sync-text">Live Sync</span>
+            </button>
+            <span class="text-[10px] bg-slate-800/90 text-slate-300 px-2.5 py-1 rounded-xl font-mono font-semibold border border-slate-700/60 hidden sm:inline-block">૧૩ મોડ્યુલ્સ</span>
+          </div>
         </div>
 
-        <!-- All 11 Admin Module Buttons: Wrapped into Clean Multi-Row Stack (Upar-Niche) -->
-        <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
-          <button type="button" onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab active px-3.5 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md shadow-brand-600/25 transition flex items-center gap-2 cursor-pointer">
+        <!-- All 13 Admin Module Buttons with Live Counter Badges -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 relative z-10">
+          <button type="button" onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab active px-3.5 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md shadow-brand-600/30 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
             <span>Overview</span>
           </button>
-          <button type="button" onclick="switchAdminTab('inquiries_orders')" id="tab-btn-inquiries_orders" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('inquiries_orders')" id="tab-btn-inquiries_orders" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span>Inquiries & Orders</span>
+            <span id="tab-badge-inquiries" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">0</span>
           </button>
-          <button type="button" onclick="switchAdminTab('purchase_shortage')" id="tab-btn-purchase_shortage" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('purchase_shortage')" id="tab-btn-purchase_shortage" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
             <span>Stock & Shortage</span>
+            <span id="tab-badge-shortage" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">Alert</span>
           </button>
-          <button type="button" onclick="switchAdminTab('accounts_ledger')" id="tab-btn-accounts_ledger" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('accounts_ledger')" id="tab-btn-accounts_ledger" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
             <span>Accounts & Ledger</span>
           </button>
-          <button type="button" onclick="switchAdminTab('jobsheets')" id="tab-btn-jobsheets" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('jobsheets')" id="tab-btn-jobsheets" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233l2.802-2.803a3.75 3.75 0 00-5.304-5.303l-2.802 2.802m4.102 4.102l-4.102-4.102"/></svg>
             <span>Job Sheets / Lab</span>
+            <span id="tab-badge-jobsheets" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span>
           </button>
-          <button type="button" onclick="switchAdminTab('inventory')" id="tab-btn-inventory" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('inventory')" id="tab-btn-inventory" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
             <span>Stock Inventory</span>
           </button>
-          <button type="button" onclick="switchAdminTab('serials')" id="tab-btn-serials" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('serials')" id="tab-btn-serials" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
             <span>Serial Registry</span>
           </button>
-          <button type="button" onclick="switchAdminTab('billing')" id="tab-btn-billing" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('billing')" id="tab-btn-billing" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
             <span>GST Invoicing</span>
           </button>
-          <button type="button" onclick="switchAdminTab('staff')" id="tab-btn-staff" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('staff')" id="tab-btn-staff" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
             <span>Staff Team</span>
+            <span id="tab-badge-staff" class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">8</span>
           </button>
-          <button type="button" onclick="switchAdminTab('warehouses')" id="tab-btn-warehouses" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('warehouses')" id="tab-btn-warehouses" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
             <span>Warehouses</span>
+            <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">3</span>
           </button>
-          <button type="button" onclick="switchAdminTab('amc')" id="tab-btn-amc" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('amc')" id="tab-btn-amc" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
             <span>AMC Contracts</span>
           </button>
-          <button type="button" onclick="switchAdminTab('referrals')" id="tab-btn-referrals" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
-            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+
+          <button type="button" onclick="switchAdminTab('referrals')" id="tab-btn-referrals" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span>Referral & Rewards</span>
           </button>
-          <button type="button" onclick="switchAdminTab('backup_restore')" id="tab-btn-backup_restore" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
+
+          <button type="button" onclick="switchAdminTab('backup_restore')" id="tab-btn-backup_restore" class="admin-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
             <span>Backup & Restore</span>
+            <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Safe</span>
           </button>
         </div>
       </div>
@@ -2089,9 +2126,9 @@
               <p class="text-xs text-rose-200/80 mt-0.5">રીઓર્ડર લેવલ કરતાં ઓછો સ્ટોક ધરાવતી તમામ આઇટમ્સ માટે અહીંથી સીધા સપ્લાયર PO બનાવો</p>
             </div>
           </div>
-          <button type="button" onclick="openPOModal()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer">
+          <button type="button" onclick="openCreatePOModal()" class="bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-rose-600/30 transition flex items-center gap-2 cursor-pointer active:scale-95 hover:scale-105 duration-150">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            <span>+ New Supplier PO</span>
+            <span>+ Create Supplier PO</span>
           </button>
         </div>
 
@@ -2161,10 +2198,12 @@
               <h3 class="font-bold text-slate-900 text-sm">સપ્લાયર ખરીદી ઓર્ડર્સ (Purchase Orders & Inward GRN)</h3>
               <p class="text-xs text-slate-500">Redington, Ingram, Supertron ને મોકલેલ PO અને માલ ગોડાઉનમાં જમા (GRN)</p>
             </div>
-            <button type="button" onclick="openCreatePOModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer">
-              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-              <span>+ Create Purchase Order</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="loadPurchaseAndShortage()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-sm" title="Refresh PO List">
+                <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span>Refresh POs</span>
+              </button>
+            </div>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
@@ -2772,38 +2811,41 @@
 
         <!-- 3 FAST ACTION CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <!-- Action 1: Instant Manual Snapshot -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <!-- Action 1: Automated Daily Engine -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
             <div class="space-y-2">
               <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
                 ⚡
               </div>
-              <h4 class="text-sm font-black text-slate-900">૧-ક્લિક ઇન્સ્ટન્ટ બેકઅપ (Snapshot)</h4>
+              <h4 class="text-sm font-black text-slate-900">દૈનિક ઓટોમેટિક સર્વર બેકઅપ</h4>
               <p class="text-xs text-slate-500 leading-relaxed">
-                કોઈપણ મોટા ફેરફાર કે બિલિંગ પહેલાં વર્તમાન સ્થિતિનો નવો સ્નેપશોટ તાત્કાલિક સર્વર પર સેવ કરો.
+                સિસ્ટમ દરરોજ રાત્રે 00:00 વાગ્યે કોઈપણ મેન્યુઅલ પ્રક્રિયા વગર આપોઆપ નવો સ્નેપશોટ સર્વર પર સેવ કરે છે.
               </p>
             </div>
-            <div class="mt-5">
-              <button type="button" onclick="createManualBackup()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>Take Snapshot Now</span>
+            <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-emerald-700 font-bold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Active 24x7</span>
+              </span>
+              <button type="button" onclick="createManualBackup()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl border border-emerald-200 transition cursor-pointer active:scale-95">
+                + Extra Snapshot
               </button>
             </div>
           </div>
 
           <!-- Action 2: Download Live DB to PC -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
             <div class="space-y-2">
               <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
                 📥
               </div>
-              <h4 class="text-sm font-black text-slate-900">કમ્પ્યુટરમાં ડાઉનલોડ કરો (Offline PC Copy)</h4>
+              <h4 class="text-sm font-black text-slate-900">કમ્પ્યુટરમાં ડાઉનલોડ કરો (Offline Copy)</h4>
               <p class="text-xs text-slate-500 leading-relaxed">
-                આખો લાઈવ ડેટાબેઝ ( ફાઇલ) તમારા લેપટોપ, કમ્પ્યુટર કે પેનડ્રાઇવમાં સેવ કરવા માટે સીધો ડાઉનલોડ કરો.
+                આખો લાઈવ ડેટાબેઝ તમારા લેપટોપ, કમ્પ્યુટર કે પેનડ્રાઇવમાં સેવ કરવા માટે ૧-ક્લિકમાં ડાઉનલોડ કરો.
               </p>
             </div>
             <div class="mt-5">
-              <button type="button" onclick="downloadLiveDatabase()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+              <button type="button" onclick="downloadLiveDatabase()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2 active:scale-95">
                 <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 <span>Download Live Database</span>
               </button>
@@ -2811,19 +2853,19 @@
           </div>
 
           <!-- Action 3: Upload & Restore from PC -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
             <div class="space-y-2">
               <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
                 📤
               </div>
               <h4 class="text-sm font-black text-slate-900">કમ્પ્યુટરમાંથી ફાઇલ અપલોડ કરી રીસ્ટોર</h4>
               <p class="text-xs text-slate-500 leading-relaxed">
-                તમારા PC માં સેવ કરેલી કોઈ જૂની  ફાઇલ પસંદ કરીને ડેટાબેઝને પાછલા સ્ટેટ પર રીસ્ટોર કરો.
+                તમારા PC માં સેવ કરેલી કોઈ જૂની .db ફાઇલ પસંદ કરીને ડેટાબેઝને પાછલા સ્ટેટ પર રીસ્ટોર કરો.
               </p>
             </div>
             <div class="mt-5">
               <input type="file" id="backup-file-upload-input" accept=".db" class="hidden" onchange="handleUploadRestore(event)">
-              <button type="button" onclick="document.getElementById('backup-file-upload-input').click()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2">
+              <button type="button" onclick="document.getElementById('backup-file-upload-input').click()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2 active:scale-95">
                 <svg class="w-4 h-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                 <span>Choose .db File &amp; Restore</span>
               </button>
@@ -2847,8 +2889,9 @@
                 <input type="text" id="backup-search-input" onkeyup="filterBackupsTable()" placeholder="Search backups..." class="px-3.5 py-1.5 pl-8 text-xs rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-brand-500 outline-none w-48 sm:w-60">
                 <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               </div>
-              <button type="button" onclick="loadAdminBackups()" class="p-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-600 transition cursor-pointer" title="Refresh list">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <button type="button" onclick="loadAdminBackups()" class="px-3 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 transition cursor-pointer flex items-center gap-1.5 text-xs font-bold active:scale-95 shadow-sm" title="Refresh list">
+                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span>Refresh List</span>
               </button>
             </div>
           </div>
