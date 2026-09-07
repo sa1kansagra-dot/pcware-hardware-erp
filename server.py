@@ -2955,15 +2955,30 @@ def run_server():
     try:
         from database import init_db
         init_db(force_reseed=False)
-        print("[Database] Successfully initialized database tables and seed staff data.")
+        print("[Database] Successfully initialized database tables and seed staff data.", flush=True)
     except Exception as e:
-        print("[Database Warning] Database initialization exception:", e)
+        print("[Database Warning] Database initialization exception:", e, flush=True)
     ensure_daily_backup()
-    # Bind to all interfaces (0.0.0.0) so browser can connect via localhost
-    with socketserver.ThreadingTCPServer(("0.0.0.0", PORT), ERPRequestHandler) as httpd:
-        httpd.allow_reuse_address = True
-        print(f"Server live at http://localhost:{PORT}")
-        httpd.serve_forever()
+    
+    ports_to_try = [PORT] if os.environ.get("PORT") else [8080, 8081, 8082, 8085, 5000, 8000]
+    httpd = None
+    actual_port = None
+    for p in ports_to_try:
+        try:
+            socketserver.ThreadingTCPServer.allow_reuse_address = True
+            httpd = socketserver.ThreadingTCPServer(("0.0.0.0", p), ERPRequestHandler)
+            actual_port = p
+            break
+        except OSError as err:
+            print(f"[Port Warning] Port {p} busy: {err}. Trying next port...", flush=True)
+            continue
+            
+    if not httpd:
+        print("[Error] Could not bind to any port.", flush=True)
+        return
+        
+    print(f"Server live at http://localhost:{actual_port}", flush=True)
+    httpd.serve_forever()
 
 if __name__ == "__main__":
     run_server()
