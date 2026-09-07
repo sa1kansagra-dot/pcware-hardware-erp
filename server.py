@@ -1274,6 +1274,11 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 return
 
             # Google Contacts Integration & Sync Endpoints
+            
+            if path == "/api/whatsapp-api/settings":
+                settings = dict(cursor.execute("SELECT key, value FROM store_settings WHERE key LIKE 'wa_api_%'").fetchall())
+                return self.send_json({"success": True, "settings": settings})
+
             if path == "/api/google-contacts/stats":
                 contacts = get_all_google_contacts(cursor)
                 parties_cnt = cursor.execute("SELECT COUNT(*) FROM parties").fetchone()[0]
@@ -2555,6 +2560,95 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     "skipped_existing": skipped,
                     "message": f"સફળતાપૂર્વક {imported} નવા ગ્રાહક કોન્ટેક્ટ્સ ERP માં ઉમેરાયા ({skipped} અગાઉથી હાજર હતા)."
                 })
+
+            
+            if path == "/api/whatsapp-api/settings":
+                wa_sender_name = str(body.get("wa_sender_name", "PCWARE_LAPTOP")).strip()
+                wa_provider = str(body.get("wa_provider", "meta_cloud")).strip()
+                wa_phone_number_id = str(body.get("wa_phone_number_id", "")).strip()
+                wa_access_token = str(body.get("wa_access_token", "")).strip()
+                wa_bsp_url = str(body.get("wa_bsp_url", "")).strip()
+                wa_auto_jobsheet = "1" if body.get("wa_auto_jobsheet") else "0"
+                wa_auto_invoice = "1" if body.get("wa_auto_invoice") else "0"
+
+                pairs = [
+                    ("wa_api_sender_name", wa_sender_name),
+                    ("wa_api_provider", wa_provider),
+                    ("wa_api_phone_number_id", wa_phone_number_id),
+                    ("wa_api_access_token", wa_access_token),
+                    ("wa_api_bsp_url", wa_bsp_url),
+                    ("wa_api_auto_jobsheet", wa_auto_jobsheet),
+                    ("wa_api_auto_invoice", wa_auto_invoice)
+                ]
+                for k, v in pairs:
+                    cursor.execute("INSERT OR REPLACE INTO store_settings (key, value) VALUES (?, ?)", (k, v))
+                conn.commit()
+                return self.send_json({"success": True, "message": "WhatsApp API (PCWARE_LAPTOP) સેટિંગ્સ સફળતાપૂર્વક સેવ થયા!"})
+
+            if path == "/api/whatsapp-api/send":
+                recipient_phone = str(body.get("recipient_phone", "")).strip()
+                message_text = str(body.get("message_text", "")).strip()
+
+                if not recipient_phone or not message_text:
+                    return self.send_json({"error": "કૃપા કરીને ગ્રાહકનો ફોન નંબર અને મેસેજ લખો."}, 400)
+
+                clean_phone = "".join(ch for ch in recipient_phone if ch.isdigit())
+                if len(clean_phone) == 10:
+                    clean_phone = "91" + clean_phone
+
+                settings = dict(cursor.execute("SELECT key, value FROM store_settings WHERE key LIKE 'wa_api_%'").fetchall())
+                provider = settings.get("wa_api_provider", "meta_cloud")
+                access_token = settings.get("wa_api_access_token", "")
+                phone_number_id = settings.get("wa_api_phone_number_id", "")
+                bsp_url = settings.get("wa_api_bsp_url", "")
+
+                if provider == "meta_cloud" and access_token and phone_number_id:
+                    try:
+                        import urllib.request
+                        url = f"https://graph.facebook.com/v19.0/{phone_number_id}/messages"
+                        payload = json.dumps({
+                            "messaging_product": "whatsapp",
+                            "to": clean_phone,
+                            "type": "text",
+                            "text": {"preview_url": True, "body": message_text}
+                        }).encode("utf-8")
+                        req = urllib.request.Request(url, data=payload, headers={
+                            "Authorization": f"Bearer {access_token}",
+                            "Content-Type": "application/json"
+                        })
+                        with urllib.request.urlopen(req, timeout=10) as resp:
+                            res_data = json.loads(resp.read().decode("utf-8"))
+                            return self.send_json({"success": True, "message": "Official WhatsApp API (PCWARE_LAPTOP) થી મેસેજ સફળતાપૂર્વક મોકલાયો!", "data": res_data})
+                    except Exception as err:
+                        print("WhatsApp Meta Cloud API error:", err)
+                        wa_web_url = f"https://wa.me/{clean_phone}?text={urllib.parse.quote(message_text)}"
+                        return self.send_json({"success": True, "fallback": True, "whatsapp_url": wa_web_url, "message": f"API Exception ({str(err)}). Fallback Web WhatsApp Link બનેલ છે."})
+                elif bsp_url and access_token:
+                    try:
+                        import urllib.request
+                        payload = json.dumps({
+                            "phone": clean_phone,
+                            "message": message_text,
+                            "sender_name": "PCWARE_LAPTOP"
+                        }).encode("utf-8")
+                        req = urllib.request.Request(bsp_url, data=payload, headers={
+                            "Authorization": f"Bearer {access_token}",
+                            "Content-Type": "application/json"
+                        })
+                        with urllib.request.urlopen(req, timeout=10) as resp:
+                            res_data = json.loads(resp.read().decode("utf-8"))
+                            return self.send_json({"success": True, "message": "BSP WhatsApp API થી મેસેજ મોકલાયો!", "data": res_data})
+                    except Exception as err:
+                        wa_web_url = f"https://wa.me/{clean_phone}?text={urllib.parse.quote(message_text)}"
+                        return self.send_json({"success": True, "fallback": True, "whatsapp_url": wa_web_url})
+                else:
+                    wa_web_url = f"https://wa.me/{clean_phone}?text={urllib.parse.quote(message_text)}"
+                    return self.send_json({
+                        "success": True,
+                        "fallback": True,
+                        "whatsapp_url": wa_web_url,
+                        "message": "WhatsApp API Credentials હજુ કોન્ફિગર કરેલ નથી. Direct WhatsApp Web ચેટ ખોલવામાં આવી રહી છે."
+                    })
 
             if path == "/api/google-contacts/settings":
                 client_id = str(body.get("google_client_id", "")).strip()

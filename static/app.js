@@ -11931,3 +11931,81 @@ window.handleGoogleContactsFileSelect = handleGoogleContactsFileSelect;
 
 
 
+
+
+async function openWhatsAppAPIModal() {
+  const modal = document.getElementById("modal-whatsapp-api-config");
+  if (modal) modal.classList.remove("hidden");
+
+  try {
+    const res = await apiGet("whatsapp-api/settings");
+    if (res && res.settings) {
+      const s = res.settings;
+      if (document.getElementById("wa_sender_name")) document.getElementById("wa_sender_name").value = s.wa_api_sender_name || "PCWARE_LAPTOP";
+      if (document.getElementById("wa_display-sender-name")) document.getElementById("wa-display-sender-name").textContent = s.wa_api_sender_name || "PCWARE_LAPTOP";
+      if (document.getElementById("wa_provider")) document.getElementById("wa_provider").value = s.wa_api_provider || "meta_cloud";
+      if (document.getElementById("wa_phone_number_id")) document.getElementById("wa_phone_number_id").value = s.wa_api_phone_number_id || "";
+      if (document.getElementById("wa_bsp_url")) document.getElementById("wa_bsp_url").value = s.wa_api_bsp_url || "";
+      if (document.getElementById("wa_access_token")) document.getElementById("wa_access_token").value = s.wa_api_access_token || "";
+      if (document.getElementById("wa_auto_jobsheet")) document.getElementById("wa_auto_jobsheet").checked = s.wa_api_auto_jobsheet === "1";
+      if (document.getElementById("wa_auto_invoice")) document.getElementById("wa_auto_invoice").checked = s.wa_api_auto_invoice === "1";
+    }
+  } catch (err) {
+    console.error("Error loading WhatsApp API settings:", err);
+  }
+}
+
+function closeWhatsAppAPIModal() {
+  const modal = document.getElementById("modal-whatsapp-api-config");
+  if (modal) modal.classList.add("hidden");
+}
+
+async function handleSaveWhatsAppAPISettings(e) {
+  e.preventDefault();
+  const payload = {
+    wa_sender_name: document.getElementById("wa_sender_name").value,
+    wa_provider: document.getElementById("wa_provider").value,
+    wa_phone_number_id: document.getElementById("wa_phone_number_id").value,
+    wa_bsp_url: document.getElementById("wa_bsp_url").value,
+    wa_access_token: document.getElementById("wa_access_token").value,
+    wa_auto_jobsheet: document.getElementById("wa_auto_jobsheet").checked,
+    wa_auto_invoice: document.getElementById("wa_auto_invoice").checked
+  };
+
+  const res = await apiPost("whatsapp-api/settings", payload);
+  if (res && res.success) {
+    showToast(res.message, "success");
+    closeWhatsAppAPIModal();
+  } else {
+    showToast((res && res.error) || "સેટિંગ્સ સેવ કરવામાં એરર આવી.", "error");
+  }
+}
+
+async function sendTestWhatsAppAPI() {
+  const phone = document.getElementById("wa-test-phone").value.trim();
+  const msg = document.getElementById("wa-test-msg").value.trim();
+
+  if (!phone) {
+    showToast("કૃપા કરીને ટેસ્ટ ફોન નંબર દાખલ કરો.", "error");
+    return;
+  }
+
+  showToast("WhatsApp API (PCWARE_LAPTOP) દ્વારા મેસેજ મોકલાઈ રહ્યો છે...", "info");
+  const res = await apiPost("whatsapp-api/send", { recipient_phone: phone, message_text: msg });
+
+  if (res && res.success) {
+    if (res.fallback && res.whatsapp_url) {
+      showToast(res.message || "Direct WhatsApp Chat ખોલવામાં આવે છે.", "info");
+      window.open(res.whatsapp_url, "_blank");
+    } else {
+      showToast(res.message || "WhatsApp API મેસેજ મોકલાયો!", "success");
+    }
+  } else {
+    showToast((res && res.error) || "મેસેજ મોકલવામાં ક્ષતિ આવી.", "error");
+  }
+}
+
+window.openWhatsAppAPIModal = openWhatsAppAPIModal;
+window.closeWhatsAppAPIModal = closeWhatsAppAPIModal;
+window.handleSaveWhatsAppAPISettings = handleSaveWhatsAppAPISettings;
+window.sendTestWhatsAppAPI = sendTestWhatsAppAPI;
