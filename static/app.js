@@ -9528,9 +9528,20 @@ async function handleCreatePartySubmit(e) {
   }
 }
 
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.remove("hidden");
+  } else {
+    console.warn("Modal #" + id + " not found in DOM.");
+  }
+}
+
 function closeModal(id) {
   const modal = document.getElementById(id);
-  if (modal) modal.classList.add("hidden");
+  if (modal) {
+    modal.classList.add("hidden");
+  }
 }
 
 function openNewJobSheetModal() {
@@ -10324,6 +10335,7 @@ window.shareBuildWhatsApp = shareBuildWhatsApp;
 window.performJobTracking = performJobTracking;
 window.setTrackTest = setTrackTest;
 window.submitServiceBooking = submitServiceBooking;
+window.openModal = openModal;
 window.closeModal = closeModal;
 window.openNewJobSheetModal = openNewJobSheetModal;
 window.handleCreateJobSheet = handleCreateJobSheet;
@@ -12181,7 +12193,7 @@ async function openWhatsAppAPIModal() {
     if (res && res.settings) {
       const s = res.settings;
       if (document.getElementById("wa_sender_name")) document.getElementById("wa_sender_name").value = s.wa_api_sender_name || "PCWARE_LAPTOP";
-      if (document.getElementById("wa_display-sender-name")) document.getElementById("wa-display-sender-name").textContent = s.wa_api_sender_name || "PCWARE_LAPTOP";
+      if (document.getElementById("wa-display-sender-name")) document.getElementById("wa-display-sender-name").textContent = s.wa_api_sender_name || "PCWARE_LAPTOP";
       if (document.getElementById("wa_provider")) document.getElementById("wa_provider").value = s.wa_api_provider || "meta_cloud";
       if (document.getElementById("wa_phone_number_id")) document.getElementById("wa_phone_number_id").value = s.wa_api_phone_number_id || "";
       if (document.getElementById("wa_bsp_url")) document.getElementById("wa_bsp_url").value = s.wa_api_bsp_url || "";
