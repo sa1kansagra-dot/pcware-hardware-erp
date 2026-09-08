@@ -1004,6 +1004,20 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                     params.extend([q, q, q, q])
                 sql += " ORDER BY name ASC"
                 parties = [dict(row) for row in cursor.execute(sql, params).fetchall()]
+                for p in parties:
+                    p_id = p["id"]
+                    p_type = p["party_type"]
+                    op_bal = float(p.get("opening_balance") or 0)
+                    e_rows = cursor.execute("SELECT debit, credit FROM ledger_entries WHERE party_id = ?", (p_id,)).fetchall()
+                    bal = op_bal
+                    for er in e_rows:
+                        d = float(er[0] or 0)
+                        c = float(er[1] or 0)
+                        if p_type == "CUSTOMER":
+                            bal += (d - c)
+                        else:
+                            bal += (c - d)
+                    p["current_balance"] = round(bal, 2)
                 return self.send_json(parties)
 
             # 16. Party Ledger
@@ -1014,10 +1028,29 @@ class ERPRequestHandler(http.server.BaseHTTPRequestHandler):
                 party = cursor.execute("SELECT * FROM parties WHERE id = ?", (party_id,)).fetchone()
                 if not party:
                     return self.send_json({"error": "Party not found"}, 404)
+                
+                party_dict = dict(party)
+                party_type = party_dict.get("party_type", "CUSTOMER")
+                opening_bal = float(party_dict.get("opening_balance") or 0)
+
                 entries = [dict(row) for row in cursor.execute("SELECT * FROM ledger_entries WHERE party_id = ? ORDER BY entry_date ASC, id ASC", (party_id,)).fetchall()]
-                res = dict(party)
-                res["entries"] = entries
-                return self.send_json(res)
+                
+                running = opening_bal
+                for e in entries:
+                    debit = float(e.get("debit") or 0)
+                    credit = float(e.get("credit") or 0)
+                    if party_type == "CUSTOMER":
+                        running += (debit - credit)
+                    else:
+                        running += (credit - debit)
+                    e["running_balance"] = round(running, 2)
+                
+                party_dict["current_balance"] = round(running, 2)
+                cursor.execute("UPDATE parties SET current_balance = ? WHERE id = ?", (round(running, 2), party_id))
+                conn.commit()
+                
+                party_dict["entries"] = entries
+                return self.send_json(party_dict)
 
             
             # 17. Staff Members (8 Team Members)

@@ -9165,47 +9165,82 @@ function renderPartiesList(list) {
     return;
   }
 
-  tbody.innerHTML = list.map(p => `
-    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-      <td class="py-3 px-4">
-        <span class="font-bold text-slate-900">${p.name}</span>
-        ${p.city ? `<span class="block text-[11px] text-slate-500">${p.city}</span>` : ''}
-      </td>
-      <td class="py-3 px-4">
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
-          p.party_type === 'CUSTOMER' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
-        }">
-          ${p.party_type === 'CUSTOMER' ? '👤 ગ્રાહક (Customer)' : '🏢 સપ્લાયર (Supplier)'}
-        </span>
-      </td>
-      <td class="py-3 px-4 text-xs text-slate-700">
-        📞 ${p.phone || '-'}<br>
-        <span class="text-[11px] text-slate-400">${p.email || ''}</span>
-      </td>
-      <td class="py-3 px-4 font-mono text-xs text-slate-600">
-        ${p.gstin || '-'}
-      </td>
-      <td class="py-3 px-4">
-        <span class="font-black text-sm ${
-          p.party_type === 'CUSTOMER' ? (p.current_balance > 0 ? 'text-amber-600' : 'text-emerald-600') :
-          (p.current_balance > 0 ? 'text-rose-600' : 'text-emerald-600')
-        }">
-          ₹${Number(p.current_balance || 0).toLocaleString('en-IN')}
-        </span>
-        <span class="block text-[10px] text-slate-400">
-          ${p.party_type === 'CUSTOMER' ? (p.current_balance > 0 ? 'બાકી લેવાના (Receivable)' : 'ચુકતે') : (p.current_balance > 0 ? 'ચૂકવવાના (Payable)' : 'ચુકતે')}
-        </span>
-      </td>
-      <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
-        <button type="button" onclick="openPartyLedgerModal(${p.id})" class="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold rounded text-xs transition cursor-pointer">
-          View Ledger
-        </button>
-        <button type="button" onclick="openRecordPaymentModal(${p.id})" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold rounded text-xs transition cursor-pointer">
-          Record Payment
-        </button>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = list.map(p => {
+    const bal = parseFloat(p.current_balance || 0);
+    const isCust = p.party_type === 'CUSTOMER';
+    let balStr = "";
+    let balClass = "";
+    let statusLabel = "";
+
+    if (isCust) {
+      if (bal > 0) {
+        balStr = `₹${bal.toLocaleString('en-IN')} Dr`;
+        balClass = "text-amber-600 font-black";
+        statusLabel = "બાકી લેવાના (Receivable Dr)";
+      } else if (bal < 0) {
+        balStr = `₹${Math.abs(bal).toLocaleString('en-IN')} Cr`;
+        balClass = "text-emerald-600 font-black";
+        statusLabel = "અગાઉથી મળેલ (Advance Cr)";
+      } else {
+        balStr = "₹0.00";
+        balClass = "text-slate-500 font-bold";
+        statusLabel = "ચુકતે (Settled)";
+      }
+    } else {
+      if (bal > 0) {
+        balStr = `₹${bal.toLocaleString('en-IN')} Cr`;
+        balClass = "text-rose-600 font-black";
+        statusLabel = "ચૂકવવાના (Payable Cr)";
+      } else if (bal < 0) {
+        balStr = `₹${Math.abs(bal).toLocaleString('en-IN')} Dr`;
+        balClass = "text-emerald-600 font-black";
+        statusLabel = "અગાઉથી આપેલ (Advance Dr)";
+      } else {
+        balStr = "₹0.00";
+        balClass = "text-slate-500 font-bold";
+        statusLabel = "ચુકતે (Settled)";
+      }
+    }
+
+    return `
+      <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+        <td class="py-3 px-4">
+          <span class="font-bold text-slate-900">${escapeHtml(p.name)}</span>
+          ${p.city ? `<span class="block text-[11px] text-slate-500">${escapeHtml(p.city)}</span>` : ''}
+        </td>
+        <td class="py-3 px-4">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+            isCust ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+          }">
+            ${isCust ? '👤 ગ્રાહક (Customer)' : '🏢 સપ્લાયર (Supplier)'}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-xs text-slate-700">
+          📞 ${p.phone || '-'}<br>
+          <span class="text-[11px] text-slate-400">${p.email || ''}</span>
+        </td>
+        <td class="py-3 px-4 font-mono text-xs text-slate-600">
+          ${p.gstin || '-'}
+        </td>
+        <td class="py-3 px-4">
+          <span class="text-sm ${balClass}">
+            ${balStr}
+          </span>
+          <span class="block text-[10px] text-slate-400 font-bold">
+            ${statusLabel}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
+          <button type="button" onclick="openPartyLedgerModal(${p.id})" class="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold rounded text-xs transition cursor-pointer">
+            View Ledger
+          </button>
+          <button type="button" onclick="openRecordPaymentModal(${p.id})" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold rounded text-xs transition cursor-pointer">
+            Record Payment
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 async function openPartyLedgerModal(partyId) {
@@ -9233,8 +9268,16 @@ async function openPartyLedgerModal(partyId) {
   }
   if (elBal) {
     const bal = parseFloat(party.current_balance || 0);
-    elBal.textContent = "₹" + bal.toLocaleString('en-IN');
-    elBal.className = "text-xl font-black " + (party.party_type === 'CUSTOMER' ? (bal > 0 ? "text-amber-600" : "text-emerald-600") : (bal > 0 ? "text-rose-600" : "text-emerald-600"));
+    const isCust = party.party_type === 'CUSTOMER';
+    let balFormatted = "";
+    if (isCust) {
+      balFormatted = "₹" + Math.abs(bal).toLocaleString('en-IN') + (bal >= 0 ? " Dr (Receivable)" : " Cr (Advance)");
+      elBal.className = "text-xl font-black " + (bal > 0 ? "text-amber-600" : "text-emerald-600");
+    } else {
+      balFormatted = "₹" + Math.abs(bal).toLocaleString('en-IN') + (bal >= 0 ? " Cr (Payable)" : " Dr (Advance)");
+      elBal.className = "text-xl font-black " + (bal > 0 ? "text-rose-600" : "text-emerald-600");
+    }
+    elBal.textContent = balFormatted;
   }
 
   const tbody = document.getElementById("ledger-entries-tbody");
@@ -9245,6 +9288,7 @@ async function openPartyLedgerModal(partyId) {
     if (entries.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">કોઈ લેજર એન્ટ્રી નોંધાયેલ નથી.</td></tr>`;
     } else {
+      const isCust = party.party_type === 'CUSTOMER';
       tbody.innerHTML = entries.map(e => {
         const debit = parseFloat(e.debit || 0);
         const credit = parseFloat(e.credit || 0);
@@ -9254,6 +9298,9 @@ async function openPartyLedgerModal(partyId) {
         const vNo = e.voucher_no || e.reference_number || '';
         const vDesc = e.narration || e.description || '-';
         const vDate = e.entry_date || e.date || '';
+        const runBal = parseFloat(e.running_balance || 0);
+        const runBalStr = "₹" + Math.abs(runBal).toLocaleString('en-IN') + (isCust ? (runBal >= 0 ? " Dr" : " Cr") : (runBal >= 0 ? " Cr" : " Dr"));
+
         return `
           <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
             <td class="py-2.5 px-3 font-mono text-slate-600">${vDate}</td>
@@ -9264,10 +9311,10 @@ async function openPartyLedgerModal(partyId) {
               }">${vType}</span>
               <span class="block text-[10px] text-slate-400 font-mono mt-0.5">${vNo || '-'}</span>
             </td>
-            <td class="py-2.5 px-3 text-slate-800">${vDesc}</td>
+            <td class="py-2.5 px-3 text-slate-800">${escapeHtml(vDesc)}</td>
             <td class="py-2.5 px-3 text-right font-semibold text-slate-900">${debit > 0 ? '₹' + debit.toLocaleString('en-IN') : '-'}</td>
             <td class="py-2.5 px-3 text-right font-semibold text-emerald-700">${credit > 0 ? '₹' + credit.toLocaleString('en-IN') : '-'}</td>
-            <td class="py-2.5 px-3 text-right font-black text-slate-900">₹${Number(e.running_balance || 0).toLocaleString('en-IN')}</td>
+            <td class="py-2.5 px-3 text-right font-black text-slate-900">${runBalStr}</td>
           </tr>
         `;
       }).join("");
@@ -9344,19 +9391,24 @@ function printPartyLedger(partyId = null) {
           </tr>
         </thead>
         <tbody>
-          ${entries.map(e => `
-            <tr>
-              <td style="padding: 6px; border: 1px solid #cbd5e1;">${e.entry_date || e.date}</td>
-              <td style="padding: 6px; border: 1px solid #cbd5e1; font-weight: 600;">
-                ${e.voucher_type || e.type}<br>
-                <span style="font-size: 9px; color: #64748b;">${e.voucher_no || e.reference_number || ''}</span>
-              </td>
-              <td style="padding: 6px; border: 1px solid #cbd5e1;">${e.narration || e.description || '-'}</td>
-              <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: right;">${e.debit > 0 ? '₹' + Number(e.debit).toLocaleString('en-IN') : '-'}</td>
-              <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: right; color: #15803d;">${e.credit > 0 ? '₹' + Number(e.credit).toLocaleString('en-IN') : '-'}</td>
-              <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: right; font-weight: bold;">₹${Number(e.running_balance).toLocaleString('en-IN')}</td>
-            </tr>
-          `).join("")}
+          ${entries.map(e => {
+            const runBal = parseFloat(e.running_balance || 0);
+            const isCust = party.party_type === 'CUSTOMER';
+            const runBalStr = "₹" + Math.abs(runBal).toLocaleString('en-IN') + (isCust ? (runBal >= 0 ? " Dr" : " Cr") : (runBal >= 0 ? " Cr" : " Dr"));
+            return `
+              <tr>
+                <td style="padding: 6px; border: 1px solid #cbd5e1;">${e.entry_date || e.date}</td>
+                <td style="padding: 6px; border: 1px solid #cbd5e1; font-weight: 600;">
+                  ${e.voucher_type || e.type}<br>
+                  <span style="font-size: 9px; color: #64748b;">${e.voucher_no || e.reference_number || ''}</span>
+                </td>
+                <td style="padding: 6px; border: 1px solid #cbd5e1;">${escapeHtml(e.narration || e.description || '-')}</td>
+                <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: right;">${e.debit > 0 ? '₹' + Number(e.debit).toLocaleString('en-IN') : '-'}</td>
+                <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: right; color: #15803d;">${e.credit > 0 ? '₹' + Number(e.credit).toLocaleString('en-IN') : '-'}</td>
+                <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: right; font-weight: bold;">${runBalStr}</td>
+              </tr>
+            `;
+          }).join("")}
         </tbody>
       </table>
 

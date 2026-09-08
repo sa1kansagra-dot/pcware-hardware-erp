@@ -605,11 +605,11 @@ def seed_data(conn):
         ("CUSTOMER", "Dr. Rohan Bhatt (Bhatt Clinic)", "Dr. Rohan", "9426011223", "dr.bhatt@gmail.com", "Tagore Road, Rajkot", None, 0, 0.0, now_str),
         ("CUSTOMER", "Shree Ram Engineering Works", "Rameshbhai", "9724155667", "shreeram.rajkot@yahoo.com", "Aji GIDC Phase II, Rajkot", "24ABJPR4590H1Z3", 0, 32000.0, now_str),
         ("CUSTOMER", "Kavya Infotech Solutions", "Kavya Mehta", "7016022334", "kavya@kavyainfotech.com", "150 Feet Ring Road, Rajkot", "24AADCK5612R1ZU", 0, 0.0, now_str),
-        ("SUPPLIER", "Redington India Ltd", "Manish Joshi", "9820011223", "orders.west@redington.co.in", "Bhiwandi Hub & Ahmedabad Depot", "24AAACR1234F1Z8", 0, -185000.0, now_str),
-        ("SUPPLIER", "Ingram Micro India Pvt Ltd", "Suresh Nair", "9819044556", "sales.rajkot@ingrammicro.com", "Changodar Distribution Center, Ahmedabad", "24AAACI5566K1Z2", 0, -94000.0, now_str),
-        ("SUPPLIER", "Supertron Electronics Pvt Ltd", "Deepak Roy", "9830077889", "west.supertron@supertron.in", "Prahladnagar, Ahmedabad", "24AAACS7890M1Z5", 0, -52000.0, now_str),
+        ("SUPPLIER", "Redington India Ltd", "Manish Joshi", "9820011223", "orders.west@redington.co.in", "Bhiwandi Hub & Ahmedabad Depot", "24AAACR1234F1Z8", 0, 185000.0, now_str),
+        ("SUPPLIER", "Ingram Micro India Pvt Ltd", "Suresh Nair", "9819044556", "sales.rajkot@ingrammicro.com", "Changodar Distribution Center, Ahmedabad", "24AAACI5566K1Z2", 0, 94000.0, now_str),
+        ("SUPPLIER", "Supertron Electronics Pvt Ltd", "Deepak Roy", "9830077889", "west.supertron@supertron.in", "Prahladnagar, Ahmedabad", "24AAACS7890M1Z5", 0, 52000.0, now_str),
         ("SUPPLIER", "Neoteric Infomatique Ltd", "Amit Trivedi", "9821033445", "corporate@neoteric.com", "C.G. Road, Ahmedabad", "24AAACN3412B1Z7", 0, 0.0, now_str),
-        ("SUPPLIER", "Savex Technologies Pvt Ltd", "Kiran Varma", "9822066778", "gujarat.sales@savex.org", "GIDC Vatva, Ahmedabad", "24AAACS9988C1Z9", 0, -38000.0, now_str)
+        ("SUPPLIER", "Savex Technologies Pvt Ltd", "Kiran Varma", "9822066778", "gujarat.sales@savex.org", "GIDC Vatva, Ahmedabad", "24AAACS9988C1Z9", 0, 38000.0, now_str)
     ]
     cursor.executemany("""
     INSERT INTO parties (party_type, name, contact_person, phone, email, address, gstin, opening_balance, current_balance, created_at)
@@ -671,7 +671,7 @@ def seed_data(conn):
 
     # Purchase Orders
     po_data = [
-        ("PO-2026-0801", 1, "Redington India Ltd", "9820011223", "24AAACR1234F1Z8", "2026-09-02", "2026-09-05",
+        ("PO-2026-0801", 6, "Redington India Ltd", "9820011223", "24AAACR1234F1Z8", "2026-09-02", "2026-09-05",
          '[{"product_id":1,"name":"Intel Core i3-12100F Processor","price":6800,"quantity":10,"total":68000},{"product_id":2,"name":"Intel Core i5-12400F Processor","price":9800,"quantity":10,"total":98000}]',
          166000.0, 29880.0, 195880.0, "DELIVERED", "PAID", "Delivered to Godown 1 via SafeXpress", now_str)
     ]
@@ -683,7 +683,7 @@ def seed_data(conn):
     # Ledger Entries
     ledger_data = [
         (1, "CUSTOMER", "2026-09-01", "SALES_INVOICE", "INV-2026-0101", "Sale of Workstation Components & Antivirus", 61360.0, 0.0, 61360.0, now_str),
-        (6, "SUPPLIER", "2026-09-02", "PURCHASE_BILL", "PO-2026-0801", "Purchase of Intel Core i3 & i5 CPUs", 0.0, 195880.0, -195880.0, now_str),
+        (6, "SUPPLIER", "2026-09-02", "PURCHASE_BILL", "PO-2026-0801", "Purchase of Intel Core i3 & i5 CPUs", 0.0, 195880.0, 195880.0, now_str),
     ]
     cursor.executemany("""
     INSERT INTO ledger_entries (party_id, party_type, entry_date, voucher_type, voucher_no, narration, debit, credit, running_balance, created_at)
