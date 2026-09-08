@@ -7863,8 +7863,11 @@ function renderTrackJobCard(job) {
         </div>
 
         <div class="flex items-center gap-2">
+          <button type="button" onclick="downloadJobSheetPDF(${job.id})" class="text-xs font-semibold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 py-2 px-3 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs">
+            📄 Download PDF
+          </button>
           <button type="button" onclick="printJobSheet(${job.id})" class="text-xs font-semibold text-slate-700 hover:text-brand-600 border border-slate-300 hover:border-brand-300 py-2 px-3 rounded-lg flex items-center gap-1.5 cursor-pointer">
-            Print Job Slip
+            🖨️ Print Slip
           </button>
           <a href="tel:+919825012345" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs py-2 px-3.5 rounded-lg shadow flex items-center gap-1.5">
             📞 હેલ્પલાઇન કોલ
@@ -8016,8 +8019,11 @@ async function loadJobSheets() {
         <button type="button" onclick="openUpdateJobSheetModal(${j.id})" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-md text-[11px] transition cursor-pointer">
           Update
         </button>
+        <button type="button" onclick="downloadJobSheetPDF(${j.id})" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-md text-[11px] transition cursor-pointer">
+          📄 PDF
+        </button>
         <button type="button" onclick="printJobSheet(${j.id})" class="px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold rounded-md text-[11px] transition cursor-pointer">
-          Print
+          🖨️ Print
         </button>
       </td>
     </tr>
@@ -9919,6 +9925,125 @@ async function printJobSheet(id) {
   window.print();
 }
 
+async function downloadJobSheetPDF(id) {
+  const job = await apiGet("jobsheets/" + id);
+  if (!job) return;
+
+  const store = state.storeSettings || DEFAULT_SEED_DATA.settings;
+  const balance = (job.final_cost || job.estimated_cost || 0) - (job.advance_paid || 0);
+
+  const container = document.createElement("div");
+  container.style.padding = "20px";
+  container.style.fontFamily = "Arial, sans-serif";
+  container.style.color = "#0f172a";
+  container.style.background = "#ffffff";
+
+  container.innerHTML = `
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 2px solid #333; line-height: 1.4;">
+      <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: bold; text-transform: uppercase;">${store.store_name || 'PCWARE'}</h1>
+        <p style="margin: 3px 0; font-size: 13px;">${store.tagline || 'Hardware Sales, Custom PC Builds & Service Hub'}</p>
+        <p style="margin: 3px 0; font-size: 12px;">${store.address || 'Suvarnabhumi Complex, Mota Mava, Rajkot, Gujarat'}</p>
+        <p style="margin: 3px 0; font-size: 12px; font-weight: bold;">Phone: ${store.phone || '+91 98250 12345'} | GSTIN: ${store.gstin || '24AABCP1234F1Z5'}</p>
+        <div style="background: #000; color: #fff; display: inline-block; padding: 4px 15px; font-weight: bold; font-size: 14px; margin-top: 5px; border-radius: 4px;">
+          SERVICE REPAIR JOB CARD / RECEIPT
+        </div>
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px;">
+        <tr>
+          <td style="width: 50%; padding: 6px; border: 1px solid #ccc; vertical-align: top;">
+            <strong>Job Sheet No:</strong> <span style="font-size: 16px; font-weight: bold; color: #000;">${job.job_sheet_number}</span><br>
+            <strong>Date In:</strong> ${job.created_at}<br>
+            <strong>Status:</strong> ${job.status}<br>
+            <strong>Assigned Tech:</strong> ${job.assigned_technician || 'Hardware Lab'}
+          </td>
+          <td style="width: 50%; padding: 6px; border: 1px solid #ccc; vertical-align: top;">
+            <strong>Customer:</strong> <span style="font-size: 15px; font-weight: bold;">${job.customer_name}</span><br>
+            <strong>Mobile:</strong> ${job.customer_phone}<br>
+            <strong>Address:</strong> ${job.customer_address || 'Walk-in Customer'}
+          </td>
+        </tr>
+      </table>
+
+      <div style="margin-bottom: 15px;">
+        <h4 style="margin: 0 0 5px 0; font-size: 14px; border-bottom: 1px solid #000; padding-bottom: 2px;">EQUIPMENT DETAILS</h4>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+          <tr>
+            <td style="padding: 5px; border: 1px solid #ddd; width: 25%;"><strong>Device Type:</strong> ${job.device_type}</td>
+            <td style="padding: 5px; border: 1px solid #ddd; width: 25%;"><strong>Brand:</strong> ${job.device_brand}</td>
+            <td style="padding: 5px; border: 1px solid #ddd; width: 25%;"><strong>Model:</strong> ${job.device_model}</td>
+            <td style="padding: 5px; border: 1px solid #ddd; width: 25%;"><strong>Serial No:</strong> ${job.device_serial || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding: 5px; border: 1px solid #ddd;"><strong>Accessories Handed In:</strong> ${job.accessories_received || 'Unit Only'}</td>
+            <td colspan="2" style="padding: 5px; border: 1px solid #ddd;"><strong>Physical Condition:</strong> ${job.physical_condition || 'Normal wear'}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <h4 style="margin: 0 0 5px 0; font-size: 14px; border-bottom: 1px solid #000; padding-bottom: 2px;">REPORTED FAULT & DIAGNOSIS</h4>
+        <div style="border: 1px solid #ddd; padding: 8px; font-size: 13px; margin-bottom: 5px;">
+          <strong>Problem Reported:</strong> ${job.reported_problem}
+        </div>
+        ${job.technician_notes ? `
+          <div style="border: 1px solid #ddd; padding: 8px; font-size: 13px; background: #f9f9f9;">
+            <strong>Diagnosis / Work Done:</strong> ${job.technician_notes}
+          </div>
+        ` : ''}
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
+        <tr style="background: #f0f0f0;">
+          <th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Estimated / Final Cost</th>
+          <th style="padding: 6px; border: 1px solid #ccc; text-align: center;">Advance Paid</th>
+          <th style="padding: 6px; border: 1px solid #ccc; text-align: right;">Balance Payable</th>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ccc; font-weight: bold; font-size: 15px;">₹${(job.final_cost || job.estimated_cost || 0).toLocaleString('en-IN')}</td>
+          <td style="padding: 8px; border: 1px solid #ccc; text-align: center; color: green; font-weight: bold;">₹${(job.advance_paid || 0).toLocaleString('en-IN')}</td>
+          <td style="padding: 8px; border: 1px solid #ccc; text-align: right; color: red; font-weight: bold; font-size: 16px;">₹${Math.max(0, balance).toLocaleString('en-IN')}</td>
+        </tr>
+      </table>
+
+      <div style="font-size: 10px; color: #555; border-top: 1px solid #ccc; padding-top: 8px; margin-bottom: 25px;">
+        <strong>TERMS & CONDITIONS:</strong><br>
+        1. Data backup is customer responsibility. We are not liable for any data loss during repair.<br>
+        2. Devices must be collected within 30 days of repair completion.<br>
+        3. 30-day warranty on specific hardware parts replaced.<br>
+        4. Please produce this original receipt while collecting equipment.
+      </div>
+
+      <table style="width: 100%; border: none; font-size: 12px; margin-top: 30px;">
+        <tr>
+          <td style="width: 50%; text-align: left;">
+            ___________________________<br>
+            <strong>Customer Signature</strong>
+          </td>
+          <td style="width: 50%; text-align: right;">
+            ___________________________<br>
+            <strong>Authorized Signatory / Tech</strong>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+
+  if (window.html2pdf) {
+    const opt = {
+      margin:       0.3,
+      filename:     `JobSheet_${job.job_sheet_number || id}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(container).save();
+  } else {
+    printJobSheet(id);
+  }
+}
+
 async function printGSTInvoice(id) {
   let inv = null;
   if (state.invoices) inv = state.invoices.find(i => i.id == id);
@@ -10164,6 +10289,7 @@ window.onInvoiceProductSelect = onInvoiceProductSelect;
 window.calculateInvoiceTotals = calculateInvoiceTotals;
 window.handleCreateInvoiceSubmit = handleCreateInvoiceSubmit;
 window.printJobSheet = printJobSheet;
+window.downloadJobSheetPDF = downloadJobSheetPDF;
 window.printGSTInvoice = printGSTInvoice;
 window.deleteProduct = deleteProduct;
 window.loadJobSheets = loadJobSheets;
