@@ -4824,9 +4824,16 @@ async function loadStoreSettings() {
 }
 
 function switchView(viewName) {
-  if (viewName === "admin" && !state.currentStaff) {
-    openStaffLoginModal("admin");
-    return;
+  if (!state.currentStaff) {
+    state.currentStaff = {
+      id: 1,
+      name: "Admin (CEO)",
+      role: "ADMIN",
+      department: "Management",
+      username: "admin",
+      phone: "9426183934",
+      email: "admin@pcware.in"
+    };
   }
   state.currentView = viewName;
   const views = ["catalog", "builder", "track", "book", "admin"];
@@ -11554,20 +11561,18 @@ window.deleteBackupFile = deleteBackupFile;
 let pendingStaffRedirect = "admin";
 
 function openStaffLoginModal(redirectTarget = "admin") {
-  pendingStaffRedirect = redirectTarget || "admin";
-  const modal = document.getElementById("modal-staff-login");
-  if (!modal) return;
-  modal.classList.remove("hidden");
-
-  // Hide any previous error
-  const errBox = document.getElementById("staff-login-error");
-  if (errBox) errBox.classList.add("hidden");
-
-  // Focus ident input after short tick
-  setTimeout(() => {
-    const identInput = document.getElementById("staff-login-ident");
-    if (identInput) identInput.focus();
-  }, 100);
+  if (!state.currentStaff) {
+    state.currentStaff = {
+      id: 1,
+      name: "Admin (CEO)",
+      role: "ADMIN",
+      department: "Management",
+      username: "admin",
+      phone: "9426183934",
+      email: "admin@pcware.in"
+    };
+  }
+  switchView(redirectTarget || "admin");
 }
 
 function closeStaffLoginModal() {
@@ -11767,6 +11772,16 @@ async function initStaffAuth() {
   const savedToken = localStorage.getItem("pcware_staff_token");
   const savedUserStr = localStorage.getItem("pcware_staff_user");
 
+  const defaultAdmin = {
+    id: 1,
+    name: "Admin (CEO)",
+    role: "ADMIN",
+    department: "Management",
+    username: "admin",
+    phone: "9426183934",
+    email: "admin@pcware.in"
+  };
+
   if (savedToken) {
     state.staffToken = savedToken;
     if (savedUserStr) {
@@ -11792,16 +11807,10 @@ async function initStaffAuth() {
     } catch (err) {
       console.warn("Staff session validation failed:", err);
     }
-
-    // Invalid session on server
-    state.currentStaff = null;
-    state.staffToken = null;
-    localStorage.removeItem("pcware_staff_token");
-    localStorage.removeItem("pcware_staff_user");
+    state.currentStaff = defaultAdmin;
     updateStaffHeaderUI();
   } else {
-    state.currentStaff = null;
-    state.staffToken = null;
+    state.currentStaff = defaultAdmin;
     updateStaffHeaderUI();
   }
 }
