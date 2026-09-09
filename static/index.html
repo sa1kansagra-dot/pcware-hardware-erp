@@ -660,314 +660,216 @@
             </button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             
             <!-- Category 1: Laptops -->
-            <div onclick="filterCategory('laptop', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-amber-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">56 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">ThinkPad & Dell</span>
+            <div onclick="filterCategory('laptop', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-amber-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">💻</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-amber-600 transition">Laptops (લેપટોપ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">56 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹38,000</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-amber-600 transition flex items-center gap-2">
-                  <span>💻</span> Laptops (લેપટોપ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Business ThinkPads, Dell Precision Workstations, HP ZBook & Ultrabooks</p>
-                <div class="my-2 h-36 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400" alt="Laptops" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹38,000</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-amber-600 group-hover:text-amber-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Laptops</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-amber-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
             <!-- Category 2: Desktop PCs -->
-            <div onclick="filterCategory('desktop', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-brand-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-blue-100 text-blue-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">25 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Desktop PCs</span>
+            <div onclick="filterCategory('desktop', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-brand-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🖥️</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Desktop PCs (ડેસ્કટોપ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-blue-100 text-blue-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">25 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹18,500</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-brand-600 transition flex items-center gap-2">
-                  <span>🖥️</span> Desktop PCs (ડેસ્કટોપ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Enterprise Office Towers, Custom Gaming Rigs & Small Form Factor PCs</p>
-                <div class="my-2 h-36 bg-blue-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Desktop PCs" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹18,500</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-brand-600 group-hover:text-brand-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Desktops</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-brand-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
             <!-- Category 3: All-in-One PCs -->
-            <div onclick="filterCategory('aio', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-purple-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-purple-100 text-purple-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">20 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">All-in-One</span>
+            <div onclick="filterCategory('aio', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-purple-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🖥️</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-purple-600 transition">All-in-One PCs (ઓલ-ઇન-વન)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-purple-100 text-purple-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">20 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹42,000</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-purple-600 transition flex items-center gap-2">
-                  <span>🖥️</span> All-in-One PCs (ઓલ-ઇન-વન)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">24" & 27" FHD Borderless Touch & Non-Touch Sleek All-in-One Computers</p>
-                <div class="my-2 h-36 bg-purple-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400" alt="All-in-One" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹42,000</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-purple-600 group-hover:text-purple-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore All-in-One</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-purple-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 4: Monitors & Screens -->
-            <div onclick="filterCategory('screen_accessory', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-teal-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-teal-100 text-teal-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">30 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">4K & Gaming</span>
+            <!-- Category 4: Monitors -->
+            <div onclick="filterCategory('screen_accessory', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-teal-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🖥️</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-teal-600 transition">Monitors & Acc (મોનિટર)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-teal-100 text-teal-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">30 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹7,500</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-teal-600 transition flex items-center gap-2">
-                  <span>🖥️</span> Monitors & Acc (મોનિટર)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">4K IPS Displays, High Refresh Rate Gaming Monitors & Screen Accessories</p>
-                <div class="my-2 h-36 bg-teal-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400" alt="Monitors" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹7,500</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-teal-600 group-hover:text-teal-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Monitors</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-teal-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
             <!-- Category 5: Processors -->
-            <div onclick="filterCategory('processor', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-indigo-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">34 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Intel & AMD</span>
+            <div onclick="filterCategory('processor', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-indigo-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">⚡</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-indigo-600 transition">Processors (પ્રોસેસર)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">34 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹9,800</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-indigo-600 transition flex items-center gap-2">
-                  <span>⚡</span> Processors (પ્રોસેસર)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Intel 14th Gen Core i9/i7/i5 & AMD Ryzen 7000 Series Unlocked Processors</p>
-                <div class="my-2 h-36 bg-indigo-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400" alt="Processors" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹9,800</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-indigo-600 group-hover:text-indigo-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Processors</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-indigo-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 6: Graphics Cards -->
-            <div onclick="filterCategory('gpu', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-emerald-100 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">18 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Nvidia RTX</span>
+            <!-- Category 6: Graphic Cards -->
+            <div onclick="filterCategory('gpu', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-emerald-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🎮</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-emerald-600 transition">Graphic Cards (ગ્રાફિક્સ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-emerald-100 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">18 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹24,000</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-emerald-600 transition flex items-center gap-2">
-                  <span>🎮</span> Graphic Cards (ગ્રાફિક્સ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Nvidia GeForce RTX 4090/4080/4070 Ti & Workstation Quadro Cards</p>
-                <div class="my-2 h-36 bg-emerald-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Graphics Cards" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹24,000</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore GPUs</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-emerald-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
             <!-- Category 7: NVMe SSDs -->
-            <div onclick="filterCategory('storage', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-amber-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">22 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Gen4 x4 NVMe</span>
+            <div onclick="filterCategory('storage', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-amber-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">💾</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-amber-600 transition">NVMe SSDs (એનવીએમઇ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">22 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹2,850</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-amber-600 transition flex items-center gap-2">
-                  <span>💾</span> NVMe SSDs (એનવીએમઇ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Samsung 990 Pro, Crucial P3 Plus & Kingston 7400MB/s M.2 SSDs</p>
-                <div class="my-2 h-36 bg-amber-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400" alt="NVMe SSDs" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹2,850</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-amber-600 group-hover:text-amber-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore SSDs</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-amber-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
             <!-- Category 8: RAM Memory -->
-            <div onclick="filterCategory('ram', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-cyan-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-cyan-100 text-cyan-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">28 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">DDR4 & DDR5</span>
+            <div onclick="filterCategory('ram', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-cyan-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🧠</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-cyan-600 transition">RAM Memory (રેમ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-cyan-100 text-cyan-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">28 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹1,750</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-cyan-600 transition flex items-center gap-2">
-                  <span>🧠</span> RAM Memory (રેમ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Corsair Vengeance, G.Skill Trident & Kingston Fury DDR4 / DDR5 Modules</p>
-                <div class="my-2 h-36 bg-cyan-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1562976540-1502c2145186?w=400" alt="RAM Memory" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹1,750</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-cyan-600 group-hover:text-cyan-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore RAM</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-cyan-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
             <!-- Category 9: Motherboards -->
-            <div onclick="filterCategory('motherboard', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-rose-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-rose-100 text-rose-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">16 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">ASUS & MSI</span>
+            <div onclick="filterCategory('motherboard', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-rose-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🔌</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-rose-600 transition">Motherboards (મધરબોર્ડ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-rose-100 text-rose-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">16 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹8,200</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-rose-600 transition flex items-center gap-2">
-                  <span>🔌</span> Motherboards (મધરબોર્ડ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Intel Z790/B760 & AMD AM5 X670 WiFi Gaming Motherboards</p>
-                <div class="my-2 h-36 bg-rose-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400" alt="Motherboards" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹8,200</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-rose-600 group-hover:text-rose-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Motherboards</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-rose-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 10: Gaming Cabinets -->
-            <div onclick="filterCategory('cabinet', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-slate-100 text-slate-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">14 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Lian Li & NZXT</span>
+            <!-- Category 10: Cabinets -->
+            <div onclick="filterCategory('cabinet', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-slate-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">📦</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-slate-700 transition">Cabinets (કેબિનેટ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-slate-100 text-slate-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">14 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹3,200</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-slate-700 transition flex items-center gap-2">
-                  <span>📦</span> Cabinets (કેબિનેટ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Dual Chamber Glass Cabinets, Mesh Airflow & ARGB Towers</p>
-                <div class="my-2 h-36 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Cabinets" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹3,200</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-slate-700 group-hover:text-slate-950 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Cabinets</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-slate-700 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 11: Liquid Coolers -->
-            <div onclick="filterCategory('cooler', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-sky-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-sky-100 text-sky-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">12 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">360mm AIO</span>
+            <!-- Category 11: Coolers -->
+            <div onclick="filterCategory('cooler', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-sky-400 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">❄️</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-sky-600 transition">Coolers (કુલર)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-sky-100 text-sky-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">12 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹2,100</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-sky-600 transition flex items-center gap-2">
-                  <span>❄️</span> Coolers (કુલર)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">DeepCool 360mm ARGB AIO Liquid Coolers & Noctua Dual Tower Coolers</p>
-                <div class="my-2 h-36 bg-sky-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400" alt="Coolers" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹2,100</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-sky-600 group-hover:text-sky-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Coolers</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-sky-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 12: Enterprise Workstations -->
-            <div onclick="filterCategory('workstation', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-indigo-500 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">10 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Dell Precision</span>
+            <!-- Category 12: Workstations -->
+            <div onclick="filterCategory('workstation', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-indigo-500 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🏢</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-indigo-600 transition">Workstations (વર્કસ્ટેશન)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">10 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹95,000</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-indigo-600 transition flex items-center gap-2">
-                  <span>🏢</span> Workstations (વર્કસ્ટેશન)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Dell Precision 7000/9000 Towers with Xeon, ECC RAM & Nvidia RTX Ada</p>
-                <div class="my-2 h-36 bg-indigo-50/40 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400" alt="Workstations" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹95,000</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-indigo-600 group-hover:text-indigo-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Workstations</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-indigo-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 13: Enterprise Servers -->
-            <div onclick="filterCategory('server', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-500 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-slate-200 text-slate-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">8 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">PowerEdge</span>
+            <!-- Category 13: Servers -->
+            <div onclick="filterCategory('server', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-slate-500 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🖧</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-slate-800 transition">Servers (સર્વર)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-slate-200 text-slate-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">8 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹1,45,000</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-slate-800 transition flex items-center gap-2">
-                  <span>🖧</span> Servers (સર્વર)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Dell PowerEdge Rack & Tower Servers for Enterprise Cloud & ERP</p>
-                <div class="my-2 h-36 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400" alt="Servers" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹1,45,000</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-slate-800 group-hover:text-slate-950 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Servers</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-slate-800 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
-            <!-- Category 14: Antivirus & Security -->
-            <div onclick="filterCategory('antivirus_software', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-500 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="bg-emerald-100 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">15 Products</span>
-                  <span class="text-[11px] font-bold text-slate-400">Quick Heal & K7</span>
+            <!-- Category 14: Antivirus -->
+            <div onclick="filterCategory('antivirus_software', null)" class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-emerald-500 transition-all duration-200 flex items-center justify-between group cursor-pointer relative overflow-hidden">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition duration-200">🛡️</div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-emerald-600 transition">Antivirus (એન્ટીવાયરસ)</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="bg-emerald-100 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">15 Items</span>
+                    <span class="text-[11px] font-bold text-emerald-700">From ₹450</span>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-emerald-600 transition flex items-center gap-2">
-                  <span>🛡️</span> Antivirus (એન્ટીવાયરસ)
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2">Quick Heal Total Security 1/3-Yr, Net Protector & K7 License Keys</p>
-                <div class="my-2 h-36 bg-emerald-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=400" alt="Antivirus" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                </div>
-                <div class="text-xs font-bold text-emerald-700">Starting from ₹450</div>
               </div>
-              <div class="mt-3 text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
-                <span>Explore Antivirus</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </div>
+              <div class="text-emerald-600 group-hover:translate-x-1 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
             </div>
 
           </div>
@@ -1092,6 +994,22 @@
           <!-- LEFT COLUMN: AMAZON-STYLE FILTER SIDEBAR -->
           <aside class="hidden lg:block bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-6 sticky top-24">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                <span>🎯</span>
+                <span>Filters (ફિલ્ટર્સ)</span>
+              </h4>
+              <button type="button" onclick="resetAllFilters()" class="text-[11px] font-bold text-brand-600 hover:underline cursor-pointer">
+                Reset All
+              </button>
+            </div>
+
+            <!-- Filter Section 0: Search Catalog Input -->
+            <div class="space-y-2 pb-3 border-b border-slate-100">
+              <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Search Catalog</h5>
+              <div class="relative">
+                <input type="text" id="catalog-sidebar-search" oninput="debounceProductSearch(this.value)" placeholder="🔍 Search product..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-50 font-medium">
+              </div>
+            </div>
               <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
                 <span>🎯</span>
                 <span>Filters (ફિલ્ટર્સ)</span>
@@ -1264,7 +1182,109 @@
         </div>
 
       </div>
-      <!-- END SUBVIEW 2: DEDICATED AMAZON PRODUCT LISTING PAGE --></div>
+      <!-- END SUBVIEW 2: DEDICATED AMAZON PRODUCT LISTING PAGE -->
+
+      <!-- SUBVIEW 3: DEDICATED FULL PRODUCT DETAIL PAGE VIEW -->
+      <div id="subview-product-detail-page" class="hidden space-y-6">
+        
+        <!-- Breadcrumb & Back Header -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+            <button type="button" onclick="showLandingCategoryHub()" class="hover:text-brand-600 transition flex items-center gap-1 cursor-pointer">
+              <span>🏠 Home</span>
+            </button>
+            <span>/</span>
+            <button type="button" onclick="showProductsCatalog()" class="hover:text-brand-600 transition flex items-center gap-1 cursor-pointer">
+              <span>Products</span>
+            </button>
+            <span>/</span>
+            <span id="detail-page-cat-name" class="text-slate-900 font-extrabold truncate max-w-xs sm:max-w-md">Product Detail</span>
+          </div>
+
+          <button type="button" onclick="closeProductDetailPage()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer border border-slate-300 shadow-2xs">
+            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+            <span>← Back to Products</span>
+          </button>
+        </div>
+
+        <!-- MAIN PRODUCT DETAIL CARD -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- LEFT: 1.75x WIDE PRODUCT IMAGE SHOWCASE & THUMBNAILS -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="aspect-[1.75/1] w-full bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center p-4 border border-slate-200 shadow-inner relative group">
+              <img id="detail-page-main-img" src="" alt="Product Image" class="max-h-full max-w-full object-contain transition duration-300 group-hover:scale-105">
+              <div id="detail-page-badge" class="absolute top-3 left-3"></div>
+            </div>
+            <!-- Thumbnails strip -->
+            <div id="detail-page-thumbnails" class="flex items-center gap-3 overflow-x-auto pb-2"></div>
+          </div>
+
+          <!-- RIGHT: SPECS, PRICING & BOOKING ACTIONS -->
+          <div class="lg:col-span-6 space-y-5">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span id="detail-page-brand" class="bg-slate-100 text-slate-700 text-xs font-extrabold uppercase px-2.5 py-1 rounded-md border border-slate-200"></span>
+                <span id="detail-page-stock" class="text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider"></span>
+              </div>
+              <h1 id="detail-page-title" class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight"></h1>
+              <div class="flex items-center gap-2 mt-2">
+                <div class="text-amber-500 font-bold text-sm">★★★★★</div>
+                <span id="detail-page-rating" class="text-xs font-bold text-slate-600">4.9 / 5.0 (120+ verified customer reviews)</span>
+              </div>
+            </div>
+
+            <!-- Price Box -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+              <div class="flex items-baseline gap-3">
+                <span id="detail-page-price" class="text-3xl font-black text-slate-900"></span>
+                <span id="detail-page-mrp" class="text-sm font-bold text-slate-400 line-through"></span>
+                <span id="detail-page-discount" class="bg-rose-100 text-rose-700 text-xs font-black px-2 py-0.5 rounded"></span>
+              </div>
+              <p class="text-xs font-semibold text-emerald-700 flex items-center gap-1 pt-1">
+                <span>✅ 18% GST Input Credit Invoice Available</span>
+              </p>
+            </div>
+
+            <!-- Specs Grid -->
+            <div class="space-y-2">
+              <h4 class="text-xs font-black uppercase text-slate-700 tracking-wider">Key Specifications</h4>
+              <div id="detail-page-specs" class="grid grid-cols-2 gap-2 text-xs"></div>
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-2">
+              <h4 class="text-xs font-black uppercase text-slate-700 tracking-wider">Product Overview</h4>
+              <p id="detail-page-desc" class="text-xs text-slate-600 leading-relaxed"></p>
+            </div>
+
+            <!-- Action Buttons (Add to Cart & Direct Booking) -->
+            <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center gap-3">
+              <button type="button" id="detail-page-cart-btn" class="w-full sm:w-1/2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3.5 px-5 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                <span>🛒 Add to Cart</span>
+              </button>
+              <button type="button" id="detail-page-buy-btn" class="w-full sm:w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3.5 px-5 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                <span>📱 Book / Buy via WhatsApp</span>
+              </button>
+            </div>
+
+            <!-- Customization Notice if Laptop/Workstation -->
+            <div id="detail-page-custom-box" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 flex items-center justify-between gap-3">
+              <div class="space-y-0.5">
+                <span class="font-bold block">⚙️ Custom RAM / SSD Upgrade Available</span>
+                <span class="text-[11px] text-amber-800">અમે આ લેપટોપમાં તમારી જરૂરિયાત મુજબ RAM (16GB/32GB) અને NVMe SSD (512GB/1TB) અપગ્રેડ કરી આપીશું.</span>
+              </div>
+              <button type="button" onclick="showCTOModal()" class="bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shrink-0 cursor-pointer">
+                Custom Upgrade
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+</div>
 
       </div>
 

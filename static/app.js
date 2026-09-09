@@ -5671,8 +5671,10 @@ function handleAmazonSearch(e) {
   if (state.currentView !== "catalog") switchView("catalog");
   const subLanding = document.getElementById("subview-categories-landing");
   const subCatalog = document.getElementById("subview-products-catalog");
+  const subDetail = document.getElementById("subview-product-detail-page");
   if (subLanding) subLanding.classList.add("hidden");
   if (subCatalog) subCatalog.classList.remove("hidden");
+  if (subDetail) subDetail.classList.add("hidden");
 
   applyCatalogFilters();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -5691,8 +5693,10 @@ function showLandingCategoryHub() {
   }
   const subLanding = document.getElementById("subview-categories-landing");
   const subCatalog = document.getElementById("subview-products-catalog");
+  const subDetail = document.getElementById("subview-product-detail-page");
   if (subLanding) subLanding.classList.remove("hidden");
   if (subCatalog) subCatalog.classList.add("hidden");
+  if (subDetail) subDetail.classList.add("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -5703,8 +5707,10 @@ function filterCategory(cat, btn) {
 
   const subLanding = document.getElementById("subview-categories-landing");
   const subCatalog = document.getElementById("subview-products-catalog");
+  const subDetail = document.getElementById("subview-product-detail-page");
   if (subLanding) subLanding.classList.add("hidden");
   if (subCatalog) subCatalog.classList.remove("hidden");
+  if (subDetail) subDetail.classList.add("hidden");
 
   state.catalogFilters.category = cat || "all";
   state.currentPage = 1;
@@ -5951,7 +5957,7 @@ function renderProductsGrid() {
     }
 
     return `
-      <div onclick="openProductDetailModal(${p.id})" class="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 hover:shadow-xl transition-all duration-200 flex flex-col justify-between p-4 group relative cursor-pointer">
+      <div onclick="openProductDetailPage(${p.id})" class="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 hover:shadow-xl transition-all duration-200 flex flex-col justify-between p-4 group relative cursor-pointer">
         
         <!-- Top Badge & Urgency Pill -->
         <div class="flex items-center justify-between gap-2 mb-2">
@@ -5966,7 +5972,7 @@ function renderProductsGrid() {
         </div>
 
         <!-- Product Image Showcase with Smooth Hover Slider & Gallery Scrubbing -->
-        <div class="relative h-44 sm:h-48 bg-slate-50/70 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3 border border-slate-100 cursor-pointer prod-gallery-card group/slider"
+        <div class="relative aspect-[1.75/1] w-full bg-slate-50/70 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3 border border-slate-100 cursor-pointer prod-gallery-card group/slider"
              id="prod-gallery-${p.id}"
              data-images="${safeGalleryJson}"
              data-idx="0"
@@ -12539,3 +12545,163 @@ window.openWhatsAppAPIModal = openWhatsAppAPIModal;
 window.closeWhatsAppAPIModal = closeWhatsAppAPIModal;
 window.handleSaveWhatsAppAPISettings = handleSaveWhatsAppAPISettings;
 window.sendTestWhatsAppAPI = sendTestWhatsAppAPI;
+
+
+
+let productSearchTimer = null;
+function debounceProductSearch(val) {
+  clearTimeout(productSearchTimer);
+  productSearchTimer = setTimeout(() => {
+    state.searchQuery = val.trim();
+    applyProductFilters();
+  }, 250);
+}
+
+function showProductsCatalog() {
+  if (state.currentView !== "catalog") {
+    switchView("catalog");
+  }
+  const subLanding = document.getElementById("subview-categories-landing");
+  const subCatalog = document.getElementById("subview-products-catalog");
+  const subDetail = document.getElementById("subview-product-detail-page");
+  if (subLanding) subLanding.classList.add("hidden");
+  if (subCatalog) subCatalog.classList.remove("hidden");
+  if (subDetail) subDetail.classList.add("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeProductDetailPage() {
+  showProductsCatalog();
+}
+
+function setDetailPageMainImage(url) {
+  const mainImgEl = document.getElementById("detail-page-main-img");
+  if (mainImgEl) mainImgEl.src = url;
+}
+
+function openProductDetailPage(productId) {
+  const p = (state.allProducts || []).find(item => item.id == productId);
+  if (!p) return;
+
+  const landingSub = document.getElementById("subview-categories-landing");
+  const catalogSub = document.getElementById("subview-products-catalog");
+  const detailSub = document.getElementById("subview-product-detail-page");
+
+  if (landingSub) landingSub.classList.add("hidden");
+  if (catalogSub) catalogSub.classList.add("hidden");
+  if (detailSub) detailSub.classList.remove("hidden");
+
+  // Populate detail page fields
+  const catNameEl = document.getElementById("detail-page-cat-name");
+  if (catNameEl) catNameEl.textContent = p.name;
+
+  const mainImgEl = document.getElementById("detail-page-main-img");
+  if (mainImgEl) mainImgEl.src = p.image_url || 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400';
+
+  const brandEl = document.getElementById("detail-page-brand");
+  if (brandEl) brandEl.textContent = p.brand || 'PCWARE';
+
+  const stockEl = document.getElementById("detail-page-stock");
+  if (stockEl) {
+    const isOutOfStock = p.stock_quantity <= 0;
+    const isLowStock = p.stock_quantity <= (p.low_stock_threshold || 5) && p.stock_quantity > 0;
+    stockEl.textContent = isOutOfStock ? 'Out of Stock' : `In Stock: ${p.stock_quantity} units`;
+    stockEl.className = `text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${
+      isOutOfStock ? 'bg-rose-100 text-rose-700 border border-rose-200' :
+      isLowStock ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+      'bg-emerald-100 text-emerald-800 border border-emerald-200'
+    }`;
+  }
+
+  const titleEl = document.getElementById("detail-page-title");
+  if (titleEl) titleEl.textContent = p.name;
+
+  const priceEl = document.getElementById("detail-page-price");
+  if (priceEl) priceEl.textContent = `₹${(p.selling_price || 0).toLocaleString('en-IN')}`;
+
+  const mrpVal = Math.round(((p.selling_price || 0) * 1.22) / 50) * 50;
+  const mrpEl = document.getElementById("detail-page-mrp");
+  if (mrpEl) mrpEl.textContent = `MRP ₹${mrpVal.toLocaleString('en-IN')}`;
+
+  const discVal = Math.round(((mrpVal - (p.selling_price || 0)) / mrpVal) * 100);
+  const discEl = document.getElementById("detail-page-discount");
+  if (discEl) discEl.textContent = `${discVal}% OFF`;
+
+  const descEl = document.getElementById("detail-page-desc");
+  if (descEl) descEl.textContent = p.description || 'હાઇ પરફોર્મન્સ ઓરિજિનલ હાર્ડવેર આઇટમ સીરીયલ ટ્રેકિંગ અને બ્રાન્ડ વોરંટી સાથે.';
+
+  // Gallery Thumbnails
+  let gallery = [];
+  try {
+    gallery = typeof p.gallery_images === 'string' ? JSON.parse(p.gallery_images) : (p.gallery_images || []);
+  } catch(e) { gallery = []; }
+  if (!Array.isArray(gallery) || gallery.length === 0) gallery = [p.image_url];
+  gallery = gallery.filter(Boolean);
+
+  const thumbContainer = document.getElementById("detail-page-thumbnails");
+  if (thumbContainer) {
+    thumbContainer.innerHTML = gallery.map((imgUrl) => `
+      <button type="button" onclick="setDetailPageMainImage('${imgUrl}')" class="w-16 h-12 rounded-lg border border-slate-200 overflow-hidden shrink-0 hover:border-brand-500 focus:border-brand-500 p-1 bg-slate-50 cursor-pointer">
+        <img src="${imgUrl}" class="w-full h-full object-contain">
+      </button>
+    `).join('');
+  }
+
+  // Specs
+  const specsContainer = document.getElementById("detail-page-specs");
+  if (specsContainer) {
+    let specsObj = {};
+    try {
+      specsObj = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs || {});
+    } catch(e) { specsObj = {}; }
+
+    const specEntries = Object.entries(specsObj);
+    if (specEntries.length === 0) {
+      specsContainer.innerHTML = `
+        <div class="col-span-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex justify-between">
+          <span class="text-slate-500 font-bold">Category</span>
+          <span class="font-extrabold text-slate-800 uppercase">${p.category}</span>
+        </div>
+        <div class="col-span-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex justify-between">
+          <span class="text-slate-500 font-bold">Warranty</span>
+          <span class="font-extrabold text-slate-800">1 Year Brand Warranty</span>
+        </div>
+      `;
+    } else {
+      specsContainer.innerHTML = specEntries.map(([k, v]) => `
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex flex-col">
+          <span class="text-slate-400 text-[10px] font-extrabold uppercase">${k}</span>
+          <span class="font-extrabold text-slate-800 text-xs">${v}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Action buttons
+  const cartBtn = document.getElementById("detail-page-cart-btn");
+  if (cartBtn) cartBtn.onclick = () => addToCart(p.id);
+
+  const buyBtn = document.getElementById("detail-page-buy-btn");
+  if (buyBtn) buyBtn.onclick = () => orderViaWhatsApp(p.id);
+
+  // Customization box
+  const customBox = document.getElementById("detail-page-custom-box");
+  if (customBox) {
+    if (p.category === "laptop" || p.category === "workstation") {
+      customBox.classList.remove("hidden");
+    } else {
+      customBox.classList.add("hidden");
+    }
+  }
+
+  // Scroll smoothly to top of catalog view
+  const catalogView = document.getElementById("view-catalog");
+  if (catalogView) catalogView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+
+window.debounceProductSearch = debounceProductSearch;
+window.showProductsCatalog = showProductsCatalog;
+window.closeProductDetailPage = closeProductDetailPage;
+window.setDetailPageMainImage = setDetailPageMainImage;
+window.openProductDetailPage = openProductDetailPage;
