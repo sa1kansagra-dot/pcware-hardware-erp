@@ -5885,6 +5885,7 @@ function renderProductsGrid() {
   if (state.currentPage < 1) state.currentPage = 1;
 
   if (totalItems === 0) {
+    container.className = "grid grid-cols-1 gap-5";
     container.innerHTML = `
       <div class="col-span-full py-16 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
         <span class="text-4xl mb-3 block">🔍</span>
@@ -5903,6 +5904,8 @@ function renderProductsGrid() {
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const pageProducts = state.filteredProducts.slice(startIndex, endIndex);
 
+  // Amazon-style vertical list layout (space-y-4)
+  container.className = "space-y-4";
   container.innerHTML = pageProducts.map(p => {
     // Safe gallery images preparation
     let gallery = [];
@@ -5918,65 +5921,21 @@ function renderProductsGrid() {
 
     const isLowStock = p.stock_quantity <= p.low_stock_threshold && p.stock_quantity > 0;
     const isOutOfStock = p.stock_quantity <= 0;
-    const isCustomizable = (p.category === "laptop" || p.category === "workstation");
 
     // Amazon pricing calculation
     const mrp = Math.round((p.selling_price * 1.22) / 50) * 50;
     const discountPct = Math.round(((mrp - p.selling_price) / mrp) * 100);
-    const savings = mrp - p.selling_price;
 
     // Rating & reviews calculation (5-Star Premium Verified Customer Ratings)
     const ratingNum = parseFloat((4.8 + ((p.id * 2) % 3) / 10).toFixed(1));
     const starsVisual = '★★★★★';
     const reviewsCount = 35 + ((p.id * 17) % 340);
 
-    // Amazon-style ribbons
-    const catDisplayNames = {
-      laptop: "Laptop",
-      desktop: "Desktop PC",
-      aio: "All-in-One",
-      screen_accessory: "Monitor / Acc",
-      processor: "Processor",
-      antivirus_software: "Antivirus",
-      gpu: "Graphics Card",
-      motherboard: "Motherboard",
-      storage: "NVMe SSD",
-      ram: "RAM Memory",
-      cabinet: "Cabinet",
-      cooler: "Cooler",
-      workstation: "Workstation",
-      server: "Server"
-    };
-    const catLabel = catDisplayNames[p.category] || p.category;
-
-    let badgeHtml = '';
-    if (p.id % 7 === 1) {
-      badgeHtml = `<span class="inline-block bg-[#232f3e] text-[#febd69] text-[10px] font-black uppercase px-2 py-0.5 rounded shadow-xs tracking-wider">Amazon's <span class="text-white">Choice</span></span>`;
-    } else if (p.id % 5 === 0) {
-      badgeHtml = `<span class="inline-block bg-[#e67a00] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow-xs tracking-wider">#1 Best Seller</span>`;
-    } else if (discountPct >= 18) {
-      badgeHtml = `<span class="inline-block bg-[#cc0c39] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow-xs tracking-wider">Limited time deal</span>`;
-    } else {
-      badgeHtml = `<span class="inline-block bg-slate-100 text-slate-700 text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider border border-slate-200">${escapeHtml(catLabel)}</span>`;
-    }
-
     return `
-      <div onclick="openProductDetailPage(${p.id})" class="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 hover:shadow-xl transition-all duration-200 flex flex-col justify-between p-4 group relative cursor-pointer">
+      <div onclick="openProductDetailPage(${p.id})" class="bg-white rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-xl transition-all duration-200 p-4 sm:p-5 group cursor-pointer grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
         
-        <!-- Top Badge & Urgency Pill -->
-        <div class="flex items-center justify-between gap-2 mb-2">
-          ${badgeHtml}
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-            isOutOfStock ? 'bg-rose-100 text-rose-700 border border-rose-200' :
-            isLowStock ? 'bg-amber-100 text-amber-800 border border-amber-200' :
-            'bg-emerald-100 text-emerald-800 border border-emerald-200'
-          }">
-            ${isOutOfStock ? (t('out_of_stock') || 'Out of Stock') : (t('stock_prefix') || 'Stock: ') + p.stock_quantity}
-          </span>
-        </div>
-
-        <!-- Product Image Showcase with Smooth Hover Slider & Gallery Scrubbing -->
-        <div class="relative aspect-[1.75/1] w-full bg-slate-50/70 rounded-xl overflow-hidden flex items-center justify-center p-3 mb-3 border border-slate-100 cursor-pointer prod-gallery-card group/slider"
+        <!-- Left Column: Product Image Showcase (sm:col-span-4) -->
+        <div class="sm:col-span-4 relative aspect-[1.5/1] bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-100 group/slider"
              id="prod-gallery-${p.id}"
              data-images="${safeGalleryJson}"
              data-idx="0"
@@ -5986,112 +5945,74 @@ function renderProductsGrid() {
           
           <img id="prod-img-${p.id}" src="${gallery[0]}" alt="${escapeHtml(p.name)}" loading="lazy" class="max-h-full max-w-full object-contain transition-all duration-300 transform group-hover/slider:scale-105 select-none">
           
-          <span class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider pointer-events-none z-10">
+          <span class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider pointer-events-none z-10">
             ${escapeHtml(p.brand)}
           </span>
 
-          ${gallery.length > 1 ? `
-            <span class="absolute top-2 right-2 bg-slate-900/75 backdrop-blur text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 opacity-80 group-hover/slider:opacity-100 transition z-10 pointer-events-none">
-              <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              <span>${gallery.length} Photos</span>
-            </span>
-            <div id="prod-dots-${p.id}" class="absolute bottom-2 right-2 flex items-center gap-1 z-10 bg-slate-900/50 backdrop-blur px-1.5 py-0.5 rounded-full pointer-events-none">
-              ${gallery.map((_, i) => `<span class="prod-dot-${p.id} h-1.5 rounded-full transition-all duration-200 ${i === 0 ? 'bg-amber-400 w-3' : 'bg-white/60 w-1.5'}"></span>`).join('')}
-            </div>
-          ` : ''}
+          ${p.id % 5 === 0 ? '<span class="absolute top-2 right-2 bg-[#e67a00] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-xs tracking-wider">#1 Best Seller</span>' : ''}
         </div>
 
-        <!-- Product Details -->
-        <div class="flex-1 flex flex-col justify-between space-y-2.5">
-          <div>
-            <!-- Rating Row -->
-            <div class="flex items-center gap-1.5 text-xs mb-1">
-              <span class="text-amber-500 font-bold tracking-tighter">${starsVisual}</span>
-              <span class="font-bold text-slate-800 text-[11px]">${ratingNum}</span>
-              <span class="text-slate-400 text-[11px]">(${reviewsCount})</span>
-            </div>
-
-            <!-- Title -->
-            <h3 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-amber-600 transition" title="${escapeHtml(p.name)}">
-              ${escapeHtml(p.name)}
-            </h3>
-
-            <!-- Specs Snippet -->
-            ${p.specs ? `<p class="text-[11px] text-slate-500 line-clamp-1 mt-1">${escapeHtml(p.specs)}</p>` : ''}
+        <!-- Middle Column: Details, Specs, Ratings & Shipping (sm:col-span-5) -->
+        <div class="sm:col-span-5 space-y-2">
+          
+          <!-- Rating Row -->
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-amber-500 font-bold tracking-tighter text-sm">${starsVisual}</span>
+            <span class="font-bold text-slate-800 text-xs">${ratingNum}</span>
+            <span class="text-slate-400 text-xs">(${reviewsCount} verified reviews)</span>
           </div>
 
-          <!-- Amazon Pricing Section -->
-          <div class="pt-2 border-t border-slate-100 space-y-2">
-            <div class="space-y-0.5">
-              <div class="flex items-baseline gap-2">
-                <span class="text-[#cc0c39] font-black text-sm">-${discountPct}%</span>
-                <div class="flex items-start">
-                  <span class="text-xs font-semibold text-slate-900 mt-0.5">₹</span>
-                  <span class="text-2xl font-black text-slate-900 tracking-tight leading-none">${p.selling_price.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-              <div class="text-[11px] text-slate-500 flex items-center gap-1.5 flex-wrap">
-                <span>M.R.P.: <span class="line-through text-slate-400">₹${mrp.toLocaleString('en-IN')}</span></span>
-                <span class="text-emerald-700 font-bold">(Save ₹${savings.toLocaleString('en-IN')})</span>
-              </div>
-              <div class="text-[10px] text-slate-400 font-medium">
-                Incl. 18% GST • Input Credit Available
-              </div>
+          <!-- Product Title -->
+          <h3 class="font-extrabold text-slate-900 text-base sm:text-lg leading-snug group-hover:text-amber-600 transition" title="${escapeHtml(p.name)}">
+            ${escapeHtml(p.name)}
+          </h3>
+
+          <!-- Specifications Snippet -->
+          ${p.specs ? `<p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">${escapeHtml(p.specs)}</p>` : ''}
+
+          <!-- Delivery & Stock Info -->
+          <div class="space-y-1 pt-1.5 text-xs">
+            <div class="flex items-center gap-1.5 text-slate-700">
+              <span>📦</span>
+              <span>FREE Delivery by <strong class="text-slate-900 font-bold">Tomorrow, 10 Sept</strong></span>
             </div>
-
-            <!-- Amazon Prime / Fulfillment & Delivery Badge -->
-            <div class="space-y-1 pt-1.5 border-t border-slate-100 text-[11px]">
-              <div class="flex items-center gap-1 text-slate-700">
-                <span>📦</span>
-                <span>FREE Delivery by <strong class="text-slate-900 font-bold">Tomorrow, 2 PM</strong></span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="inline-flex items-center gap-1 text-[10px] font-black text-white bg-[#131921] px-1.5 py-0.5 rounded">
-                  <span>✓</span> PCWARE <span class="text-[#febd69]">Fulfilled</span>
-                </span>
-                <span class="text-[10px] text-emerald-700 font-bold">3-Yr Serialized Warranty</span>
-              </div>
-              ${isOutOfStock ? `
-                <p class="text-rose-600 font-bold text-xs pt-0.5">Currently unavailable / Out of stock</p>
-              ` : isLowStock ? `
-                <p class="text-rose-700 font-bold text-xs pt-0.5">Only ${p.stock_quantity} left in stock - order soon.</p>
-              ` : `
-                <p class="text-emerald-700 font-semibold text-xs pt-0.5">In stock (Ready for Rajkot express pickup)</p>
-              `}
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 text-[10px] font-black text-white bg-[#131921] px-2 py-0.5 rounded">
+                <span>✓</span> PCWARE <span class="text-[#febd69]">Fulfilled</span>
+              </span>
+              <span class="text-[11px] font-bold text-emerald-700">100% Serialized Stock</span>
             </div>
-
-            <!-- Amazon Action Buttons (Pure English + Clean SVG Icons) -->
-            <div class="pt-2 space-y-1.5">
-              <!-- Add to Cart (Signature Amazon Yellow) -->
-              <button type="button" onclick="event.stopPropagation(); addToCart(${p.id});" ${isOutOfStock ? 'disabled' : ''} class="w-full bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] disabled:bg-slate-200 disabled:cursor-not-allowed text-slate-950 font-bold text-xs py-2 px-3 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#fcd200]">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
-                <span>Add to Cart</span>
-              </button>
-
-              <!-- Buy Now / WhatsApp Direct Booking (Signature Amazon Orange) -->
-              <button type="button" onclick="event.stopPropagation(); openWhatsAppBookingModal(${p.id});" class="w-full bg-[#ffa41c] hover:bg-[#fa8900] active:bg-[#f37c00] text-slate-950 font-bold text-xs py-2 px-3 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#ff8f00]">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.075-2.227-.557-1.846-.763-3.036-2.646-3.128-2.769-.093-.122-.746-.991-.746-1.891 0-.9.472-1.343.64-1.527.168-.184.368-.23.491-.23.122 0 .245.001.353.007.113.005.263-.042.411.314.153.369.521 1.272.568 1.365.046.092.077.2.015.322-.061.123-.092.2-.184.307-.092.108-.193.241-.276.323-.092.093-.188.193-.081.377.108.184.478.788 1.026 1.276.707.63 1.303.825 1.488.917.184.092.292.077.4-.046.107-.123.46-.537.583-.721.122-.184.246-.153.414-.092.169.061 1.073.506 1.257.598.184.092.307.138.353.215.046.077.046.446-.098.851z"/></svg>
-                <span>Buy Now / WhatsApp</span>
-              </button>
-
-              <!-- Custom Upgrade Button for Laptops & Workstations -->
-              ${isCustomizable ? `
-                <button type="button" onclick="event.stopPropagation(); openLaptopUpgradeModal(${p.id});" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer">
-                  <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  <span>Customize RAM / SSD</span>
-                </button>
-              ` : ''}
-
-              <!-- Flagship Dell CTO Workstation Button -->
-              ${p.category === 'workstation' || (p.name && p.name.toLowerCase().includes('precision')) ? `
-                <button type="button" onclick="event.stopPropagation(); openCTOFromProduct('dell-precision-9-t6');" class="w-full bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 text-indigo-900 border border-indigo-200 font-black text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
-                  <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                  <span>Configure To Order (Dell CTO)</span>
-                </button>
-              ` : ''}
-            </div>
-
           </div>
+
+        </div>
+
+        <!-- Right Column: Amazon Price, Discount & Add to Cart Action (sm:col-span-3) -->
+        <div class="sm:col-span-3 sm:border-l sm:border-slate-100 sm:pl-5 space-y-3 flex flex-col justify-between h-full">
+          
+          <!-- Pricing Block -->
+          <div class="space-y-1">
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none">₹${p.selling_price.toLocaleString('en-IN')}</span>
+              <span class="text-[#cc0c39] font-black text-xs">-${discountPct}%</span>
+            </div>
+            <div class="text-xs text-slate-500 flex items-center gap-1 flex-wrap">
+              <span>M.R.P.: <span class="line-through text-slate-400">₹${mrp.toLocaleString('en-IN')}</span></span>
+            </div>
+            <div class="text-[11px] text-emerald-700 font-bold">
+              Incl. 18% GST Credit
+            </div>
+          </div>
+
+          <!-- Add to Cart Action Button (Amazon Yellow Button) -->
+          <div class="space-y-2 pt-1">
+            <button type="button" onclick="event.stopPropagation(); addToCart(${p.id})" class="w-full bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] text-slate-950 font-black text-xs py-2.5 px-4 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer border border-[#fcd200]">
+              <span>🛒 Add to Cart</span>
+            </button>
+            <button type="button" onclick="event.stopPropagation(); orderViaWhatsApp(${p.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>📱 Buy via WhatsApp</span>
+            </button>
+          </div>
+
         </div>
 
       </div>
