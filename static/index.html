@@ -145,14 +145,14 @@
         
         <!-- Brand Logo & Deliver-To Widget -->
         <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-          <div class="flex items-center space-x-2 cursor-pointer p-1.5 rounded hover:outline hover:outline-1 hover:outline-white/40 transition" onclick="switchView('catalog')">
-            <img src="/static/logo.svg" alt="PCWARE" class="h-9 sm:h-10 w-auto object-contain">
-            <div>
-              <div class="font-black text-lg sm:text-xl tracking-tight text-white flex items-center gap-1 leading-none">
+          <div class="flex items-center space-x-2 cursor-pointer p-1.5 rounded hover:outline hover:outline-1 hover:outline-white/40 transition" onclick="showLandingCategoryHub()">
+            <img src="/static/logo.svg" alt="PCWARE" class="h-10 sm:h-11 w-auto object-contain">
+            <div class="leading-none">
+              <div class="font-black text-xl sm:text-2xl tracking-tight text-white flex items-center gap-1.5 leading-none">
                 <span>PCWARE</span>
-                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 uppercase">STORE</span>
               </div>
-              <p class="hidden sm:block text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">Hardware & Custom PC</p>
+              <div class="text-[11px] font-bold text-amber-400 tracking-wider lowercase mt-0.5 italic">everywhere</div>
+              <p class="hidden sm:block text-[9px] text-slate-400 font-medium tracking-tight mt-0.5">Hardware, Custom PC & IT Care Solutions</p>
             </div>
           </div>
 
@@ -939,10 +939,16 @@
             </h2>
           </div>
 
-          <button type="button" onclick="showLandingCategoryHub()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer border border-slate-300 shadow-2xs">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
-            <span>← Back to All Categories (કેટેગરી પસંદગી)</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openFilterDrawer()" class="bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-xs border border-amber-300">
+              <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9m-9 6h9m-9 6h9M3.75 6h.008v.008H3.75V6zm0 6h.008v.008H3.75V12zm0 6h.008v.008H3.75V18z"/></svg>
+              <span>🎯 Filter Products (ફિલ્ટર્સ)</span>
+            </button>
+            <button type="button" onclick="showLandingCategoryHub()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer border border-slate-300 shadow-2xs">
+              <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+              <span>← Back to All Categories</span>
+            </button>
+          </div>
         </div>
 
         <!-- HORIZONTAL CATEGORY PILLS BAR -->
@@ -6419,6 +6425,129 @@
         </button>
       </div>
     </div>
+  </div>
+
+
+  <!-- AMAZON-STYLE FILTER SLIDE-OVER POPUP DRAWER (POP-UP 12) -->
+  <div id="filter-drawer-backdrop" onclick="closeFilterDrawer()" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 transition-opacity duration-300"></div>
+
+  <div id="filter-popup-drawer" class="fixed top-0 left-0 bottom-0 w-80 sm:w-96 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-hidden">
+    
+    <!-- Drawer Header -->
+    <div class="bg-[#131921] text-white p-4 flex items-center justify-between shadow-md shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🎯</span>
+        <div>
+          <h3 class="font-extrabold text-sm text-white">Filter Products (ફિલ્ટર્સ)</h3>
+          <p class="text-[10px] text-slate-400">Refine catalog by brand, price & specifications</p>
+        </div>
+      </div>
+      <button type="button" onclick="closeFilterDrawer()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition cursor-pointer text-lg font-bold">
+        ✕
+      </button>
+    </div>
+
+    <!-- Drawer Body Content (Filter Options) -->
+    <div class="flex-1 p-5 overflow-y-auto space-y-6">
+      
+      <!-- Filter Section 0: Search Catalog Input -->
+      <div class="space-y-2 pb-3 border-b border-slate-100">
+        <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Search Catalog</h5>
+        <div class="relative">
+          <input type="text" id="drawer-catalog-search" oninput="debounceProductSearch(this.value)" placeholder="🔍 Search product..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-50 font-medium">
+        </div>
+      </div>
+
+      <!-- Filter Section 1: Department -->
+      <div class="space-y-2">
+        <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Department</h5>
+        <div class="space-y-1.5 text-xs text-slate-600 max-h-48 overflow-y-auto pr-1">
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('all', null); closeFilterDrawer();">
+            <span class="font-semibold text-brand-600">All Departments</span>
+            <span class="text-[10px] text-slate-400 font-mono">65</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('laptop', null); closeFilterDrawer();">
+            <span>Laptops</span>
+            <span class="text-[10px] text-slate-400 font-mono">56</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('processor', null); closeFilterDrawer();">
+            <span>Processors (CPU)</span>
+            <span class="text-[10px] text-slate-400 font-mono">34</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('motherboard', null); closeFilterDrawer();">
+            <span>Motherboards</span>
+            <span class="text-[10px] text-slate-400 font-mono">16</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('ram', null); closeFilterDrawer();">
+            <span>RAM (Memory)</span>
+            <span class="text-[10px] text-slate-400 font-mono">28</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('storage', null); closeFilterDrawer();">
+            <span>Storage (SSD/HDD)</span>
+            <span class="text-[10px] text-slate-400 font-mono">22</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('gpu', null); closeFilterDrawer();">
+            <span>Graphic Cards</span>
+            <span class="text-[10px] text-slate-400 font-mono">18</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('workstation', null); closeFilterDrawer();">
+            <span>Workstations</span>
+            <span class="text-[10px] text-slate-400 font-mono">10</span>
+          </label>
+          <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 py-1" onclick="filterCategory('server', null); closeFilterDrawer();">
+            <span>Servers</span>
+            <span class="text-[10px] text-slate-400 font-mono">8</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Filter Section 2: Brands -->
+      <div class="space-y-2 pt-3 border-t border-slate-100">
+        <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Brands</h5>
+        <div class="space-y-1.5 text-xs text-slate-600 max-h-40 overflow-y-auto pr-1" id="drawer-brands-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Filter Section 3: Price Range -->
+      <div class="space-y-2 pt-3 border-t border-slate-100">
+        <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Price Range</h5>
+        <div class="space-y-1.5 text-xs text-slate-600">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="drawer_price_range" value="all" onchange="handlePriceFilter('all')" checked class="text-brand-600">
+            <span>All Prices</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="drawer_price_range" value="0-5000" onchange="handlePriceFilter('0-5000')" class="text-brand-600">
+            <span>Under ₹5,000</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="drawer_price_range" value="5000-20000" onchange="handlePriceFilter('5000-20000')" class="text-brand-600">
+            <span>₹5,000 - ₹20,000</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="drawer_price_range" value="20000-50000" onchange="handlePriceFilter('20000-50000')" class="text-brand-600">
+            <span>₹20,000 - ₹50,000</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="drawer_price_range" value="50000-999999" onchange="handlePriceFilter('50000-999999')" class="text-brand-600">
+            <span>Above ₹50,000</span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Drawer Footer Actions -->
+    <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3 shrink-0">
+      <button type="button" onclick="resetAllFilters()" class="text-xs font-bold text-slate-600 hover:text-slate-900 underline cursor-pointer">
+        Reset All
+      </button>
+      <button type="button" onclick="closeFilterDrawer()" class="bg-[#febd69] hover:bg-[#f3a847] text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl shadow transition cursor-pointer">
+        Apply Filters
+      </button>
+    </div>
+
   </div>
 
 </body>

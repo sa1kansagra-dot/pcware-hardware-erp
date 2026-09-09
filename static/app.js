@@ -5506,7 +5506,8 @@ function escapeHtml(str) {
 
 function populateSidebarBrands() {
   const container = document.getElementById("sidebar-brands-list");
-  if (!container || !state.products) return;
+  const drawerContainer = document.getElementById("drawer-brands-list");
+  if (!state.products) return;
 
   const brandCounts = {};
   state.products.forEach(p => {
@@ -5516,7 +5517,7 @@ function populateSidebarBrands() {
   });
 
   const sortedBrands = Object.keys(brandCounts).sort();
-  container.innerHTML = sortedBrands.map(brand => {
+  const markup = sortedBrands.map(brand => {
     const isChecked = state.catalogFilters.brands.includes(brand) ? "checked" : "";
     return `
       <label class="flex items-center justify-between cursor-pointer hover:text-slate-900 select-none py-0.5">
@@ -5528,6 +5529,9 @@ function populateSidebarBrands() {
       </label>
     `;
   }).join("");
+
+  if (container) container.innerHTML = markup;
+  if (drawerContainer) drawerContainer.innerHTML = markup;
 }
 
 function applyCatalogFilters() {
@@ -12705,3 +12709,30 @@ window.showProductsCatalog = showProductsCatalog;
 window.closeProductDetailPage = closeProductDetailPage;
 window.setDetailPageMainImage = setDetailPageMainImage;
 window.openProductDetailPage = openProductDetailPage;
+
+
+
+function openFilterDrawer() {
+  const backdrop = document.getElementById("filter-drawer-backdrop");
+  const drawer = document.getElementById("filter-popup-drawer");
+  if (backdrop) backdrop.classList.remove("hidden");
+  if (drawer) {
+    drawer.classList.remove("-translate-x-full");
+    drawer.classList.add("translate-x-0");
+  }
+}
+
+function closeFilterDrawer() {
+  const backdrop = document.getElementById("filter-drawer-backdrop");
+  const drawer = document.getElementById("filter-popup-drawer");
+  if (drawer) {
+    drawer.classList.remove("translate-x-0");
+    drawer.classList.add("-translate-x-full");
+  }
+  if (backdrop) {
+    setTimeout(() => backdrop.classList.add("hidden"), 200);
+  }
+}
+
+window.openFilterDrawer = openFilterDrawer;
+window.closeFilterDrawer = closeFilterDrawer;
