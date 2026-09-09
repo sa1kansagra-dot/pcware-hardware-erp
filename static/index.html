@@ -107,282 +107,149 @@
 <body class="min-h-full flex flex-col font-sans antialiased bg-slate-50 selection:bg-brand-500 selection:text-white pb-16 md:pb-0">
 
   <!-- Top Announcement Bar (Amazon Utility Strip) -->
-  <div class="bg-slate-100 text-slate-600 text-xs py-1.5 px-3 sm:px-6 border-b border-slate-200">
+  <div class="bg-[#0b0f19] text-slate-300 text-xs py-1.5 px-3 sm:px-6 border-b border-slate-800">
     <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
       <div class="flex items-center space-x-3 text-[11px] sm:text-xs">
         <span class="flex items-center text-emerald-400 font-medium">
           <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span>
           Store & Lab: 10:00 AM - 8:30 PM (Suvarnabhumi Complex, Rajkot)
         </span>
-        <span class="hidden md:inline text-slate-600">|</span>
-        <span class="hidden md:inline-flex items-center gap-1.5 text-slate-600"><svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span>4-Hour Express Delivery in Rajkot</span></span>
       </div>
       
       <!-- Quick Utility Access Links -->
       <div class="flex flex-wrap items-center gap-3 text-[11px]">
-        <button type="button" onclick="openCustomerPortalModal()" class="flex items-center gap-1.5 text-indigo-700 hover:text-indigo-900 font-semibold transition cursor-pointer">
+        <button type="button" onclick="openCustomerPortalModal()" class="flex items-center gap-1 text-indigo-300 hover:text-white font-semibold transition cursor-pointer">
           <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-          <span class="underline underline-offset-2">Customer Login</span>
+          <span class="underline underline-offset-2">Customer Login (ગ્રાહક પોર્ટલ)</span>
         </button>
-        <span class="text-slate-600">|</span>
-        <button type="button" onclick="switchView('admin')" class="flex items-center gap-1.5 text-amber-700 hover:text-amber-900 font-semibold transition cursor-pointer">
+        <span class="text-slate-700">|</span>
+        <button type="button" onclick="switchView('admin')" class="flex items-center gap-1 text-amber-300 hover:text-white font-semibold transition cursor-pointer">
           <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-          <span class="underline underline-offset-2">Staff / Admin ERP</span>
+          <span class="underline underline-offset-2">Staff / Admin ERP (સ્ટાફ લૉગિન)</span>
         </button>
-        <span class="hidden lg:inline text-slate-600">|</span>
-        <span class="hidden lg:inline text-slate-600">👔 CEO: <strong class="text-slate-900 font-bold">+91 94261 83934</strong></span>
-        <span class="hidden lg:inline-flex items-center gap-1.5 text-slate-600"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>Service: <strong class="text-slate-900 font-bold">+91 80007 80704</strong></span></span>
       </div>
     </div>
   </div>
 
-  <!-- Amazon-Style Primary Dark Header -->
-  <header class="sticky top-0 z-40 bg-white text-slate-900 shadow-sm border-b border-slate-200">
+  <!-- Primary Dark Header (#0b0f19) -->
+  <header class="sticky top-0 z-40 bg-[#0b0f19] text-white shadow-lg border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       
-      <!-- DESKTOP HEADER ROW (sm and up) -->
+      <!-- DESKTOP HEADER ROW -->
       <div class="hidden sm:flex items-center justify-between h-16 sm:h-[68px] gap-3 sm:gap-4">
         
-        <!-- Brand Logo & Deliver-To Widget -->
-        <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Brand Logo -->
+        <div class="flex items-center space-x-2 shrink-0">
           <div class="flex items-center space-x-2 cursor-pointer p-1.5 rounded hover:outline hover:outline-1 hover:outline-white/40 transition" onclick="showLandingCategoryHub()">
             <img src="/static/logo.svg" alt="PCWARE" class="h-10 sm:h-11 w-auto object-contain">
-            <div class="leading-none">
-              <div class="font-black text-xl sm:text-2xl tracking-tight text-white flex items-center gap-1.5 leading-none">
-                <span>PCWARE</span>
-              </div>
-              <div class="text-[11px] font-bold text-amber-400 tracking-wider lowercase mt-0.5 italic">everywhere</div>
-              <p class="hidden sm:block text-[9px] text-slate-600 font-medium tracking-tight mt-0.5">Hardware, Custom PC & IT Care Solutions</p>
-            </div>
-          </div>
-
-          <!-- Deliver to Rajkot Location Widget -->
-          <div class="hidden xl:flex items-center gap-1.5 p-1.5 rounded hover:outline hover:outline-1 hover:outline-white/40 transition cursor-pointer" onclick="showDeliveryPincodeModal()">
-            <svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <div class="leading-tight text-left">
-              <span class="block text-[10px] text-slate-600">Deliver to</span>
-              <span class="block text-xs font-bold text-slate-900 whitespace-nowrap">Rajkot 360005</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-black text-xl sm:text-2xl tracking-tight text-white leading-none">PCWARE</span>
+              <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#f59e0b] text-slate-950 uppercase tracking-wider">STORE</span>
             </div>
           </div>
         </div>
 
-        <!-- Central Massive Amazon Search Bar -->
+        <!-- Central Search Bar -->
         <div class="flex-1 max-w-2xl mx-1 sm:mx-2">
-          <form onsubmit="handleAmazonSearch(event)" class="flex items-center w-full h-10 sm:h-11 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#f90] shadow-sm">
-            <!-- Category Dropdown on Left -->
-            <select id="header-search-cat" onchange="handleAmazonCatChange()" class="h-full bg-[#e6e6e6] hover:bg-[#d4d4d4] text-slate-900 text-xs font-semibold px-3 border-r border-slate-300 outline-none cursor-pointer max-w-[135px]">
-              <option value="all">All Categories</option>
-              <option value="laptop">Laptops</option>
-              <option value="desktop">Desktop PCs</option>
-              <option value="aio">All-in-One PCs</option>
-              <option value="screen_accessory">Monitors & Acc</option>
-              <option value="processor">Processors (CPU)</option>
-              <option value="antivirus_software">Antivirus & Security</option>
-              <option value="motherboard">Motherboards</option>
-              <option value="ram">RAM Memory</option>
-              <option value="storage">SSD Storage</option>
-              <option value="gpu">Graphic Cards</option>
-              <option value="cabinet">Cabinets</option>
-              <option value="workstation">Workstations</option>
-              <option value="server">Servers</option>
-            </select>
-            
+          <form onsubmit="handleAmazonSearch(event)" class="flex items-center w-full h-10 sm:h-11 rounded-xl overflow-hidden shadow-sm bg-white border border-slate-200">
             <!-- Search Input -->
-            <input type="text" id="header-search-input" oninput="debounceProductSearch(this.value)" placeholder="Search PC parts, Intel i5, Ryzen, RTX 4060, ThinkPad, 1TB SSD..." class="flex-1 h-full px-3.5 text-xs sm:text-sm text-slate-900 bg-white outline-none placeholder:text-slate-600">
+            <input type="text" id="header-search-input" oninput="debounceProductSearch(this.value)" placeholder="Search PC parts, Intel i5, Ryzen, RTX 4060, ThinkPad, 1TB SSD..." class="flex-1 h-full px-4 text-xs sm:text-sm text-slate-900 bg-white outline-none placeholder:text-slate-400 font-medium">
             
-            <!-- Amazon Amber Search Button -->
-            <button type="submit" class="h-full bg-[#febd69] hover:bg-[#f3a847] text-slate-950 px-4 sm:px-5 flex items-center justify-center transition cursor-pointer shrink-0 font-bold" title="Search">
-              <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <!-- Amber Search Button -->
+            <button type="submit" class="h-full bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 px-5 flex items-center justify-center transition cursor-pointer shrink-0 font-bold" title="Search">
+              <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
           </form>
         </div>
 
-        <!-- Right Side: Language, Account, Orders, Staff & Cart -->
-        <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
+        <!-- Right Side Widgets -->
+        <div class="flex items-center space-x-2 shrink-0">
           
-          <!-- Language Toggle Switcher -->
-          <div class="flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-xs font-bold">
-            <button type="button" id="btn-lang-en" onclick="setLanguage('en')" class="px-2 py-1 rounded transition cursor-pointer bg-amber-400 text-slate-950 font-bold text-xs">EN</button>
-            <button type="button" id="btn-lang-gu" onclick="setLanguage('gu')" class="px-2 py-1 rounded transition cursor-pointer text-slate-600 hover:text-slate-950 text-xs font-semibold">GU</button>
-          </div>
-
-          <!-- 👤 CUSTOMER: Amazon-Style Account & Invoices Widget -->
-          <button type="button" onclick="openCustomerPortalModal()" id="btn-header-myaccount" class="p-1.5 sm:px-2.5 sm:py-1 rounded hover:outline hover:outline-1 hover:outline-white/40 transition cursor-pointer text-left" title="Customer Self-Service Portal, Invoices & Warranty">
-            <span class="block text-[10px] text-slate-500 leading-tight" id="header-greet">Hello, Sign in</span>
-            <span class="block text-xs sm:text-sm font-bold text-white leading-tight whitespace-nowrap flex items-center gap-1">
-              <span id="header-myaccount-text" class="text-slate-900">Account & Orders</span>
-              <span class="text-[9px] text-slate-600">▼</span>
+          <!-- 👤 Account & Orders Widget -->
+          <button type="button" onclick="openCustomerPortalModal()" id="btn-header-myaccount" class="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-left" title="Customer Portal">
+            <span class="block text-[10px] text-slate-400 leading-tight" id="header-greet">Hello, My Account</span>
+            <span class="block text-xs font-bold text-white leading-tight whitespace-nowrap flex items-center gap-1.5">
+              <span id="header-myaccount-text">Account & Orders</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="text-[9px] text-slate-400">▼</span>
             </span>
           </button>
 
-          <!-- 🔍 Returns & Job-Sheet Tracker Widget -->
-          <button type="button" onclick="switchView('track')" class="hidden md:block p-1.5 sm:px-2.5 sm:py-1 rounded hover:outline hover:outline-1 hover:outline-white/40 transition cursor-pointer text-left" title="Repair & Job Sheet Tracker">
-            <span class="block text-[10px] text-slate-500 leading-tight">Returns &</span>
-            <span class="block text-xs sm:text-sm font-bold text-white leading-tight whitespace-nowrap">Job-Sheets</span>
-          </button>
-
-          <!-- 🔐 Staff / Admin ERP Widget -->
-          <button type="button" data-nav="admin" onclick="switchView('admin')" id="nav-admin" class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-left transition cursor-pointer flex items-center gap-2 group shadow-sm" title="Enterprise Staff & Admin ERP Portal">
-            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-slate-950 transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            </div>
-            <div>
-              <span class="block text-[9px] text-amber-400 font-black uppercase tracking-wider leading-tight">Staff Access</span>
-              <span class="block text-xs font-bold text-slate-200 leading-tight whitespace-nowrap">ERP Portal</span>
+          <!-- 🔐 Staff ERP Portal Button -->
+          <button type="button" onclick="switchView('admin')" id="nav-admin" class="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-left transition cursor-pointer flex items-center gap-1.5 shadow-xs" title="Staff ERP Portal">
+            <span class="text-xs">🔐</span>
+            <div class="leading-none">
+              <span class="block text-[9px] text-amber-400 font-black uppercase tracking-wider">STAFF</span>
+              <span class="block text-xs font-bold text-slate-200">ERP Portal</span>
             </div>
           </button>
 
-          <!-- 🛒 Amazon Shopping Cart Button -->
-          <button type="button" onclick="toggleCartDrawer(true)" class="p-1.5 sm:px-2.5 sm:py-1 rounded hover:outline hover:outline-1 hover:outline-white/40 transition cursor-pointer flex items-center gap-1.5 relative" title="View Shopping Cart">
+          <!-- 🛒 Shopping Cart Button -->
+          <button type="button" onclick="toggleCartDrawer(true)" class="p-2 rounded-xl hover:bg-white/10 transition cursor-pointer flex items-center gap-1 relative" title="View Cart">
             <div class="relative">
-              <svg class="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
               </svg>
-              <span id="cart-badge" class="absolute -top-1 left-3 sm:left-3.5 bg-[#f08804] text-slate-950 font-black text-[11px] rounded-full w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center shadow-sm">0</span>
+              <span id="cart-badge" class="absolute -top-1.5 -right-1 bg-[#f59e0b] text-slate-950 font-black text-[11px] rounded-full w-4.5 h-4.5 flex items-center justify-center shadow-xs">0</span>
             </div>
-            <span class="hidden sm:inline font-bold text-xs sm:text-sm text-white pt-2.5">Cart</span>
           </button>
 
         </div>
 
-      </div>
-
-      <!-- MOBILE 2-TIER HEADER (screens < sm) -->
-      <div class="sm:hidden py-2 space-y-2">
-        <!-- Row 1: Menu + Logo + Customer Icon + Cart -->
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <!-- Mobile Hamburger Menu Button -->
-            <button type="button" onclick="openMobileNavDrawer()" class="p-1.5 rounded-lg text-slate-200 hover:text-slate-950 hover:bg-slate-200/70 transition cursor-pointer active:scale-95" title="Open Categories Menu">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-            </button>
-            
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-1.5 cursor-pointer" onclick="switchView('catalog')">
-              <img src="/static/logo.svg" alt="PCWARE" class="h-8 w-auto object-contain">
-              <div class="font-black text-base tracking-tight text-white flex items-center gap-1 leading-none">
-                <span>PCWARE</span>
-                <span class="text-[8px] font-bold px-1 py-0.2 rounded bg-amber-400 text-slate-950 uppercase">STORE</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Mobile Actions: Language + Admin ERP + Account + Cart -->
-          <div class="flex items-center gap-1.5">
-            <!-- Mobile Admin ERP Button -->
-            <button type="button" onclick="switchView('admin')" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black text-xs flex items-center gap-1 shadow-md active:scale-95 cursor-pointer border border-amber-300" title="Open Staff & Admin ERP">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-              <span>ERP</span>
-            </button>
-
-            <!-- Mobile Language Switcher -->
-            <div class="flex items-center bg-slate-800 p-0.5 rounded-md border border-slate-700 text-[10px] font-bold">
-              <button type="button" id="btn-lang-en-mob" onclick="setLanguage('en')" class="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-bold">EN</button>
-              <button type="button" id="btn-lang-gu-mob" onclick="setLanguage('gu')" class="px-1.5 py-0.5 rounded text-slate-600">GU</button>
-            </div>
-
-            <!-- Customer Portal Icon -->
-            <button type="button" onclick="openCustomerPortalModal()" class="p-1.5 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-slate-200/70 transition cursor-pointer" title="Customer Portal">
-              <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-            </button>
-
-            <!-- Cart Button -->
-            <button type="button" onclick="toggleCartDrawer(true)" class="p-1.5 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-slate-200/70 transition cursor-pointer relative" title="Shopping Cart">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-              <span id="cart-badge-mob" class="absolute -top-0.5 -right-0.5 bg-[#f08804] text-slate-950 font-black text-[10px] rounded-full w-4 h-4 flex items-center justify-center shadow-xs">0</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Row 2: Mobile Full-Width Search Bar -->
-        <form onsubmit="handleAmazonSearch(event)" class="flex items-center w-full h-10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#f90] shadow-sm">
-          <input type="text" id="header-search-input-mob" oninput="debounceProductSearch(this.value)" placeholder="Search Laptops, CPUs, SSDs, RTX 4060..." class="flex-1 h-full px-3 text-xs text-slate-900 bg-white outline-none placeholder:text-slate-600">
-          <button type="submit" class="h-full bg-[#febd69] hover:bg-[#f3a847] text-slate-950 px-3.5 flex items-center justify-center transition cursor-pointer shrink-0 font-bold" title="Search">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          </button>
-        </form>
       </div>
 
     </div>
 
-    <!-- Amazon Secondary Sub-Header Ribbon (#232f3e) -->
-    <div class="bg-slate-50 text-slate-800 text-xs font-medium border-t border-b border-slate-200 shadow-2xs">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 py-1.5 overflow-x-auto no-scrollbar touch-scroll">
-        <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-          <button type="button" onclick="openMobileNavDrawer()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 font-bold transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+    <!-- Sub-Header Ribbon Navigation (#1e293b) -->
+    <div class="bg-[#1e293b] text-slate-200 text-xs font-semibold border-t border-slate-700/60 shadow-inner">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 py-2 overflow-x-auto no-scrollbar touch-scroll">
+        <div class="flex items-center space-x-1 sm:space-x-3 shrink-0">
+          
+          <button type="button" onclick="openMobileNavDrawer()" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap font-bold">
+            <span>☰</span>
             <span>All Categories</span>
           </button>
           
-          <button type="button" onclick="filterCategory('laptop', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
+          <button type="button" onclick="filterCategory('laptop', null)" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap">
+            <span>💻</span>
             <span>Laptops</span>
           </button>
 
-          <button type="button" onclick="filterCategory('desktop', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-            <span>Desktop PCs</span>
-          </button>
-
-          <button type="button" onclick="filterCategory('aio', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
-            <span>All-in-One</span>
-          </button>
-
-          <button type="button" onclick="filterCategory('screen_accessory', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            <span>Monitors &amp; Acc</span>
-          </button>
-          
-          <button type="button" onclick="switchView('builder')" class="px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap text-amber-300 font-bold flex items-center gap-1.5 bg-amber-400/10 border border-amber-400/20">
-            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+          <button type="button" onclick="switchView('builder')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap text-amber-400 font-bold">
+            <span>⚡</span>
             <span>Custom PC Builder</span>
           </button>
           
-          <button type="button" onclick="filterCategory('processor', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"/></svg>
+          <button type="button" onclick="filterCategory('processor', null)" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap">
+            <span>🧠</span>
             <span>Processors</span>
           </button>
 
-          <button type="button" onclick="filterCategory('antivirus_software', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-            <span>Antivirus</span>
-          </button>
-
-          <button type="button" onclick="filterCategory('gpu', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.75 5.1a3 3 0 012.4-1.35h7.7a3 3 0 012.4 1.35l2.1 3.45c.6.9.9 1.8.9 2.7"/></svg>
+          <button type="button" onclick="filterCategory('gpu', null)" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap">
+            <span>🎮</span>
             <span>Graphic Cards</span>
           </button>
           
-          <button type="button" onclick="filterCategory('storage', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
+          <button type="button" onclick="filterCategory('storage', null)" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap">
+            <span>🚀</span>
             <span>NVMe SSDs</span>
           </button>
 
-          <button type="button" onclick="switchView('track')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233l2.802-2.803a3.75 3.75 0 00-5.304-5.303l-2.802 2.802m4.102 4.102l-4.102-4.102"/></svg>
+          <button type="button" onclick="switchView('track')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap">
+            <span>🛠️</span>
             <span>Repair Lab</span>
           </button>
 
-          <button type="button" onclick="filterCategory('workstation', null)" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap">
-            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
+          <button type="button" onclick="filterCategory('workstation', null)" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap">
+            <span>🖥️</span>
             <span>Workstations</span>
           </button>
 
-          <button type="button" onclick="document.getElementById('section-comparison').scrollIntoView({behavior: 'smooth'})" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-200/70 transition cursor-pointer whitespace-nowrap text-orange-300">
-            <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+          <button type="button" onclick="document.getElementById('section-comparison').scrollIntoView({behavior: 'smooth'})" class="flex items-center gap-1.5 px-3 py-1 rounded-lg hover:bg-white/10 transition cursor-pointer whitespace-nowrap text-slate-300">
+            <span>🛡️</span>
             <span>Why PCWARE?</span>
           </button>
-        </div>
 
-        <div class="hidden xl:flex items-center gap-2 text-[11px] text-amber-300 font-semibold shrink-0">
-          <span class="inline-flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>100% Genuine Hardware & Warranty</span></span>
-          <span>•</span>
-          <span>GST Input Tax Credit</span>
-          <span>•</span>
-          <span>Official Serial Warranty</span>
         </div>
       </div>
     </div>
