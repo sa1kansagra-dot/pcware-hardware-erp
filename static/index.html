@@ -521,396 +521,750 @@
   <!-- Main Content Body -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- VIEW 1: E-COMMERCE HARDWARE CATALOG -->
-        <!-- VIEW 1: E-COMMERCE HARDWARE CATALOG (AMAZON STYLE) -->
+    <!-- VIEW 1: E-COMMERCE HARDWARE CATALOG & CATEGORY LANDING HUB -->
     <section id="view-catalog" class="space-y-8">
       
-      <!-- 1. AMAZON DYNAMIC HERO PROMO BANNER -->
-      <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#0d1424] via-[#1a2b4c] to-[#0d1424] text-white shadow-xl border border-slate-800">
-        <!-- Background Glow Accent -->
-        <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-20 -top-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="relative z-10 px-6 sm:px-10 pt-8 sm:pt-10 pb-16 sm:pb-24 max-w-3xl space-y-4">
-          <div class="flex items-center gap-2">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-amber-400 text-slate-950 uppercase tracking-wider shadow-sm">
-              MEGA HARDWARE FEST
-            </span>
-            <span class="text-xs text-slate-300 font-medium">Up to 35% Off • Rajkot Same-Day Delivery</span>
-          </div>
-          
-          <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
-            Top-Tier Laptops, Gaming Parts & Workstations
-          </h1>
-          
-          <p class="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed">
-            Intel 14th Gen Core i9, AMD Ryzen 7000, Nvidia RTX 40-Series GPUs, Enterprise ThinkPads, and Ultra-Fast Gen4 NVMe SSDs in ready stock with official serial warranty.
-          </p>
-          
-          <div class="pt-2 flex flex-wrap items-center gap-3">
-            <button type="button" onclick="filterCategory('laptop', null); window.scrollTo({top: 650, behavior:'smooth'})" class="bg-[#febd69] hover:bg-[#f3a847] text-slate-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer">
-              <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              <span>Explore Laptops</span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-            <button type="button" onclick="switchView('builder')" class="bg-white/10 hover:bg-white/20 text-white border border-white/25 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl transition flex items-center gap-2 cursor-pointer">
-              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              <span>Configure Custom PC</span>
-            </button>
-            <button type="button" onclick="document.getElementById('section-comparison').scrollIntoView({behavior:'smooth'})" class="text-slate-300 hover:text-white text-xs sm:text-sm font-semibold px-3 py-3 transition flex items-center gap-1.5 cursor-pointer">
-              <span>Why PCWARE?</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. AMAZON SIGNATURE 4-QUADRANT FEATURE TILES OVERLAY -->
-      <div class="-mt-12 sm:-mt-16 relative z-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2 sm:px-4">
+      <!-- SUBVIEW 1: LANDING PAGE CATEGORY SHOWCASE HUB -->
+      <div id="subview-categories-landing" class="space-y-8">
         
-        <!-- Tile 1: Business Laptops -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
-          <div>
-            <h3 class="font-extrabold text-slate-900 text-base group-hover:text-brand-600 transition">
-              Business Laptops
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">ThinkPad, Latitude & ProBook</p>
-            <div class="my-3 h-32 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2">
-              <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400" alt="Laptops" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-            </div>
-            <span class="text-xs font-bold text-emerald-600">Starting from ₹38,000</span>
-          </div>
-          <button type="button" onclick="filterCategory('laptop', null)" class="mt-3 text-xs font-bold text-brand-600 hover:text-brand-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
-            <span>See all models</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </button>
-        </div>
+        <!-- 1. AMAZON DYNAMIC HERO PROMO BANNER -->
+        <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#0d1424] via-[#1a2b4c] to-[#0d1424] text-white shadow-xl border border-slate-800">
+          <!-- Background Glow Accent -->
+          <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-20 -top-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- Tile 2: Custom PC Builder -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
-          <div>
-            <h3 class="font-extrabold text-slate-900 text-base group-hover:text-indigo-600 transition">
-              Custom Gaming & AI PCs
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">RTX 4070, Ryzen & Liquid Cooler</p>
-            <div class="my-3 h-32 bg-indigo-50/50 rounded-xl overflow-hidden flex items-center justify-center p-2">
-              <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Custom PC" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-            </div>
-            <span class="text-xs font-bold text-indigo-600">Live Wattage & Compatibility</span>
-          </div>
-          <button type="button" onclick="switchView('builder')" class="mt-3 text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
-            <span>Build custom PC</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </button>
-        </div>
-
-        <!-- Tile 3: High-Speed Storage & RAM -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
-          <div>
-            <h3 class="font-extrabold text-slate-900 text-base group-hover:text-amber-600 transition">
-              SSD & RAM Speed Boost
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">Gen4 NVMe 1TB/2TB & DDR5</p>
-            <div class="my-3 h-32 bg-amber-50/40 rounded-xl overflow-hidden flex items-center justify-center p-2">
-              <img src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400" alt="SSD RAM" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-            </div>
-            <span class="text-xs font-bold text-amber-600">Upgrades from ₹1,750</span>
-          </div>
-          <button type="button" onclick="filterCategory('storage', null)" class="mt-3 text-xs font-bold text-amber-600 hover:text-amber-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
-            <span>Shop SSDs & Memory</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </button>
-        </div>
-
-        <!-- Tile 4: Chip-Level Service Lab -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
-          <div>
-            <h3 class="font-extrabold text-slate-900 text-base group-hover:text-emerald-600 transition">
-              Chip-Level Repair Lab
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">Screen, Motherboard & IC Repair</p>
-            <div class="my-3 h-32 bg-emerald-50/40 rounded-xl overflow-hidden flex items-center justify-center p-2">
-              <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400" alt="Service Lab" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-            </div>
-            <span class="text-xs font-bold text-emerald-600">Free Diagnosis & Fast Delivery</span>
-          </div>
-          <button type="button" onclick="switchView('track')" class="mt-3 text-xs font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
-            <span>Track or book repair</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- 3. HORIZONTAL CATEGORY ICONS BAR -->
-      <div class="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs">
-        <div class="flex flex-wrap items-center gap-2 pb-1" id="category-pills">
-          <button type="button" onclick="filterCategory('all', this)" class="cat-pill active px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition flex items-center gap-2 cursor-pointer shrink-0">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
-            <span>All Products</span>
-          </button>
-          <button type="button" onclick="filterCategory('laptop', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
-            <span>Laptops (56)</span>
-          </button>
-          <button type="button" onclick="filterCategory('desktop', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-            <span>Desktop PCs (25)</span>
-          </button>
-          <button type="button" onclick="filterCategory('aio', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
-            <span>All-in-One (20)</span>
-          </button>
-          <button type="button" onclick="filterCategory('screen_accessory', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            <span>Screens &amp; Acc (30)</span>
-          </button>
-          <button type="button" onclick="filterCategory('processor', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"/></svg>
-            <span>Processors (34)</span>
-          </button>
-          <button type="button" onclick="filterCategory('motherboard', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/></svg>
-            <span>Motherboards</span>
-          </button>
-          <button type="button" onclick="filterCategory('ram', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3.75v16.5M9 3.75v16.5M12 3.75v16.5M15 3.75v16.5M18 3.75v16.5M3 7.5h18M3 16.5h18"/></svg>
-            <span>RAM Memory</span>
-          </button>
-          <button type="button" onclick="filterCategory('storage', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
-            <span>NVMe SSDs</span>
-          </button>
-          <button type="button" onclick="filterCategory('gpu', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.75 5.1a3 3 0 012.4-1.35h7.7a3 3 0 012.4 1.35l2.1 3.45c.6.9.9 1.8.9 2.7"/></svg>
-            <span>Graphic Cards</span>
-          </button>
-          <button type="button" onclick="filterCategory('cabinet', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
-            <span>Cabinets</span>
-          </button>
-          <button type="button" onclick="filterCategory('cooler', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3m15.364 6.364l-12.728-12.728m12.728 0L5.636 18.364"/></svg>
-            <span>Coolers</span>
-          </button>
-          <button type="button" onclick="filterCategory('workstation', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
-            <span>Workstations</span>
-          </button>
-          <button type="button" onclick="filterCategory('server', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.75 5.1a3 3 0 012.4-1.35h7.7a3 3 0 012.4 1.35l2.1 3.45c.6.9.9 1.8.9 2.7"/></svg>
-            <span>Servers</span>
-          </button>
-          <button type="button" onclick="filterCategory('antivirus_software', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
-            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-            <span>Antivirus</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. 🔥 LIGHTNING DEALS STRIP (AMAZON STYLE WITH COUNTDOWN) -->
-      <div class="bg-gradient-to-r from-rose-600 via-rose-700 to-amber-600 text-white rounded-2xl p-4 sm:p-5 shadow-lg flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl animate-bounce">⚡</span>
-          <div>
+          <div class="relative z-10 px-6 sm:px-10 pt-8 sm:pt-10 pb-16 sm:pb-24 max-w-3xl space-y-4">
             <div class="flex items-center gap-2">
-              <span class="bg-white text-rose-700 text-[10px] font-black uppercase px-2 py-0.5 rounded font-mono">
-                LIMITED TIME DEAL
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-amber-400 text-slate-950 uppercase tracking-wider shadow-sm">
+                MEGA HARDWARE FEST
               </span>
-              <h3 class="text-base sm:text-lg font-black text-white">
-                Today's Flash Deals & Stock Clearances
-              </h3>
+              <span class="text-xs text-slate-300 font-medium">Up to 35% Off • Rajkot Same-Day Delivery</span>
             </div>
-            <p class="text-xs text-rose-100 mt-0.5">Top brand laptops, SSDs and DDR4 RAM at wholesale prices</p>
+            
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
+              Top-Tier Laptops, Gaming Parts & Workstations
+            </h1>
+            
+            <p class="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed">
+              Intel 14th Gen Core i9, AMD Ryzen 7000, Nvidia RTX 40-Series GPUs, Enterprise ThinkPads, and Ultra-Fast Gen4 NVMe SSDs in ready stock with official serial warranty.
+            </p>
+            
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+              <button type="button" onclick="filterCategory('laptop', null)" class="bg-[#febd69] hover:bg-[#f3a847] text-slate-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer">
+                <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span>Explore Laptops</span>
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+              <button type="button" onclick="switchView('builder')" class="bg-white/10 hover:bg-white/20 text-white border border-white/25 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span>Configure Custom PC</span>
+              </button>
+              <button type="button" onclick="document.getElementById('section-comparison').scrollIntoView({behavior:'smooth'})" class="text-slate-300 hover:text-white text-xs sm:text-sm font-semibold px-3 py-3 transition flex items-center gap-1.5 cursor-pointer">
+                <span>Why PCWARE?</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="bg-slate-950/60 backdrop-blur px-3.5 py-1.5 rounded-xl border border-white/20 text-xs font-mono font-bold flex items-center gap-1.5">
-            <span class="text-amber-300">⏳ Ends in:</span>
-            <span id="lightning-timer" class="text-white font-black tracking-wider">04h : 28m : 15s</span>
+        <!-- 2. AMAZON SIGNATURE 4-QUADRANT FEATURE TILES OVERLAY -->
+        <div class="-mt-12 sm:-mt-16 relative z-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2 sm:px-4">
+          
+          <!-- Tile 1: Business Laptops -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-base group-hover:text-brand-600 transition">
+                Business Laptops
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">ThinkPad, Latitude & ProBook</p>
+              <div class="my-3 h-32 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2">
+                <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400" alt="Laptops" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+              </div>
+              <span class="text-xs font-bold text-emerald-600">Starting from ₹38,000</span>
+            </div>
+            <button type="button" onclick="filterCategory('laptop', null)" class="mt-3 text-xs font-bold text-brand-600 hover:text-brand-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
+              <span>See all models</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
           </div>
-          <button type="button" onclick="filterCategory('all', null); window.scrollTo({top: 800, behavior:'smooth'})" class="bg-white text-rose-700 hover:bg-rose-50 font-black text-xs px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer">
-            <span>View All Deals</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+
+          <!-- Tile 2: Custom PC Builder -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-base group-hover:text-indigo-600 transition">
+                Custom Gaming & AI PCs
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">RTX 4070, Ryzen & Liquid Cooler</p>
+              <div class="my-3 h-32 bg-indigo-50/50 rounded-xl overflow-hidden flex items-center justify-center p-2">
+                <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Custom PC" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+              </div>
+              <span class="text-xs font-bold text-indigo-600">Live Wattage & Compatibility</span>
+            </div>
+            <button type="button" onclick="switchView('builder')" class="mt-3 text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
+              <span>Build custom PC</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <!-- Tile 3: High-Speed Storage & RAM -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-base group-hover:text-amber-600 transition">
+                SSD & RAM Speed Boost
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Gen4 NVMe 1TB/2TB & DDR5</p>
+              <div class="my-3 h-32 bg-amber-50/40 rounded-xl overflow-hidden flex items-center justify-center p-2">
+                <img src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400" alt="SSD RAM" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+              </div>
+              <span class="text-xs font-bold text-amber-600">Upgrades from ₹1,750</span>
+            </div>
+            <button type="button" onclick="filterCategory('storage', null)" class="mt-3 text-xs font-bold text-amber-600 hover:text-amber-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
+              <span>Shop SSDs & Memory</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <!-- Tile 4: Chip-Level Service Lab -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-md hover:shadow-xl transition flex flex-col justify-between group">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-base group-hover:text-emerald-600 transition">
+                Chip-Level Repair Lab
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Screen, Motherboard & IC Repair</p>
+              <div class="my-3 h-32 bg-emerald-50/40 rounded-xl overflow-hidden flex items-center justify-center p-2">
+                <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400" alt="Service Lab" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+              </div>
+              <span class="text-xs font-bold text-emerald-600">Free Diagnosis & Fast Delivery</span>
+            </div>
+            <button type="button" onclick="switchView('track')" class="mt-3 text-xs font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1.5 cursor-pointer pt-2 border-t border-slate-100">
+              <span>Track or book repair</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- 3. FEATURED PRODUCT CATEGORIES GRID HUB (MAIN CATEGORIES SHOWCASE) -->
+        <div id="category-showcase-hub" class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <span>🛒</span>
+                <span>Shop by Product Category (કેટેગરી પસંદ કરો)</span>
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">તમામ ઓરિજિનલ હાર્ડવેર આઇટમ્સ સીરીયલ ટ્રેકિંગ અને બ્રાન્ડ વોરંટી સાથે ઉપલબ્ધ</p>
+            </div>
+            <button type="button" onclick="filterCategory('all', null)" class="text-xs font-bold text-brand-600 hover:text-brand-800 flex items-center gap-1 cursor-pointer">
+              <span>Browse All Products</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            
+            <!-- Category 1: Laptops -->
+            <div onclick="filterCategory('laptop', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-amber-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">56 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">ThinkPad & Dell</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-amber-600 transition flex items-center gap-2">
+                  <span>💻</span> Laptops (લેપટોપ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Business ThinkPads, Dell Precision Workstations, HP ZBook & Ultrabooks</p>
+                <div class="my-2 h-36 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400" alt="Laptops" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹38,000</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-amber-600 group-hover:text-amber-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Laptops</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 2: Desktop PCs -->
+            <div onclick="filterCategory('desktop', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-brand-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-blue-100 text-blue-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">25 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Desktop PCs</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-brand-600 transition flex items-center gap-2">
+                  <span>🖥️</span> Desktop PCs (ડેસ્કટોપ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Enterprise Office Towers, Custom Gaming Rigs & Small Form Factor PCs</p>
+                <div class="my-2 h-36 bg-blue-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Desktop PCs" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹18,500</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-brand-600 group-hover:text-brand-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Desktops</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 3: All-in-One PCs -->
+            <div onclick="filterCategory('aio', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-purple-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-purple-100 text-purple-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">20 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">All-in-One</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-purple-600 transition flex items-center gap-2">
+                  <span>🖥️</span> All-in-One PCs (ઓલ-ઇન-વન)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">24" & 27" FHD Borderless Touch & Non-Touch Sleek All-in-One Computers</p>
+                <div class="my-2 h-36 bg-purple-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400" alt="All-in-One" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹42,000</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-purple-600 group-hover:text-purple-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore All-in-One</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 4: Monitors & Screens -->
+            <div onclick="filterCategory('screen_accessory', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-teal-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-teal-100 text-teal-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">30 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">4K & Gaming</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-teal-600 transition flex items-center gap-2">
+                  <span>🖥️</span> Monitors & Acc (મોનિટર)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">4K IPS Displays, High Refresh Rate Gaming Monitors & Screen Accessories</p>
+                <div class="my-2 h-36 bg-teal-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400" alt="Monitors" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹7,500</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-teal-600 group-hover:text-teal-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Monitors</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 5: Processors -->
+            <div onclick="filterCategory('processor', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-indigo-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">34 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Intel & AMD</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-indigo-600 transition flex items-center gap-2">
+                  <span>⚡</span> Processors (પ્રોસેસર)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Intel 14th Gen Core i9/i7/i5 & AMD Ryzen 7000 Series Unlocked Processors</p>
+                <div class="my-2 h-36 bg-indigo-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400" alt="Processors" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹9,800</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-indigo-600 group-hover:text-indigo-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Processors</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 6: Graphics Cards -->
+            <div onclick="filterCategory('gpu', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-emerald-100 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">18 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Nvidia RTX</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-emerald-600 transition flex items-center gap-2">
+                  <span>🎮</span> Graphic Cards (ગ્રાફિક્સ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Nvidia GeForce RTX 4090/4080/4070 Ti & Workstation Quadro Cards</p>
+                <div class="my-2 h-36 bg-emerald-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Graphics Cards" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹24,000</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore GPUs</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 7: NVMe SSDs -->
+            <div onclick="filterCategory('storage', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-amber-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">22 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Gen4 x4 NVMe</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-amber-600 transition flex items-center gap-2">
+                  <span>💾</span> NVMe SSDs (એનવીએમઇ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Samsung 990 Pro, Crucial P3 Plus & Kingston 7400MB/s M.2 SSDs</p>
+                <div class="my-2 h-36 bg-amber-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400" alt="NVMe SSDs" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹2,850</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-amber-600 group-hover:text-amber-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore SSDs</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 8: RAM Memory -->
+            <div onclick="filterCategory('ram', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-cyan-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-cyan-100 text-cyan-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">28 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">DDR4 & DDR5</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-cyan-600 transition flex items-center gap-2">
+                  <span>🧠</span> RAM Memory (રેમ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Corsair Vengeance, G.Skill Trident & Kingston Fury DDR4 / DDR5 Modules</p>
+                <div class="my-2 h-36 bg-cyan-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1562976540-1502c2145186?w=400" alt="RAM Memory" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹1,750</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-cyan-600 group-hover:text-cyan-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore RAM</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 9: Motherboards -->
+            <div onclick="filterCategory('motherboard', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-rose-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-rose-100 text-rose-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">16 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">ASUS & MSI</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-rose-600 transition flex items-center gap-2">
+                  <span>🔌</span> Motherboards (મધરબોર્ડ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Intel Z790/B760 & AMD AM5 X670 WiFi Gaming Motherboards</p>
+                <div class="my-2 h-36 bg-rose-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400" alt="Motherboards" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹8,200</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-rose-600 group-hover:text-rose-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Motherboards</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 10: Gaming Cabinets -->
+            <div onclick="filterCategory('cabinet', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-slate-100 text-slate-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">14 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Lian Li & NZXT</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-slate-700 transition flex items-center gap-2">
+                  <span>📦</span> Cabinets (કેબિનેટ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Dual Chamber Glass Cabinets, Mesh Airflow & ARGB Towers</p>
+                <div class="my-2 h-36 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" alt="Cabinets" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹3,200</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-slate-700 group-hover:text-slate-950 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Cabinets</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 11: Liquid Coolers -->
+            <div onclick="filterCategory('cooler', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-sky-400 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-sky-100 text-sky-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">12 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">360mm AIO</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-sky-600 transition flex items-center gap-2">
+                  <span>❄️</span> Coolers (કુલર)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">DeepCool 360mm ARGB AIO Liquid Coolers & Noctua Dual Tower Coolers</p>
+                <div class="my-2 h-36 bg-sky-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400" alt="Coolers" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹2,100</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-sky-600 group-hover:text-sky-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Coolers</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 12: Enterprise Workstations -->
+            <div onclick="filterCategory('workstation', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-indigo-500 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-indigo-100 text-indigo-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">10 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Dell Precision</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-indigo-600 transition flex items-center gap-2">
+                  <span>🏢</span> Workstations (વર્કસ્ટેશન)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Dell Precision 7000/9000 Towers with Xeon, ECC RAM & Nvidia RTX Ada</p>
+                <div class="my-2 h-36 bg-indigo-50/40 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400" alt="Workstations" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹95,000</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-indigo-600 group-hover:text-indigo-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Workstations</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 13: Enterprise Servers -->
+            <div onclick="filterCategory('server', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-500 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-slate-200 text-slate-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">8 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">PowerEdge</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-slate-800 transition flex items-center gap-2">
+                  <span>🖧</span> Servers (સર્વર)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Dell PowerEdge Rack & Tower Servers for Enterprise Cloud & ERP</p>
+                <div class="my-2 h-36 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400" alt="Servers" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹1,45,000</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-slate-800 group-hover:text-slate-950 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Servers</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+            <!-- Category 14: Antivirus & Security -->
+            <div onclick="filterCategory('antivirus_software', null)" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-500 transition duration-200 flex flex-col justify-between group cursor-pointer relative overflow-hidden">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="bg-emerald-100 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">15 Products</span>
+                  <span class="text-[11px] font-bold text-slate-400">Quick Heal & K7</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-emerald-600 transition flex items-center gap-2">
+                  <span>🛡️</span> Antivirus (એન્ટીવાયરસ)
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2">Quick Heal Total Security 1/3-Yr, Net Protector & K7 License Keys</p>
+                <div class="my-2 h-36 bg-emerald-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                  <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=400" alt="Antivirus" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="text-xs font-bold text-emerald-700">Starting from ₹450</div>
+              </div>
+              <div class="mt-3 text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 pt-2.5 border-t border-slate-100">
+                <span>Explore Antivirus</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Big Bottom Banner: Browse All 65 Products -->
+          <div class="mt-6 bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 text-white rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-brand-500/30">
+            <div>
+              <h3 class="text-lg font-black">અમારા તમામ ૬૫+ હાર્ડવેર આઇટમ્સ એકસાથે જુઓ</h3>
+              <p class="text-xs text-slate-300 mt-1">બ્રાન્ડ, કિંમત અને સ્પેસિફિકેશન મુજબ ફિલ્ટર કરવા માટે ઓલ-પ્રોડક્ટ્સ પેજ ખોલો</p>
+            </div>
+            <button type="button" onclick="filterCategory('all', null)" class="bg-[#ffd814] hover:bg-[#f7ca00] text-slate-950 font-black text-xs px-6 py-3 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer shrink-0 border border-[#fcd200]">
+              <span>View All Hardware Catalog</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- 4. 🔥 LIGHTNING DEALS STRIP (AMAZON STYLE WITH COUNTDOWN) -->
+        <div class="bg-gradient-to-r from-rose-600 via-rose-700 to-amber-600 text-white rounded-2xl p-4 sm:p-5 shadow-lg flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl animate-bounce">⚡</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="bg-white text-rose-700 text-[10px] font-black uppercase px-2 py-0.5 rounded font-mono">
+                  LIMITED TIME DEAL
+                </span>
+                <h3 class="text-base sm:text-lg font-black text-white">
+                  Today's Flash Deals & Stock Clearances
+                </h3>
+              </div>
+              <p class="text-xs text-rose-100 mt-0.5">Top brand laptops, SSDs and DDR4 RAM at wholesale prices</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="bg-slate-950/60 backdrop-blur px-3.5 py-1.5 rounded-xl border border-white/20 text-xs font-mono font-bold flex items-center gap-1.5">
+              <span class="text-amber-300">⏳ Ends in:</span>
+              <span id="lightning-timer" class="text-white font-black tracking-wider">04h : 28m : 15s</span>
+            </div>
+            <button type="button" onclick="filterCategory('all', null)" class="bg-white text-rose-700 hover:bg-rose-50 font-black text-xs px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer">
+              <span>View All Deals</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <!-- END SUBVIEW 1: LANDING PAGE CATEGORY SHOWCASE HUB -->
+
+
+      <!-- SUBVIEW 2: DEDICATED AMAZON PRODUCT LISTING PAGE WITH FILTERS -->
+      <div id="subview-products-catalog" class="hidden space-y-6">
+        
+        <!-- Breadcrumb & Back to Categories Header -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+              <button type="button" onclick="showLandingCategoryHub()" class="hover:text-brand-600 transition flex items-center gap-1 cursor-pointer">
+                <span>🏠 Home</span>
+              </button>
+              <span>/</span>
+              <span id="catalog-active-cat-title" class="text-slate-900 font-extrabold">All Hardware Products</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-black text-slate-900" id="catalog-count-label">
+              Showing hardware products
+            </h2>
+          </div>
+
+          <button type="button" onclick="showLandingCategoryHub()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer border border-slate-300 shadow-2xs">
+            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+            <span>← Back to All Categories (કેટેગરી પસંદગી)</span>
           </button>
         </div>
-      </div>
 
-      <!-- 5. AMAZON 2-COLUMN SHOPPING GRID (LEFT FILTERS SIDEBAR + RIGHT CATALOG) -->
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        
-        <!-- LEFT COLUMN: AMAZON-STYLE FILTER SIDEBAR -->
-        <aside class="hidden lg:block bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-6 sticky top-24">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
-              <span>🎯</span>
-              <span>Filters (ફિલ્ટર્સ)</span>
-            </h4>
-            <button type="button" onclick="resetAllFilters()" class="text-[11px] font-bold text-brand-600 hover:underline cursor-pointer">
-              Reset All
+        <!-- HORIZONTAL CATEGORY PILLS BAR -->
+        <div class="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="flex flex-wrap items-center gap-2 pb-1" id="category-pills">
+            <button type="button" onclick="filterCategory('all', this)" class="cat-pill active px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition flex items-center gap-2 cursor-pointer shrink-0">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+              <span>All Products</span>
+            </button>
+            <button type="button" onclick="filterCategory('laptop', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Laptops</span>
+            </button>
+            <button type="button" onclick="filterCategory('desktop', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Desktops</span>
+            </button>
+            <button type="button" onclick="filterCategory('aio', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>All-in-One</span>
+            </button>
+            <button type="button" onclick="filterCategory('screen_accessory', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Monitors</span>
+            </button>
+            <button type="button" onclick="filterCategory('processor', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Processors</span>
+            </button>
+            <button type="button" onclick="filterCategory('gpu', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>GPUs</span>
+            </button>
+            <button type="button" onclick="filterCategory('storage', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>SSDs</span>
+            </button>
+            <button type="button" onclick="filterCategory('ram', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>RAM</span>
+            </button>
+            <button type="button" onclick="filterCategory('motherboard', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Motherboards</span>
+            </button>
+            <button type="button" onclick="filterCategory('workstation', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Workstations</span>
+            </button>
+            <button type="button" onclick="filterCategory('antivirus_software', this)" class="cat-pill px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200">
+              <span>Antivirus</span>
             </button>
           </div>
+        </div>
 
-          <!-- Filter Section 1: Categories -->
-          <div class="space-y-2">
-            <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Department</h5>
-            <div class="space-y-1.5 text-xs text-slate-600 max-h-48 overflow-y-auto pr-1">
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                <span onclick="filterCategory('all', null)" class="font-semibold text-brand-600">All Departments</span>
-                <span class="text-[10px] text-slate-400 font-mono">65</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('laptop', null)">
-                <span>Laptops</span>
-                <span class="text-[10px] text-slate-400 font-mono">4</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('processor', null)">
-                <span>Processors (CPU)</span>
-                <span class="text-[10px] text-slate-400 font-mono">10</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('motherboard', null)">
-                <span>Motherboards</span>
-                <span class="text-[10px] text-slate-400 font-mono">6</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('ram', null)">
-                <span>RAM (Memory)</span>
-                <span class="text-[10px] text-slate-400 font-mono">7</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('storage', null)">
-                <span>Storage (SSD/HDD)</span>
-                <span class="text-[10px] text-slate-400 font-mono">6</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('gpu', null)">
-                <span>Graphic Cards</span>
-                <span class="text-[10px] text-slate-400 font-mono">7</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('workstation', null)">
-                <span>Workstations</span>
-                <span class="text-[10px] text-slate-400 font-mono">3</span>
-              </label>
-              <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('server', null)">
-                <span>Servers</span>
-                <span class="text-[10px] text-slate-400 font-mono">2</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Filter Section 2: Brands (Checkboxes) -->
-          <div class="space-y-2 pt-3 border-t border-slate-100">
-            <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Brands</h5>
-            <div class="space-y-1.5 text-xs text-slate-600 max-h-40 overflow-y-auto pr-1" id="sidebar-brands-list">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-
-          <!-- Filter Section 3: Price Ranges -->
-          <div class="space-y-2 pt-3 border-t border-slate-100">
-            <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Price Range</h5>
-            <div class="space-y-1.5 text-xs text-slate-600">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="price_range" value="all" onchange="handlePriceFilter('all')" checked class="text-brand-600">
-                <span>All Prices</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="price_range" value="0-5000" onchange="handlePriceFilter('0-5000')" class="text-brand-600">
-                <span>Under ₹5,000</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="price_range" value="5000-20000" onchange="handlePriceFilter('5000-20000')" class="text-brand-600">
-                <span>₹5,000 - ₹20,000</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="price_range" value="20000-50000" onchange="handlePriceFilter('20000-50000')" class="text-brand-600">
-                <span>₹20,000 - ₹50,000</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="price_range" value="50000-999999" onchange="handlePriceFilter('50000-999999')" class="text-brand-600">
-                <span>Above ₹50,000</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Filter Section 4: Customer Ratings -->
-          <div class="space-y-2 pt-3 border-t border-slate-100">
-            <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Customer Review</h5>
-            <div class="space-y-1 text-xs text-slate-600">
-              <button type="button" onclick="handleRatingFilter(4)" class="flex items-center gap-2 hover:text-amber-600 cursor-pointer text-xs font-bold text-slate-700">
-                <div class="flex items-center gap-0.5"><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-slate-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
-                <span>4 Stars & Up</span>
-              </button>
-              <button type="button" onclick="handleRatingFilter(3)" class="flex items-center gap-2 hover:text-amber-600 cursor-pointer text-xs font-bold text-slate-700">
-                <div class="flex items-center gap-0.5"><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-slate-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-slate-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
-                <span>3 Stars & Up</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Filter Section 5: Availability -->
-          <div class="space-y-2 pt-3 border-t border-slate-100">
-            <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Availability</h5>
-            <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
-              <input type="checkbox" id="filter-in-stock" onchange="handleInStockFilter(this.checked)" checked class="rounded text-brand-600">
-              <span class="font-semibold">In Stock Only (ઇન-સ્ટોક)</span>
-            </label>
-            <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
-              <input type="checkbox" id="filter-same-day" onchange="handleSameDayFilter(this.checked)" class="rounded text-brand-600">
-              <span class="inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span>Same-Day Delivery Rajkot</span></span>
-            </label>
-          </div>
-        </aside>
-
-        <!-- RIGHT COLUMN: PRODUCTS CATALOG & STATS -->
-        <div class="lg:col-span-3 space-y-4">
+        <!-- 5. AMAZON 2-COLUMN SHOPPING GRID (LEFT FILTERS SIDEBAR + RIGHT CATALOG) -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           
-          <!-- MOBILE FILTER & QUICK SORT BAR (Visible on mobile/tablet, hidden on lg desktop) -->
-          <div class="lg:hidden bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between gap-2.5">
-            <button type="button" onclick="openMobileFilterModal()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer active:scale-95 border border-slate-200 shadow-2xs">
-              <svg class="w-4 h-4 text-brand-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-              <span>Filters (બ્રાન્ડ / કિંમત)</span>
-              <span id="mob-filter-count-badge" class="hidden text-[10px] font-black px-1.5 py-0.5 bg-brand-600 text-white rounded-full">1</span>
-            </button>
-
-            <select id="catalog-sort-mob" onchange="handleCatalogSort(this.value)" class="flex-1 text-xs font-semibold py-2 px-2.5 rounded-xl border border-slate-300 bg-white outline-none cursor-pointer">
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-              <option value="name">Name (A-Z)</option>
-            </select>
-          </div>
-
-          <!-- Catalog Sort & Count Top Bar (Desktop) -->
-          <div class="hidden lg:flex bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex-wrap items-center justify-between gap-3">
-            <div class="text-xs text-slate-600">
-              <span id="catalog-count-label" class="font-bold text-slate-900">Showing all hardware products</span>
-              <span class="hidden sm:inline text-slate-400"> • All prices include 18% GST</span>
+          <!-- LEFT COLUMN: AMAZON-STYLE FILTER SIDEBAR -->
+          <aside class="hidden lg:block bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-6 sticky top-24">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                <span>🎯</span>
+                <span>Filters (ફિલ્ટર્સ)</span>
+              </h4>
+              <button type="button" onclick="resetAllFilters()" class="text-[11px] font-bold text-brand-600 hover:underline cursor-pointer">
+                Reset All
+              </button>
             </div>
 
-            <!-- Sort Selector -->
-            <div class="flex items-center gap-2">
-              <label class="text-xs font-bold text-slate-700 whitespace-nowrap">Sort by:</label>
-              <select id="catalog-sort" onchange="handleCatalogSort(this.value)" class="text-xs font-semibold p-2 rounded-xl border border-slate-300 bg-white outline-none cursor-pointer">
-                <option value="featured">Featured (વિશેષ પસંદગી)</option>
-                <option value="price-asc">Price: Low to High (સૌથી ઓછી કિંમત)</option>
-                <option value="price-desc">Price: High to Low (સૌથી વધુ કિંમત)</option>
-                <option value="rating">Avg. Customer Review (રેટિંગ)</option>
-                <option value="name">Product Name (A-Z)</option>
+            <!-- Filter Section 1: Categories -->
+            <div class="space-y-2">
+              <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Department</h5>
+              <div class="space-y-1.5 text-xs text-slate-600 max-h-48 overflow-y-auto pr-1">
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900">
+                  <span onclick="filterCategory('all', null)" class="font-semibold text-brand-600">All Departments</span>
+                  <span class="text-[10px] text-slate-400 font-mono">65</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('laptop', null)">
+                  <span>Laptops</span>
+                  <span class="text-[10px] text-slate-400 font-mono">56</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('processor', null)">
+                  <span>Processors (CPU)</span>
+                  <span class="text-[10px] text-slate-400 font-mono">34</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('motherboard', null)">
+                  <span>Motherboards</span>
+                  <span class="text-[10px] text-slate-400 font-mono">16</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('ram', null)">
+                  <span>RAM (Memory)</span>
+                  <span class="text-[10px] text-slate-400 font-mono">28</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('storage', null)">
+                  <span>Storage (SSD/HDD)</span>
+                  <span class="text-[10px] text-slate-400 font-mono">22</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('gpu', null)">
+                  <span>Graphic Cards</span>
+                  <span class="text-[10px] text-slate-400 font-mono">18</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('workstation', null)">
+                  <span>Workstations</span>
+                  <span class="text-[10px] text-slate-400 font-mono">10</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer hover:text-slate-900" onclick="filterCategory('server', null)">
+                  <span>Servers</span>
+                  <span class="text-[10px] text-slate-400 font-mono">8</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Filter Section 2: Brands (Checkboxes) -->
+            <div class="space-y-2 pt-3 border-t border-slate-100">
+              <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Brands</h5>
+              <div class="space-y-1.5 text-xs text-slate-600 max-h-40 overflow-y-auto pr-1" id="sidebar-brands-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Filter Section 3: Price Ranges -->
+            <div class="space-y-2 pt-3 border-t border-slate-100">
+              <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Price Range</h5>
+              <div class="space-y-1.5 text-xs text-slate-600">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="price_range" value="all" onchange="handlePriceFilter('all')" checked class="text-brand-600">
+                  <span>All Prices</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="price_range" value="0-5000" onchange="handlePriceFilter('0-5000')" class="text-brand-600">
+                  <span>Under ₹5,000</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="price_range" value="5000-20000" onchange="handlePriceFilter('5000-20000')" class="text-brand-600">
+                  <span>₹5,000 - ₹20,000</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="price_range" value="20000-50000" onchange="handlePriceFilter('20000-50000')" class="text-brand-600">
+                  <span>₹20,000 - ₹50,000</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="price_range" value="50000-999999" onchange="handlePriceFilter('50000-999999')" class="text-brand-600">
+                  <span>Above ₹50,000</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Filter Section 4: Customer Ratings -->
+            <div class="space-y-2 pt-3 border-t border-slate-100">
+              <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Customer Review</h5>
+              <div class="space-y-1 text-xs text-slate-600">
+                <button type="button" onclick="handleRatingFilter(4)" class="flex items-center gap-2 hover:text-amber-600 cursor-pointer text-xs font-bold text-slate-700">
+                  <div class="flex items-center gap-0.5"><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-slate-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
+                  <span>4 Stars & Up</span>
+                </button>
+                <button type="button" onclick="handleRatingFilter(3)" class="flex items-center gap-2 hover:text-amber-600 cursor-pointer text-xs font-bold text-slate-700">
+                  <div class="flex items-center gap-0.5"><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-slate-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><svg class="w-3.5 h-3.5 text-slate-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
+                  <span>3 Stars & Up</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Section 5: Availability -->
+            <div class="space-y-2 pt-3 border-t border-slate-100">
+              <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Availability</h5>
+              <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                <input type="checkbox" id="filter-in-stock" onchange="handleInStockFilter(this.checked)" checked class="rounded text-brand-600">
+                <span class="font-semibold">In Stock Only (ઇન-સ્ટોક)</span>
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                <input type="checkbox" id="filter-same-day" onchange="handleSameDayFilter(this.checked)" class="rounded text-brand-600">
+                <span class="inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span>Same-Day Delivery Rajkot</span></span>
+              </label>
+            </div>
+          </aside>
+
+          <!-- RIGHT COLUMN: PRODUCTS CATALOG & STATS -->
+          <div class="lg:col-span-3 space-y-4">
+            
+            <!-- MOBILE FILTER & QUICK SORT BAR (Visible on mobile/tablet, hidden on lg desktop) -->
+            <div class="lg:hidden bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between gap-2.5">
+              <button type="button" onclick="openMobileFilterModal()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer active:scale-95 border border-slate-200 shadow-2xs">
+                <svg class="w-4 h-4 text-brand-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                <span>Filters (બ્રાન્ડ / કિંમત)</span>
+                <span id="mob-filter-count-badge" class="hidden text-[10px] font-black px-1.5 py-0.5 bg-brand-600 text-white rounded-full">1</span>
+              </button>
+
+              <select id="catalog-sort-mob" onchange="handleCatalogSort(this.value)" class="flex-1 text-xs font-semibold py-2 px-2.5 rounded-xl border border-slate-300 bg-white outline-none cursor-pointer">
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+                <option value="name">Name (A-Z)</option>
               </select>
             </div>
-          </div>
 
-          <!-- Products Grid (Populated via renderProductsGrid) -->
-          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            <div class="col-span-full py-16 text-center text-slate-400">
-              <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent mb-2"></div>
-              <p class="text-sm font-semibold text-slate-600">હાર્ડવેર આઇટમ્સ લોડ થઈ રહી છે...</p>
+            <!-- Catalog Sort & Count Top Bar (Desktop) -->
+            <div class="hidden lg:flex bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex-wrap items-center justify-between gap-3">
+              <div class="text-xs text-slate-600">
+                <span class="font-bold text-slate-900">100% Original Serialized Stock</span>
+                <span class="hidden sm:inline text-slate-400"> • All prices include 18% GST</span>
+              </div>
+
+              <!-- Sort Selector -->
+              <div class="flex items-center gap-2">
+                <label class="text-xs font-bold text-slate-700 whitespace-nowrap">Sort by:</label>
+                <select id="catalog-sort" onchange="handleCatalogSort(this.value)" class="text-xs font-semibold p-2 rounded-xl border border-slate-300 bg-white outline-none cursor-pointer">
+                  <option value="featured">Featured (વિશેષ પસંદગી)</option>
+                  <option value="price-asc">Price: Low to High (સૌથી ઓછી કિંમત)</option>
+                  <option value="price-desc">Price: High to Low (સૌથી વધુ કિંમત)</option>
+                  <option value="rating">Avg. Customer Review (રેટિંગ)</option>
+                  <option value="name">Product Name (A-Z)</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <!-- Pagination Container -->
-          <div id="products-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 pt-6 mt-8"></div>
+            <!-- Products Grid (Populated via renderProductsGrid) -->
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              <div class="col-span-full py-16 text-center text-slate-400">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent mb-2"></div>
+                <p class="text-sm font-semibold text-slate-600">હાર્ડવેર આઇટમ્સ લોડ થઈ રહી છે...</p>
+              </div>
+            </div>
+
+            <!-- Pagination Container -->
+            <div id="products-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 pt-6 mt-8"></div>
+
+          </div>
 
         </div>
+
+      </div>
+      <!-- END SUBVIEW 2: DEDICATED AMAZON PRODUCT LISTING PAGE --></div>
 
       </div>
 

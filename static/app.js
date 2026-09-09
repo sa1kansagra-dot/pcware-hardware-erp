@@ -5663,35 +5663,51 @@ function handleCatalogSort(val) {
 
 function handleAmazonSearch(e) {
   if (e) e.preventDefault();
-  const searchInput = document.getElementById("header-search-input");
+  const searchInput = document.getElementById("header-search-input") || document.getElementById("header-search-input-mob");
   const val = searchInput ? searchInput.value.trim() : "";
   state.catalogFilters.search = val;
-  applyCatalogFilters();
+  state.currentPage = 1;
+  
   if (state.currentView !== "catalog") switchView("catalog");
-  const catalogEl = document.getElementById("products-grid");
-  if (catalogEl) {
-    const topBar = document.getElementById("catalog-sort");
-    if (topBar) topBar.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+  const subLanding = document.getElementById("subview-categories-landing");
+  const subCatalog = document.getElementById("subview-products-catalog");
+  if (subLanding) subLanding.classList.add("hidden");
+  if (subCatalog) subCatalog.classList.remove("hidden");
+
+  applyCatalogFilters();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function handleAmazonCatChange() {
   const catSelect = document.getElementById("header-search-cat");
   if (!catSelect) return;
   const val = catSelect.value;
-  state.catalogFilters.category = val;
+  filterCategory(val, null);
+}
 
-  document.querySelectorAll(".cat-pill").forEach(pill => {
-    pill.classList.remove("bg-slate-900", "text-white", "shadow-xs");
-    pill.classList.add("bg-slate-100", "text-slate-700");
-  });
-
-  applyCatalogFilters();
-  if (state.currentView !== "catalog") switchView("catalog");
+function showLandingCategoryHub() {
+  if (state.currentView !== "catalog") {
+    switchView("catalog");
+  }
+  const subLanding = document.getElementById("subview-categories-landing");
+  const subCatalog = document.getElementById("subview-products-catalog");
+  if (subLanding) subLanding.classList.remove("hidden");
+  if (subCatalog) subCatalog.classList.add("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function filterCategory(cat, btn) {
-  state.catalogFilters.category = cat;
+  if (state.currentView !== "catalog") {
+    switchView("catalog");
+  }
+
+  const subLanding = document.getElementById("subview-categories-landing");
+  const subCatalog = document.getElementById("subview-products-catalog");
+  if (subLanding) subLanding.classList.add("hidden");
+  if (subCatalog) subCatalog.classList.remove("hidden");
+
+  state.catalogFilters.category = cat || "all";
+  state.currentPage = 1;
 
   document.querySelectorAll(".cat-pill").forEach(pill => {
     pill.classList.remove("bg-slate-900", "text-white", "shadow-xs");
@@ -5704,11 +5720,34 @@ function filterCategory(cat, btn) {
 
   const headerCat = document.getElementById("header-search-cat");
   if (headerCat) {
-    headerCat.value = cat;
+    headerCat.value = cat || "all";
+  }
+
+  const catNames = {
+    all: "તમામ પ્રોડક્ટ્સ (All Hardware Products)",
+    laptop: "Laptops (લેપટોપ)",
+    desktop: "Desktop PCs (ડેસ્કટોપ પીસી)",
+    aio: "All-in-One PCs (ઓલ-ઇન-વન)",
+    screen_accessory: "Monitors & Accessories (મોનિટર અને એક્સેસરીઝ)",
+    processor: "Processors (પ્રોસેસર)",
+    gpu: "Graphics Cards (ગ્રાફિક્સ કાર્ડ)",
+    motherboard: "Motherboards (મધરબોર્ડ)",
+    ram: "RAM Memory (રેમ મેમરી)",
+    storage: "NVMe SSDs (એનવીએમઇ સ્ટોરેજ)",
+    cabinet: "Gaming Cabinets (કેબિનેટ)",
+    cooler: "Coolers (કુલર)",
+    workstation: "Workstations (વર્કસ્ટેશન)",
+    server: "Enterprise Servers (સર્વર)",
+    antivirus_software: "Antivirus & Security (એન્ટીવાયરસ સોફ્ટવેર)"
+  };
+
+  const breadcrumbEl = document.getElementById("catalog-active-cat-title");
+  if (breadcrumbEl) {
+    breadcrumbEl.textContent = catNames[cat] || cat;
   }
 
   applyCatalogFilters();
-  if (state.currentView !== "catalog") switchView("catalog");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 let searchDebounceTimer = null;
@@ -11171,6 +11210,7 @@ window.goToPage = goToPage;
 window.openProductDetailModal = openProductDetailModal;
 window.closeProductDetailModal = closeProductDetailModal;
 window.changePDetailImage = changePDetailImage;
+window.showLandingCategoryHub = showLandingCategoryHub;
 
 
 // =========================================================================
