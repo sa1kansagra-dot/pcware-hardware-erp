@@ -900,12 +900,15 @@
           </div>
 
           <!-- Products Grid (Populated via renderProductsGrid) -->
-          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             <div class="col-span-full py-16 text-center text-slate-400">
               <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent mb-2"></div>
               <p class="text-sm font-semibold text-slate-600">હાર્ડવેર આઇટમ્સ લોડ થઈ રહી છે...</p>
             </div>
           </div>
+
+          <!-- Pagination Container -->
+          <div id="products-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 pt-6 mt-8"></div>
 
         </div>
 
@@ -4547,6 +4550,104 @@
     </form>
   </div>
 
+
+  <!-- MODAL: PRODUCT DETAIL DESCRIPTION & SPECIFICATIONS -->
+  <div id="modal-product-detail" class="fixed inset-0 z-50 overflow-y-auto hidden">
+    <div class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm" onclick="closeProductDetailModal()"></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div class="relative bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6">
+        
+        <!-- Header with Close button -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider" id="pdetail-category">Hardware</span>
+            <span class="text-xs text-slate-500 font-bold" id="pdetail-sku">SKU: ---</span>
+          </div>
+          <button type="button" onclick="closeProductDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Main Product Content (Grid) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- Left Column: Gallery & Images -->
+          <div class="space-y-4">
+            <div class="h-64 sm:h-80 bg-slate-50 rounded-2xl border border-slate-200 p-4 flex items-center justify-center relative overflow-hidden">
+              <img id="pdetail-main-img" src="" alt="Product Image" class="max-h-full max-w-full object-contain">
+              <span id="pdetail-brand-tag" class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
+                BRAND
+              </span>
+            </div>
+            <!-- Thumbnails strip -->
+            <div id="pdetail-thumbnails" class="flex items-center gap-2.5 overflow-x-auto pb-2 touch-scroll">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Right Column: Specs, Price, Actions -->
+          <div class="space-y-5 flex flex-col justify-between">
+            <div class="space-y-3">
+              <!-- Rating & Brand -->
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-amber-500 font-bold">★★★★★</span>
+                <span class="font-bold text-slate-800" id="pdetail-rating-num">4.9</span>
+                <span class="text-slate-400" id="pdetail-reviews-count">(128 verified ratings)</span>
+              </div>
+
+              <!-- Product Title -->
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug" id="pdetail-title">
+                Product Title
+              </h2>
+
+              <!-- Specs Summary -->
+              <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono" id="pdetail-specs">
+                Key Technical Specifications
+              </p>
+
+              <!-- Pricing Card -->
+              <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-4 space-y-2">
+                <div class="flex items-baseline gap-3">
+                  <span class="text-[#cc0c39] font-black text-lg" id="pdetail-discount">-20%</span>
+                  <div class="flex items-start">
+                    <span class="text-sm font-semibold text-slate-900 mt-1">₹</span>
+                    <span class="text-3xl font-black text-slate-900 tracking-tight" id="pdetail-price">0</span>
+                  </div>
+                </div>
+                <div class="text-xs text-slate-600 flex items-center gap-2 flex-wrap">
+                  <span>M.R.P.: <span class="line-through text-slate-400" id="pdetail-mrp">₹0</span></span>
+                  <span class="text-emerald-700 font-bold" id="pdetail-savings">You Save ₹0</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-medium">
+                  Inclusive of all taxes • 18% GST Input Credit Available
+                </div>
+              </div>
+
+              <!-- Stock & Delivery Status -->
+              <div id="pdetail-stock-box" class="p-3 rounded-xl border text-xs font-bold space-y-1">
+                <!-- Dynamically populated stock status -->
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-1">વિગતવાર વર્ણન / Product Description</h4>
+              <p class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100 max-h-36 overflow-y-auto" id="pdetail-description">
+                Product description will appear here...
+              </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div id="pdetail-actions" class="space-y-2 pt-2 border-t border-slate-100">
+              <!-- Dynamically populated Add to Cart, Buy Now, Customize buttons -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- MODAL: DYNAMIC LAPTOP / WORKSTATION CUSTOMIZER & UPGRADE -->
   <div id="modal-laptop-upgrade" class="fixed inset-0 z-50 overflow-y-auto hidden">

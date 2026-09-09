@@ -4757,6 +4757,8 @@ const state = {
   lang: (function() { try { return localStorage.getItem("pcware_lang") || "en"; } catch(e) { return "en"; } })(),
   products: (DEFAULT_SEED_DATA && DEFAULT_SEED_DATA.products) ? [...DEFAULT_SEED_DATA.products] : [],
   filteredProducts: (DEFAULT_SEED_DATA && DEFAULT_SEED_DATA.products) ? [...DEFAULT_SEED_DATA.products] : [],
+  currentPage: 1,
+  itemsPerPage: 16,
   catalogFilters: {
     category: "all",
     search: "",
@@ -5619,6 +5621,7 @@ function applyCatalogFilters() {
     }
   }
 
+  state.currentPage = 1;
   renderProductsGrid();
 }
 
@@ -5807,11 +5810,32 @@ function toggleMobileCategoryDrawer() {
   }
 }
 
+function goToPage(pageNum) {
+  const totalItems = (state.filteredProducts || []).length;
+  const totalPages = Math.ceil(totalItems / (state.itemsPerPage || 16)) || 1;
+  if (pageNum < 1) pageNum = 1;
+  if (pageNum > totalPages) pageNum = totalPages;
+  state.currentPage = pageNum;
+  renderProductsGrid();
+
+  const gridSection = document.getElementById("products-grid");
+  if (gridSection) {
+    gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 function renderProductsGrid() {
   const container = document.getElementById("products-grid");
+  const paginationContainer = document.getElementById("products-pagination");
   if (!container) return;
 
-  if (!state.filteredProducts || state.filteredProducts.length === 0) {
+  const totalItems = (state.filteredProducts || []).length;
+  const itemsPerPage = state.itemsPerPage || 16;
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  if (state.currentPage > totalPages) state.currentPage = totalPages;
+  if (state.currentPage < 1) state.currentPage = 1;
+
+  if (totalItems === 0) {
     container.innerHTML = `
       <div class="col-span-full py-16 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
         <span class="text-4xl mb-3 block">🔍</span>
@@ -5822,10 +5846,15 @@ function renderProductsGrid() {
         </button>
       </div>
     `;
+    if (paginationContainer) paginationContainer.innerHTML = '';
     return;
   }
 
-  container.innerHTML = state.filteredProducts.map(p => {
+  const startIndex = (state.currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  const pageProducts = state.filteredProducts.slice(startIndex, endIndex);
+
+  container.innerHTML = pageProducts.map(p => {
     // Safe gallery images preparation
     let gallery = [];
     try {
@@ -5883,7 +5912,7 @@ function renderProductsGrid() {
     }
 
     return `
-      <div class="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 hover:shadow-xl transition-all duration-200 flex flex-col justify-between p-4 group relative">
+      <div onclick="openProductDetailModal(${p.id})" class="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 hover:shadow-xl transition-all duration-200 flex flex-col justify-between p-4 group relative cursor-pointer">
         
         <!-- Top Badge & Urgency Pill -->
         <div class="flex items-center justify-between gap-2 mb-2">
@@ -5985,20 +6014,20 @@ function renderProductsGrid() {
             <!-- Amazon Action Buttons (Pure English + Clean SVG Icons) -->
             <div class="pt-2 space-y-1.5">
               <!-- Add to Cart (Signature Amazon Yellow) -->
-              <button type="button" onclick="addToCart(${p.id})" ${isOutOfStock ? 'disabled' : ''} class="w-full bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] disabled:bg-slate-200 disabled:cursor-not-allowed text-slate-950 font-bold text-xs py-2 px-3 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#fcd200]">
+              <button type="button" onclick="event.stopPropagation(); addToCart(${p.id});" ${isOutOfStock ? 'disabled' : ''} class="w-full bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] disabled:bg-slate-200 disabled:cursor-not-allowed text-slate-950 font-bold text-xs py-2 px-3 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#fcd200]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
                 <span>Add to Cart</span>
               </button>
 
               <!-- Buy Now / WhatsApp Direct Booking (Signature Amazon Orange) -->
-              <button type="button" onclick="openWhatsAppBookingModal(${p.id})" class="w-full bg-[#ffa41c] hover:bg-[#fa8900] active:bg-[#f37c00] text-slate-950 font-bold text-xs py-2 px-3 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#ff8f00]">
+              <button type="button" onclick="event.stopPropagation(); openWhatsAppBookingModal(${p.id});" class="w-full bg-[#ffa41c] hover:bg-[#fa8900] active:bg-[#f37c00] text-slate-950 font-bold text-xs py-2 px-3 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#ff8f00]">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.075-2.227-.557-1.846-.763-3.036-2.646-3.128-2.769-.093-.122-.746-.991-.746-1.891 0-.9.472-1.343.64-1.527.168-.184.368-.23.491-.23.122 0 .245.001.353.007.113.005.263-.042.411.314.153.369.521 1.272.568 1.365.046.092.077.2.015.322-.061.123-.092.2-.184.307-.092.108-.193.241-.276.323-.092.093-.188.193-.081.377.108.184.478.788 1.026 1.276.707.63 1.303.825 1.488.917.184.092.292.077.4-.046.107-.123.46-.537.583-.721.122-.184.246-.153.414-.092.169.061 1.073.506 1.257.598.184.092.307.138.353.215.046.077.046.446-.098.851z"/></svg>
                 <span>Buy Now / WhatsApp</span>
               </button>
 
               <!-- Custom Upgrade Button for Laptops & Workstations -->
               ${isCustomizable ? `
-                <button type="button" onclick="openLaptopUpgradeModal(${p.id})" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <button type="button" onclick="event.stopPropagation(); openLaptopUpgradeModal(${p.id});" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer">
                   <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span>Customize RAM / SSD</span>
                 </button>
@@ -6006,7 +6035,7 @@ function renderProductsGrid() {
 
               <!-- Flagship Dell CTO Workstation Button -->
               ${p.category === 'workstation' || (p.name && p.name.toLowerCase().includes('precision')) ? `
-                <button type="button" onclick="openCTOFromProduct('dell-precision-9-t6')" class="w-full bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 text-indigo-900 border border-indigo-200 font-black text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
+                <button type="button" onclick="event.stopPropagation(); openCTOFromProduct('dell-precision-9-t6');" class="w-full bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 text-indigo-900 border border-indigo-200 font-black text-xs py-1.5 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
                   <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                   <span>Configure To Order (Dell CTO)</span>
                 </button>
@@ -6019,6 +6048,214 @@ function renderProductsGrid() {
       </div>
     `;
   }).join("");
+
+  // Render Pagination Controls
+  if (paginationContainer) {
+    if (totalPages <= 1) {
+      paginationContainer.innerHTML = `
+        <div class="w-full text-center text-xs font-bold text-slate-500">
+          Showing all ${totalItems} products (${totalItems} પ્રોડક્ટ્સ દર્શાવી રહ્યા છીએ)
+        </div>
+      `;
+    } else {
+      let pageButtons = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const isActive = i === state.currentPage;
+        pageButtons += `
+          <button type="button" onclick="goToPage(${i})" class="w-9 h-9 rounded-xl font-bold text-xs transition cursor-pointer ${
+            isActive 
+              ? 'bg-amber-500 text-slate-950 shadow-md scale-105 border border-amber-600' 
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }">
+            ${i}
+          </button>
+        `;
+      }
+
+      paginationContainer.innerHTML = `
+        <div class="text-xs font-bold text-slate-600">
+          Showing <span class="text-slate-900">${startIndex + 1}-${endIndex}</span> of <span class="text-slate-900">${totalItems}</span> products (Page ${state.currentPage} of ${totalPages})
+        </div>
+
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button type="button" onclick="goToPage(${state.currentPage - 1})" ${state.currentPage === 1 ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold text-slate-800 transition flex items-center gap-1 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            <span>Previous</span>
+          </button>
+
+          ${pageButtons}
+
+          <button type="button" onclick="goToPage(${state.currentPage + 1})" ${state.currentPage === totalPages ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold text-slate-800 transition flex items-center gap-1 cursor-pointer">
+            <span>Next</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      `;
+    }
+  }
+}
+
+function openProductDetailModal(productId) {
+  const p = (state.products || []).find(item => item.id == productId);
+  if (!p) return;
+
+  const modal = document.getElementById("modal-product-detail");
+  if (!modal) return;
+
+  // Category & SKU
+  const catEl = document.getElementById("pdetail-category");
+  if (catEl) catEl.textContent = p.category || 'Hardware';
+  
+  const skuEl = document.getElementById("pdetail-sku");
+  if (skuEl) skuEl.textContent = `SKU: ${p.sku || ('PCW-' + p.id)}`;
+
+  // Title & Brand
+  const titleEl = document.getElementById("pdetail-title");
+  if (titleEl) titleEl.textContent = p.name;
+
+  const brandTag = document.getElementById("pdetail-brand-tag");
+  if (brandTag) brandTag.textContent = p.brand || 'PCWARE';
+
+  // Gallery
+  let gallery = [];
+  try {
+    gallery = typeof p.gallery_images === 'string' ? JSON.parse(p.gallery_images) : (p.gallery_images || []);
+  } catch(e) { gallery = []; }
+  if (!Array.isArray(gallery) || gallery.length === 0) {
+    gallery = [p.image_url || 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400'];
+  }
+  gallery = gallery.filter(Boolean);
+  if (gallery.length === 0) gallery = ['https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400'];
+
+  const mainImg = document.getElementById("pdetail-main-img");
+  if (mainImg) mainImg.src = gallery[0];
+
+  const thumbsContainer = document.getElementById("pdetail-thumbnails");
+  if (thumbsContainer) {
+    if (gallery.length > 1) {
+      thumbsContainer.innerHTML = gallery.map((imgUrl, idx) => `
+        <button type="button" onclick="changePDetailImage('${imgUrl.replace(/'/g, "\\'")}', this)" class="w-14 h-14 rounded-xl border-2 ${idx === 0 ? 'border-amber-500' : 'border-slate-200 hover:border-slate-300'} p-1 bg-white flex-shrink-0 cursor-pointer overflow-hidden transition">
+          <img src="${imgUrl}" class="w-full h-full object-contain">
+        </button>
+      `).join('');
+      thumbsContainer.classList.remove("hidden");
+    } else {
+      thumbsContainer.innerHTML = '';
+      thumbsContainer.classList.add("hidden");
+    }
+  }
+
+  // Rating & Reviews
+  const ratingNum = parseFloat((4.8 + ((p.id * 2) % 3) / 10).toFixed(1));
+  const reviewsCount = 35 + ((p.id * 17) % 340);
+  const rNumEl = document.getElementById("pdetail-rating-num");
+  if (rNumEl) rNumEl.textContent = ratingNum;
+  const rCntEl = document.getElementById("pdetail-reviews-count");
+  if (rCntEl) rCntEl.textContent = `(${reviewsCount} verified ratings)`;
+
+  // Specs & Description
+  const specsEl = document.getElementById("pdetail-specs");
+  if (specsEl) specsEl.textContent = p.specs || 'Standard OEM Specifications';
+
+  const descEl = document.getElementById("pdetail-description");
+  if (descEl) descEl.textContent = p.description || p.specs || 'No extra detailed description provided.';
+
+  // Pricing
+  const mrp = Math.round((p.selling_price * 1.22) / 50) * 50;
+  const discountPct = Math.round(((mrp - p.selling_price) / mrp) * 100);
+  const savings = mrp - p.selling_price;
+
+  const discEl = document.getElementById("pdetail-discount");
+  if (discEl) discEl.textContent = `-${discountPct}%`;
+  const priceEl = document.getElementById("pdetail-price");
+  if (priceEl) priceEl.textContent = p.selling_price.toLocaleString('en-IN');
+  const mrpEl = document.getElementById("pdetail-mrp");
+  if (mrpEl) mrpEl.textContent = `₹${mrp.toLocaleString('en-IN')}`;
+  const saveEl = document.getElementById("pdetail-savings");
+  if (saveEl) saveEl.textContent = `Save ₹${savings.toLocaleString('en-IN')}`;
+
+  // Stock Box
+  const isLowStock = p.stock_quantity <= p.low_stock_threshold && p.stock_quantity > 0;
+  const isOutOfStock = p.stock_quantity <= 0;
+  const stockBox = document.getElementById("pdetail-stock-box");
+  if (stockBox) {
+    if (isOutOfStock) {
+      stockBox.className = "p-3 rounded-xl border border-rose-200 bg-rose-50 text-rose-800 text-xs font-bold space-y-1";
+      stockBox.innerHTML = `
+        <div class="flex items-center gap-1.5 text-rose-700">
+          <span class="text-base">❌</span>
+          <span>Currently Out of Stock (હાલમાં સ્ટોક ઉપલબ્ધ નથી)</span>
+        </div>
+        <p class="text-[11px] text-rose-600 font-normal">Contact us via WhatsApp for upcoming shipment dates.</p>
+      `;
+    } else if (isLowStock) {
+      stockBox.className = "p-3 rounded-xl border border-amber-200 bg-amber-50 text-amber-900 text-xs font-bold space-y-1";
+      stockBox.innerHTML = `
+        <div class="flex items-center gap-1.5 text-amber-800">
+          <span class="text-base">⚠️</span>
+          <span>Only ${p.stock_quantity} left in stock - Order Soon!</span>
+        </div>
+        <p class="text-[11px] text-amber-700 font-normal">🚚 Ready for express 4-hour local dispatch in Rajkot.</p>
+      `;
+    } else {
+      stockBox.className = "p-3 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-900 text-xs font-bold space-y-1";
+      stockBox.innerHTML = `
+        <div class="flex items-center gap-1.5 text-emerald-800">
+          <span class="text-base">✅</span>
+          <span>In Stock (${p.stock_quantity} units available)</span>
+        </div>
+        <p class="text-[11px] text-emerald-700 font-normal">🚚 FREE Delivery by Tomorrow, 2 PM or Store Express Pickup</p>
+      `;
+    }
+  }
+
+  // Actions
+  const isCustomizable = (p.category === "laptop" || p.category === "workstation");
+  const actionsEl = document.getElementById("pdetail-actions");
+  if (actionsEl) {
+    actionsEl.innerHTML = `
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <button type="button" onclick="addToCart(${p.id}); closeProductDetailModal();" ${isOutOfStock ? 'disabled' : ''} class="w-full bg-[#ffd814] hover:bg-[#f7ca00] active:bg-[#f0b800] disabled:bg-slate-200 disabled:cursor-not-allowed text-slate-950 font-bold text-xs py-2.5 px-4 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#fcd200]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
+          <span>Add to Cart</span>
+        </button>
+
+        <button type="button" onclick="openWhatsAppBookingModal(${p.id}); closeProductDetailModal();" class="w-full bg-[#ffa41c] hover:bg-[#fa8900] active:bg-[#f37c00] text-slate-950 font-bold text-xs py-2.5 px-4 rounded-full shadow-xs transition duration-150 flex items-center justify-center gap-2 cursor-pointer border border-[#ff8f00]">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.075-2.227-.557-1.846-.763-3.036-2.646-3.128-2.769-.093-.122-.746-.991-.746-1.891 0-.9.472-1.343.64-1.527.168-.184.368-.23.491-.23.122 0 .245.001.353.007.113.005.263-.042.411.314.153.369.521 1.272.568 1.365.046.092.077.2.015.322-.061.123-.092.2-.184.307-.092.108-.193.241-.276.323-.092.093-.188.193-.081.377.108.184.478.788 1.026 1.276.707.63 1.303.825 1.488.917.184.092.292.077.4-.046.107-.123.46-.537.583-.721.122-.184.246-.153.414-.092.169.061 1.073.506 1.257.598.184.092.307.138.353.215.046.077.046.446-.098.851z"/></svg>
+          <span>Buy Now / WhatsApp</span>
+        </button>
+      </div>
+
+      ${isCustomizable ? `
+        <button type="button" onclick="openLaptopUpgradeModal(${p.id}); closeProductDetailModal();" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs py-2 px-3 rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>Customize RAM / SSD Upgrades</span>
+        </button>
+      ` : ''}
+    `;
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeProductDetailModal() {
+  const modal = document.getElementById("modal-product-detail");
+  if (modal) modal.classList.add("hidden");
+}
+
+function changePDetailImage(imgUrl, btnEl) {
+  const mainImg = document.getElementById("pdetail-main-img");
+  if (mainImg) mainImg.src = imgUrl;
+  
+  const thumbs = document.querySelectorAll("#pdetail-thumbnails button");
+  thumbs.forEach(b => {
+    b.classList.remove("border-amber-500");
+    b.classList.add("border-slate-200");
+  });
+  if (btnEl) {
+    btnEl.classList.remove("border-slate-200");
+    btnEl.classList.add("border-amber-500");
+  }
 }
 
 function toggleCartDrawer(open) {
@@ -10930,6 +11167,10 @@ window.toggleMobileCategoryDrawer = toggleMobileCategoryDrawer;
 window.applyCatalogFilters = applyCatalogFilters;
 window.populateSidebarBrands = populateSidebarBrands;
 window.escapeHtml = escapeHtml;
+window.goToPage = goToPage;
+window.openProductDetailModal = openProductDetailModal;
+window.closeProductDetailModal = closeProductDetailModal;
+window.changePDetailImage = changePDetailImage;
 
 
 // =========================================================================
