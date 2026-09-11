@@ -2223,6 +2223,9 @@
             <span>Overview</span>
           </button>
 
+          <button type="button" onclick="switchAdminTab('crm_reminders'); loadCrmReminders();" id="tab-btn-crm_reminders" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
+            <span>📞 CRM & Reminders</span>
+          </button>
           <button type="button" onclick="switchAdminTab('inquiries_orders')" id="tab-btn-inquiries_orders" class="admin-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 text-slate-600 hover:bg-slate-700 hover:text-slate-950 border border-slate-700/60 transition-all duration-150 flex items-center gap-2 cursor-pointer active:scale-95 hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span>Inquiries & Orders</span>
@@ -3638,7 +3641,53 @@
         </div>
       </div>
 
-    </section>
+    
+      <!-- ADMIN TAB: CRM FOLLOW-UP & REVIEW REMINDERS -->
+      <div id="admin-tab-crm_reminders" class="admin-subview hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-lg sm:text-xl flex items-center gap-2">
+                <span>📞</span>
+                <span>Customer Relationship Manager (CRM) Reminders & Review Log</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-1">ઈન્વોઈસ બન્યા પછી ગ્રાહકને ફોલો-અપ કૉલ અને પ્રોડક્ટ રિવ્યૂ મેળવવા માટેનું કમાન્ડ સેન્ટર</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="loadCrmReminders('all')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                All Reminders
+              </button>
+              <button type="button" onclick="loadCrmReminders('pending')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                Pending Calls
+              </button>
+              <button type="button" onclick="loadCrmReminders('completed')" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                Completed Logs
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-500 bg-slate-50">
+                  <th class="p-3">Scheduled Date</th>
+                  <th class="p-3">Customer Details</th>
+                  <th class="p-3">Product Sold</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">CRM Notes & Rating</th>
+                  <th class="p-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="crm-reminders-table-body">
+                <tr><td colspan="6" class="py-8 text-center text-slate-400 font-bold text-xs">Loading CRM reminders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+</section>
   </main>
 
     <!-- AMAZON-STYLE BACK TO TOP BUTTON -->
@@ -6415,6 +6464,192 @@
       </button>
     </div>
 
+  </div>
+
+
+  <!-- 1. BULK CSV INVENTORY UPLOAD MODAL -->
+  <div id="modal-bulk-upload" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-2xl overflow-hidden animate-fade-in flex flex-col">
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">📥</span>
+          <div>
+            <h3 class="font-extrabold text-base text-white">Bulk Inventory CSV Uploader</h3>
+            <p class="text-xs text-slate-300">એકસાથે આઈટમ્સ અને સ્ટોક ઇન્વેન્ટરી અપલોડ કરો</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeBulkUploadModal()" class="text-slate-400 hover:text-white p-1 text-lg font-bold">✕</button>
+      </div>
+      
+      <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between gap-3 text-xs text-amber-900">
+          <div>
+            <span class="font-bold block">📄 Need sample format?</span>
+            <span class="text-[11px] text-amber-800">આપની આઈટમ્સ યોગ્ય રીતે અપલોડ થાય તે માટે સેમ્પલ CSV ટેમ્પલેટ ડાઉનલોડ કરો.</span>
+          </div>
+          <button type="button" onclick="downloadSampleCsvTemplate()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-4 py-2 rounded-xl shrink-0 cursor-pointer shadow-xs">
+            ⬇️ Download Sample CSV
+          </button>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Select CSV File or Paste Raw CSV</label>
+          <input type="file" id="bulk-csv-file-input" accept=".csv" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-slate-50">
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Or Paste CSV Content (Direct Input)</label>
+          <textarea id="bulk-csv-raw-input" rows="5" placeholder="Product Name, Category, Brand, Purchase Price, Selling Price, Stock Qty, HSN Code, GST %&#10;ThinkPad T14 Gen 3, laptop, ThinkPad, 32000, 39500, 10, 8471, 18" class="w-full text-xs font-mono p-3 rounded-xl border border-slate-300 bg-slate-50 outline-none"></textarea>
+        </div>
+
+        <div id="bulk-upload-results" class="hidden p-4 rounded-xl text-xs font-medium space-y-1"></div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeBulkUploadModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">Cancel</button>
+        <button type="button" onclick="submitBulkCsvUpload()" class="bg-brand-600 hover:bg-brand-700 text-white font-black text-xs px-6 py-2.5 rounded-xl shadow-md cursor-pointer">
+          🚀 Import Bulk Inventory
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. NEW INQUIRY CREATION MODAL -->
+  <div id="modal-new-inquiry" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in">
+      <div class="bg-slate-900 text-white p-5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📋</span>
+          <h3 class="font-extrabold text-base text-white">Create New Customer Inquiry (નવી ઈન્ક્વાયરી)</h3>
+        </div>
+        <button type="button" onclick="closeNewInquiryModal()" class="text-slate-400 hover:text-white p-1 text-lg font-bold">✕</button>
+      </div>
+      
+      <div class="p-6 space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Customer Name *</label>
+            <input type="text" id="inq-name" placeholder="e.g. Ramesh Patel" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 font-medium">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mobile Number *</label>
+            <input type="text" id="inq-phone" placeholder="e.g. 9879012345" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 font-medium">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Email (Optional)</label>
+            <input type="email" id="inq-email" placeholder="ramesh@gmail.com" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Company / Firm Name</label>
+            <input type="text" id="inq-company" placeholder="Patel Enterprise" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Product Interested *</label>
+            <input type="text" id="inq-product" placeholder="e.g. ThinkPad Laptops / i7 Desktop" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 font-bold text-brand-700">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Estimated Budget (₹)</label>
+            <input type="number" id="inq-budget" placeholder="35000" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Requirement Notes</label>
+          <textarea id="inq-notes" rows="2" placeholder="Looking for 16GB RAM ThinkPad with 512GB NVMe SSD..." class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50"></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeNewInquiryModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">Cancel</button>
+        <button type="button" onclick="submitNewInquiry()" class="bg-brand-600 hover:bg-brand-700 text-white font-black text-xs px-6 py-2.5 rounded-xl shadow-md cursor-pointer">
+          💾 Save Inquiry
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. INQUIRY LOST REASON MODAL -->
+  <div id="modal-inquiry-lost" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden animate-fade-in">
+      <div class="bg-rose-900 text-white p-5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">❌</span>
+          <h3 class="font-extrabold text-base text-white">Mark Inquiry as Lost (Lost ઈન્ક્વાયરી)</h3>
+        </div>
+        <button type="button" onclick="closeInquiryLostModal()" class="text-slate-400 hover:text-white p-1 text-lg font-bold">✕</button>
+      </div>
+      
+      <div class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="lost-inquiry-id">
+        <div class="space-y-2">
+          <label class="block font-bold text-slate-700">Select Loss Reason (ઈન્ક્વાયરી ફ્લોપ જવાનું કારણ) *</label>
+          <select id="lost-reason-select" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 font-semibold text-slate-900">
+            <option value="Price Too High">Price Too High (કિંમત વધુ હતી / મોંઘું લાગ્યું)</option>
+            <option value="Purchased Elsewhere">Purchased Elsewhere (બીજા સ્ટોરમાંથી ખરીદી લીધું)</option>
+            <option value="No Requirement / Budget Cancelled">No Requirement / Budget Cancelled (પ્લાન જ કેન્સલ થયો)</option>
+            <option value="Specification Mismatch">Specification Mismatch (જરૂરી સ્પેસિફિકેશન અનુકૂળ ન આવ્યા)</option>
+            <option value="Customer Unreachable">Customer Unreachable (ફોન ઉપાડતા નથી)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeInquiryLostModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">Cancel</button>
+        <button type="button" onclick="submitMarkInquiryLost()" class="bg-rose-600 hover:bg-rose-700 text-white font-black text-xs px-6 py-2.5 rounded-xl shadow-md cursor-pointer">
+          Confirm Lost
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CRM FOLLOW-UP COMPLETION & REVIEW MODAL -->
+  <div id="modal-crm-complete" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in">
+      <div class="bg-emerald-900 text-white p-5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📞</span>
+          <h3 class="font-extrabold text-base text-white">CRM Follow-up & Review Log</h3>
+        </div>
+        <button type="button" onclick="closeCrmCompleteModal()" class="text-slate-400 hover:text-white p-1 text-lg font-bold">✕</button>
+      </div>
+      
+      <div class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="crm-reminder-id">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">CRM Follow-up Call Notes *</label>
+          <textarea id="crm-call-notes" rows="3" placeholder="Called customer. Product performance is excellent, customer satisfied with 3-year warranty..." class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 font-medium"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Customer Rating (૧ થી ૫ સ્ટાર્સ)</label>
+            <select id="crm-star-rating" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 font-extrabold text-amber-600">
+              <option value="5">⭐⭐⭐⭐⭐ (5 / 5 Excellent)</option>
+              <option value="4">⭐⭐⭐⭐ (4 / 5 Good)</option>
+              <option value="3">⭐⭐⭐ (3 / 5 Average)</option>
+              <option value="2">⭐⭐ (2 / 5 Needs Support)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Customer Feedback / Review</label>
+            <input type="text" id="crm-review-text" placeholder="Highly recommended hardware store in Rajkot!" class="w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50">
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+        <button type="button" onclick="closeCrmCompleteModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">Cancel</button>
+        <button type="button" onclick="submitCompleteCrmReminder()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-6 py-2.5 rounded-xl shadow-md cursor-pointer">
+          ✅ Save Follow-up & Review Log
+        </button>
+      </div>
+    </div>
   </div>
 
 </body>

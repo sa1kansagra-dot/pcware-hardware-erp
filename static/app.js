@@ -5450,7 +5450,7 @@ function switchAdminTab(tabName) {
     mobErpSel.value = tabName;
   }
 
-  const tabs = ["overview", "inquiries_orders", "purchase_shortage", "accounts_ledger", "jobsheets", "inventory", "serials", "billing", "staff", "warehouses", "amc", "referrals", "backup_restore"];
+  const tabs = ["overview", "inquiries_orders", "purchase_shortage", "accounts_ledger", "jobsheets", "inventory", "serials", "billing", "staff", "warehouses", "amc", "referrals", "backup_restore", "crm_reminders"];
   tabs.forEach(t => {
     const panel = document.getElementById("admin-tab-" + t);
     const btn = document.getElementById("tab-btn-" + t);
@@ -5473,7 +5473,8 @@ function switchAdminTab(tabName) {
   });
 
   if (tabName === "overview") loadAdminStats();
-  if (tabName === "inquiries_orders") loadInquiriesAndOrders();
+  if (tabName === "inquiries_orders") { loadInquiriesAndOrders(); loadInquiriesPipeline(); }
+  if (tabName === "crm_reminders") loadCrmReminders();
   if (tabName === "purchase_shortage") loadPurchaseAndShortage();
   if (tabName === "accounts_ledger") loadAccountsAndLedger();
   if (tabName === "jobsheets") loadJobSheets();
@@ -12657,3 +12658,415 @@ function closeFilterDrawer() {
 
 window.openFilterDrawer = openFilterDrawer;
 window.closeFilterDrawer = closeFilterDrawer;
+
+
+
+// =========================================================================
+// 1. BULK CSV INVENTORY UPLOADER MODULE
+// =========================================================================
+function openBulkUploadModal() {
+  const m = document.getElementById("modal-bulk-upload");
+  if (m) m.classList.remove("hidden");
+}
+
+function closeBulkUploadModal() {
+  const m = document.getElementById("modal-bulk-upload");
+  if (m) m.classList.add("hidden");
+}
+
+function downloadSampleCsvTemplate() {
+  const csvContent = "Product Name,Category,Brand,Purchase Price,Selling Price,Stock Quantity,HSN Code,GST Rate,Description\n" +
+                     "ThinkPad T14 Gen 3,laptop,ThinkPad,32000,39500,10,8471,18,Intel Core i5 12th Gen 16GB RAM 512GB NVMe\n" +
+                     "Dell OptiPlex 7090 Tower,desktop,Dell,18500,24000,8,8471,18,Intel Core i7 10th Gen 16GB RAM 1TB SSD\n" +
+                     "Samsung 990 Pro 1TB NVMe,storage,Samsung,6800,8900,25,8471,18,Gen4 M.2 7400MB/s Solid State Drive\n" +
+                     "Corsair Vengeance 16GB DDR4,ram,Corsair,1900,2750,30,8471,18,3200MHz Desktop RAM Memory";
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", "pcware_inventory_template.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function submitBulkCsvUpload() {
+  const fileInput = document.getElementById("bulk-csv-file-input");
+  const rawInput = document.getElementById("bulk-csv-raw-input");
+  const resultsDiv = document.getElementById("bulk-upload-results");
+
+  let csvText = "";
+  if (rawInput && rawInput.value.trim()) {
+    csvText = rawInput.value.trim();
+  }
+
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      csvText = e.target.result;
+      processCsvTextAndUpload(csvText);
+    };
+    reader.readAsText(fileInput.files[0]);
+  } else if (csvText) {
+    processCsvTextAndUpload(csvText);
+  } else {
+    alert("કૃપા કરીને CSV ફાઇલ પસંદ કરો અથવા રૉ CSV ડેટા પેસ્ટ કરો.");
+  }
+}
+
+function processCsvTextAndUpload(csvText) {
+  const resultsDiv = document.getElementById("bulk-upload-results");
+  const lines = csvText.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length <= 1) {
+    alert("CSV ફાઇલમાં ડેટા મળ્યો નથી.");
+    return;
+  }
+
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  const items = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+    if (cols.length < 2) continue;
+    
+    let row = {};
+    headers.forEach((h, idx) => {
+      row[h] = cols[idx] || "";
+    });
+    items.push(row);
+  }
+
+  if (items.length === 0) {
+    alert("કોઈ વેલિડ આઈટમ હરોળ મળી નથી.");
+    return;
+  }
+
+  fetch('/api/v1/inventory/bulk-upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: items })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (resultsDiv) {
+        resultsDiv.classList.remove("hidden", "bg-rose-50", "text-rose-800");
+        resultsDiv.classList.add("bg-emerald-50", "text-emerald-900", "border", "border-emerald-200");
+        resultsDiv.innerHTML = `✅ ${data.message}`;
+      }
+      alert(data.message);
+      closeBulkUploadModal();
+      if (typeof loadProducts === 'function') loadProducts();
+    } else {
+      alert("Error: " + (data.error || "Failed to import"));
+    }
+  })
+  .catch(err => {
+    alert("Network Error: " + err);
+  });
+}
+
+// =========================================================================
+// 2. INQUIRY -> QUOTATION -> BILL / LOST LIFECYCLE PIPELINE
+// =========================================================================
+function openNewInquiryModal() {
+  const m = document.getElementById("modal-new-inquiry");
+  if (m) m.classList.remove("hidden");
+}
+
+function closeNewInquiryModal() {
+  const m = document.getElementById("modal-new-inquiry");
+  if (m) m.classList.add("hidden");
+}
+
+function submitNewInquiry() {
+  const name = document.getElementById("inq-name")?.value.trim();
+  const phone = document.getElementById("inq-phone")?.value.trim();
+  const email = document.getElementById("inq-email")?.value.trim();
+  const company = document.getElementById("inq-company")?.value.trim();
+  const product = document.getElementById("inq-product")?.value.trim();
+  const budget = document.getElementById("inq-budget")?.value;
+  const notes = document.getElementById("inq-notes")?.value.trim();
+
+  if (!name || !phone || !product) {
+    alert("કૃપા કરીને કસ્ટમર નામ, મોબાઇલ નંબર અને ઇન્ટરેસ્ટેડ પ્રોડક્ટ દાખલ કરો.");
+    return;
+  }
+
+  fetch('/api/v1/inquiries', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      customer_name: name,
+      customer_phone: phone,
+      customer_email: email,
+      company_name: company,
+      product_interest: product,
+      budget: budget,
+      notes: notes
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      closeNewInquiryModal();
+      loadInquiriesPipeline();
+    } else {
+      alert("Error: " + data.error);
+    }
+  })
+  .catch(err => alert("Error: " + err));
+}
+
+function loadInquiriesPipeline(filterStatus = 'all') {
+  fetch(`/api/v1/inquiries?status=${filterStatus}`)
+  .then(res => res.json())
+  .then(data => {
+    renderInquiriesTable(data);
+  })
+  .catch(err => console.error("Failed to load inquiries:", err));
+}
+
+function renderInquiriesTable(inquiries) {
+  const container = document.getElementById("inquiries-table-body");
+  if (!container) return;
+
+  if (!inquiries || inquiries.length === 0) {
+    container.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-bold text-xs">કોઈ ઈન્ક્વાયરી મળી નથી (No Inquiries found)</td></tr>`;
+    return;
+  }
+
+  container.innerHTML = inquiries.map(inq => {
+    const statusPills = {
+      new: '<span class="bg-blue-100 text-blue-800 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-blue-200">New Lead</span>',
+      quoted: '<span class="bg-amber-100 text-amber-800 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-200">Quoted</span>',
+      converted: '<span class="bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-emerald-200">Billed / Converted</span>',
+      lost: '<span class="bg-rose-100 text-rose-800 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-rose-200">Lost</span>'
+    };
+
+    return `
+      <tr class="border-b border-slate-100 hover:bg-slate-50 text-xs">
+        <td class="p-3 font-mono font-bold text-slate-900">${inq.inquiry_number}</td>
+        <td class="p-3">
+          <div class="font-bold text-slate-900">${escapeHtml(inq.customer_name)}</div>
+          <div class="text-[11px] text-slate-500">${escapeHtml(inq.customer_phone)}</div>
+        </td>
+        <td class="p-3 font-bold text-brand-700">${escapeHtml(inq.product_interest)}</td>
+        <td class="p-3 font-bold text-slate-900">₹${(inq.budget || 0).toLocaleString('en-IN')}</td>
+        <td class="p-3">${statusPills[inq.status] || inq.status}</td>
+        <td class="p-3 text-[11px] text-slate-500">${inq.notes ? escapeHtml(inq.notes) : (inq.loss_reason ? `<span class="text-rose-600 font-semibold">Reason: ${escapeHtml(inq.loss_reason)}</span>` : '-')}</td>
+        <td class="p-3">
+          <div class="flex items-center gap-1.5">
+            ${inq.status === 'new' ? `
+              <button type="button" onclick="generateQuotationFromInquiry(${inq.id})" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] px-2.5 py-1 rounded-lg transition shadow-2xs">
+                📄 Quotation
+              </button>
+            ` : ''}
+
+            ${inq.status === 'new' || inq.status === 'quoted' ? `
+              <button type="button" onclick="convertInquiryToBill(${inq.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg transition shadow-2xs">
+                🧾 Convert to Bill
+              </button>
+              <button type="button" onclick="openInquiryLostModal(${inq.id})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-[11px] px-2 py-1 rounded-lg transition">
+                ❌ Lost
+              </button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function generateQuotationFromInquiry(inquiryId) {
+  fetch(`/api/v1/inquiries/${inquiryId}/quotation`, { method: 'POST' })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      loadInquiriesPipeline();
+    } else {
+      alert("Error: " + data.error);
+    }
+  })
+  .catch(err => alert("Error: " + err));
+}
+
+function convertInquiryToBill(inquiryId) {
+  if (!confirm("શું તમે આ ઈન્ક્વાયરી/ક્વોટેશન ને બિલ (GST Invoice) માં ફેરવવા માંગો છો? ઓટોમેટિક સ્ટોક માઈનસ થશે અને CRM રિમાઇન્ડર શિડ્યુલ થશે.")) return;
+
+  fetch(`/api/v1/inquiries/${inquiryId}/convert-to-bill`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      loadInquiriesPipeline();
+      if (typeof loadCrmReminders === 'function') loadCrmReminders();
+    } else {
+      alert("Error: " + data.error);
+    }
+  })
+  .catch(err => alert("Error: " + err));
+}
+
+function openInquiryLostModal(inquiryId) {
+  const el = document.getElementById("lost-inquiry-id");
+  if (el) el.value = inquiryId;
+  const m = document.getElementById("modal-inquiry-lost");
+  if (m) m.classList.remove("hidden");
+}
+
+function closeInquiryLostModal() {
+  const m = document.getElementById("modal-inquiry-lost");
+  if (m) m.classList.add("hidden");
+}
+
+function submitMarkInquiryLost() {
+  const inqId = document.getElementById("lost-inquiry-id")?.value;
+  const reason = document.getElementById("lost-reason-select")?.value;
+  if (!inqId) return;
+
+  fetch(`/api/v1/inquiries/${inqId}/lost`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ loss_reason: reason })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      closeInquiryLostModal();
+      loadInquiriesPipeline();
+    } else {
+      alert("Error: " + data.error);
+    }
+  })
+  .catch(err => alert("Error: " + err));
+}
+
+// =========================================================================
+// 3. CUSTOMER RELATIONSHIP MANAGER (CRM) REMINDERS & REVIEW MODULE
+// =========================================================================
+function loadCrmReminders(statusFilter = 'all') {
+  fetch(`/api/v1/crm/reminders?status=${statusFilter}`)
+  .then(res => res.json())
+  .then(data => {
+    renderCrmRemindersTable(data);
+  })
+  .catch(err => console.error("Failed to load CRM reminders:", err));
+}
+
+function renderCrmRemindersTable(reminders) {
+  const container = document.getElementById("crm-reminders-table-body");
+  if (!container) return;
+
+  if (!reminders || reminders.length === 0) {
+    container.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 font-bold text-xs">કોઈ CRM ફોલો-અપ રિમાઇન્ડર મળ્યા નથી (No CRM Reminders)</td></tr>`;
+    return;
+  }
+
+  container.innerHTML = reminders.map(rem => {
+    const isCompleted = rem.status === 'completed';
+    return `
+      <tr class="border-b border-slate-100 hover:bg-slate-50 text-xs">
+        <td class="p-3 font-mono font-bold text-slate-900">${rem.scheduled_date}</td>
+        <td class="p-3">
+          <div class="font-bold text-slate-900">${escapeHtml(rem.customer_name)}</div>
+          <div class="text-[11px] text-slate-500">${escapeHtml(rem.customer_phone)}</div>
+        </td>
+        <td class="p-3 font-bold text-brand-700">${escapeHtml(rem.product_sold)}</td>
+        <td class="p-3">
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${isCompleted ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}">
+            ${rem.status}
+          </span>
+        </td>
+        <td class="p-3 text-[11px]">
+          ${isCompleted ? `
+            <div class="text-amber-500 font-bold">⭐ ${rem.rating_given || 5}/5 Star</div>
+            <div class="text-slate-600 font-medium">${rem.agent_notes ? escapeHtml(rem.agent_notes) : ''}</div>
+          ` : '<span class="text-slate-400">Pending CRM Follow-up Call</span>'}
+        </td>
+        <td class="p-3">
+          <div class="flex items-center gap-1.5">
+            <a href="tel:${rem.customer_phone}" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-[11px] px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+              📞 Call
+            </a>
+            ${!isCompleted ? `
+              <button type="button" onclick="openCrmCompleteModal(${rem.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg transition shadow-2xs">
+                ✅ Log Review
+              </button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openCrmCompleteModal(reminderId) {
+  const el = document.getElementById("crm-reminder-id");
+  if (el) el.value = reminderId;
+  const m = document.getElementById("modal-crm-complete");
+  if (m) m.classList.remove("hidden");
+}
+
+function closeCrmCompleteModal() {
+  const m = document.getElementById("modal-crm-complete");
+  if (m) m.classList.add("hidden");
+}
+
+function submitCompleteCrmReminder() {
+  const remId = document.getElementById("crm-reminder-id")?.value;
+  const notes = document.getElementById("crm-call-notes")?.value.trim();
+  const rating = document.getElementById("crm-star-rating")?.value;
+  const review = document.getElementById("crm-review-text")?.value.trim();
+
+  if (!remId || !notes) {
+    alert("કૃપા કરીને કૉલની નોટ્સ દાખલ કરો.");
+    return;
+  }
+
+  fetch(`/api/v1/crm/reminders/${remId}/complete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      agent_notes: notes,
+      rating_given: rating,
+      review_text: review
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      closeCrmCompleteModal();
+      loadCrmReminders();
+    } else {
+      alert("Error: " + data.error);
+    }
+  })
+  .catch(err => alert("Error: " + err));
+}
+
+// Window Exports
+window.openBulkUploadModal = openBulkUploadModal;
+window.closeBulkUploadModal = closeBulkUploadModal;
+window.downloadSampleCsvTemplate = downloadSampleCsvTemplate;
+window.submitBulkCsvUpload = submitBulkCsvUpload;
+window.openNewInquiryModal = openNewInquiryModal;
+window.closeNewInquiryModal = closeNewInquiryModal;
+window.submitNewInquiry = submitNewInquiry;
+window.loadInquiriesPipeline = loadInquiriesPipeline;
+window.generateQuotationFromInquiry = generateQuotationFromInquiry;
+window.convertInquiryToBill = convertInquiryToBill;
+window.openInquiryLostModal = openInquiryLostModal;
+window.closeInquiryLostModal = closeInquiryLostModal;
+window.submitMarkInquiryLost = submitMarkInquiryLost;
+window.loadCrmReminders = loadCrmReminders;
+window.openCrmCompleteModal = openCrmCompleteModal;
+window.closeCrmCompleteModal = closeCrmCompleteModal;
+window.submitCompleteCrmReminder = submitCompleteCrmReminder;

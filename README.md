@@ -1,75 +1,78 @@
-# PCWARE | Computer Hardware E-Commerce & Service ERP System
-> **કમ્પ્યુટર હાર્ડવેર વેચાણ, કસ્ટમ પીસી અને સર્વિસ મેનેજમેન્ટ (ERP) સિસ્ટમ**
-> **સરનામું:** Shop No. SF, 47, 48, 49, Suvarnabhumi Complex, opp. Speedwell Party Plot, Ambika Twp, Mota Mava, Rajkot, Gujarat 360005
-> **સંપર્ક:** CEO: +91 94261 83934 | Service: +91 80007 80704 | Inquiry: +91 70167 37271
-
-આ એપ્લિકેશન ખાસ કરીને **કમ્પ્યુટર હાર્ડવેર ડીલર્સ, પીસી બિલ્ડર્સ અને આઈટી સર્વિસ/રિપેરિંગ સેન્ટર્સ** માટે તૈયાર કરવામાં આવી છે.
+# PC WARE — Refurbished IT Hardware Website & Enterprise ERP System
+> **Certified Refurbished Laptops, Desktops, Servers, Workstations & Custom PC System Integration**
+> **Address:** Shop No. SF, 47, 48, 49, Suvarnabhumi Complex, opp. Speedwell Party Plot, Ambika Twp, Mota Mava, Rajkot, Gujarat 360005  
+> **Contact:** CEO: +91 94261 83934 | Technical Service: +91 80007 80704 | Inquiry: +91 70167 37271
 
 ---
 
-## 🌟 મુખ્ય સુવિધાઓ (Key Features)
+## 🌟 Architectural Pillars & The 10 Critical Rules
 
-### ૧. ગ્રાહકો માટે (Customer Portal & E-Commerce):
-* **હાર્ડવેર કેટેલોગ (Hardware Catalog):** Processors, Motherboards, RAM, NVMe SSDs, Graphic Cards, SMPS, Cabinets, Laptops અને પ્રિન્ટર્સ ફિલ્ટર અને સર્ચ સાથે.
-* **કસ્ટમ PC બિલ્ડર (Custom PC Configurator):** લાઈવ TDP વોટેજ કેલ્ક્યુલેટર, ભલામણ કરેલ SMPS ક્ષમતા, અને એક ક્લિકમાં WhatsApp પર કન્ફિગરેશન મોકલવાની સુવિધા.
-* **૨૪/૭ જોબ-શીટ ટ્રેકર (Track Repair Status):** ગ્રાહક પોતાનો ટોકન નંબર (દા.ત. `JS-2026-1001`) અથવા મોબાઇલ નંબર નાખીને રિપેરિંગનો લાઈવ પ્રોગ્રેસ જોઈ શકે છે.
-* **ઓનલાઇન સર્વિસ બુકિંગ (Book Service):** લેપટોપ/કમ્પ્યુટર રિપેરિંગ માટે પિકઅપ અથવા શોપ વિઝિટ બુકિંગ.
-* **કાર્ટ અને ચેકઆઉટ:** કેશ ઓન ડિલિવરી (COD), UPI QR અને બેંક ટ્રાન્સફર સપોર્ટ.
-
-### ૨. એડમિન ERP અને સર્વિસ સેન્ટર (Admin Management):
-* **જોબ શીટ મેનેજમેન્ટ (RMA / Service Intake):**
-  - કસ્ટમર ડિવાઇસ, સીરીયલ નંબર, સાથે આવેલ સામાન (ચાર્જર, બેગ, કેબલ), અને ખામીની વિગત સાથે એન્ટ્રી.
-  - ટેકનિશિયન નોંધ અને સ્ટેટસ અપડેટ (*Received, Diagnosing, Waiting Approval, Repaired, Delivered*).
-  - **જોબ સ્લિપ પ્રિન્ટ (Printable Job Card):** બારકોડ, ગ્રાહકની સહી, અને નિયમો-શરતો સાથે પ્રિન્ટ.
-* **સીરીયલ નંબર અને વોરંટી ટ્રેકિંગ (Serial Number Registry):**
-  - દરેક હાર્ડવેર યુનિટનો સીરીયલ નંબર, સપ્લાયરનું નામ, ખરીદ તારીખ, અને ગ્રાહક બિલ નંબર સાથે ટ્રેકિંગ (RMA ક્લેમ માટે અતિ મહત્વનું).
-* **GST ટેક્સ બિલિંગ (GST Invoicing):**
-  - B2B અને B2C બિલિંગ, HSN કોડ, CGST (9%) + SGST (9%) ટેક્સ બ્રેકઅપ.
-  - બિલમાં પાર્ટ્સના સીરીયલ નંબરની નોંધ.
-  - **ઓફિશિયલ GST ટેક્સ ઇન્વૉઇસ પ્રિન્ટ.**
-* **AMC કોન્ટ્રેક્ટ ટ્રેકિંગ (Annual Maintenance Contracts):**
-  - કોર્પોરેટ ઓફિસ, સ્કૂલ અને હોસ્પિટલના વાર્ષિક કોન્ટ્રેક્ટ, સિસ્ટમ્સની સંખ્યા, મુલાકાત આવર્તન, અને રિન્યુઅલ એલર્ટ.
+1. **Strict QC Inwarding Gate (Rule 1 & 2)**:
+   No refurbished unit can enter sellable store stock until it passes Quality Check. If a unit fails QC, it is automatically sequestered to Quarantine Bay (`WH-QUARANTINE`) and mechanically blocked from being inwarded (`HTTP 422: QC_RULE_VIOLATION`).
+2. **Serialized Traceability (Rule 3)**:
+   Every individual physical unit is tracked by its unique serial number from receiving intake lot, through 24-point QC thermal diagnostics, inward shelf location, sales order allocation, GST invoice, and warranty RMA history.
+3. **8-Vector Hardware Compatibility Engine (Rule 4 & 5)**:
+   Compatibility is verified on both the client (instant UX feedback) and authoritative backend (rejection of mismatches). Evaluates:
+   - CPU Socket vs Motherboard Socket (e.g., AM5 vs LGA1700)
+   - Motherboard RAM Gen vs RAM Module (DDR4 vs DDR5)
+   - Form Factor (DIMM vs SODIMM; ATX vs mATX)
+   - Storage Interface (PCIe Gen4 NVMe vs SATA)
+   - GPU Length Clearance vs Chassis Dimensions
+   - Power Supply Headroom (PSU Watts >= System TDP * 1.30)
+4. **Refurbished Hardware Upgrades (Rule 6)**:
+   Dedicated product detail pages (`/products/:slug`) support live RAM & SSD dynamic upgrade selections with real-time price recalculations (`Base Price + Upgrades + Labour + GST`).
+5. **Immutable Referral Points Ledger (Rule 7)**:
+   Referral rewards are credited into a double-entry transaction ledger (`referral_point_ledger`) ensuring full auditability and preventing balance tampering.
+6. **Server-Side Financial Integrity (Rule 8)**:
+   All financial subtotals, labour charges, HSN 8471 GST (9% CGST + 9% SGST), and referral discounts are calculated authoritatively on the backend.
+7. **Movement Logs & Audit Trail (Rule 9 & 10)**:
+   Every status transition and shelf movement is recorded in `inventory_movements`.
 
 ---
 
-## 🚀 સિસ્ટમ ચલાવવાની રીત (How to Run)
+## 🚀 How to Run
 
-કોઈ પણ VPS સર્વર કે વધારાના સોફ્ટવેર વગર તમે આને તમારા કમ્પ્યુટર પર સીધું જ ચલાવી શકો છો:
-
-### પદ્ધતિ ૧: One-Click Mac Launcher
-પ્રોજેક્ટ ફોલ્ડરમાં રહેલ **`run.command`** ફાઇલ પર ડબલ ક્લિક કરો. સર્વર શરૂ થઈને સીધું જ તમારા બ્રાઉઝરમાં ખુલી જશે.
-
-### પદ્ધતિ ૨: Terminal થી શરૂ કરવું
+### Option 1: One-Click Mac Launcher
+Double-click `run.command` in the project root:
 ```bash
-cd /Users/apple/.gemini/antigravity/scratch/hardware-ecommerce-erp
+./run.command
+```
+This launches the server and automatically opens `http://localhost:8080` in your default browser.
+
+### Option 2: Terminal Launch
+```bash
 python3 server.py
 ```
-ત્યારબાદ તમારા બ્રાઉઝરમાં ખોલો:
-👉 **http://localhost:8080**
+Visit:
+* **Public Website**: [http://localhost:8080](http://localhost:8080)
+* **Product Detail & Upgrades**: [http://localhost:8080/products/dell-latitude-5420-i5](http://localhost:8080/products/dell-latitude-5420-i5)
+* **Custom PC Builder**: [http://localhost:8080/custom-pc](http://localhost:8080/custom-pc)
+* **24/7 Live Job Sheet Tracker**: [http://localhost:8080/repair-tracking](http://localhost:8080/repair-tracking)
+* **Enterprise ERP Workspace**: [http://localhost:8080/erp](http://localhost:8080/erp)
 
-### પદ્ધતિ ૩: ડાયરેક્ટ બ્રાઉઝરમાં ખોલવું (Direct Browser Open)
-તમે **`static/index.html`** ફાઇલ પર ડબલ ક્લિક કરીને પણ કોઈપણ બ્રાઉઝર (Chrome/Safari) માં સીધું જ ચલાવી શકો છો. તેમાં ડ્યુઅલ લોકલ સ્ટોરેજ એન્જિન છે જેથી તમામ ડેટા આપોઆપ સેવ રહેશે!
-
----
-
-## 📁 ફાઇલ માળખું (Project Structure)
-```
-hardware-ecommerce-erp/
-├── server.py              # REST API બેકેન્ડ સર્વર (Python + SQLite)
-├── database.py            # ડેટાબેઝ સ્કીમા અને સીડ ડેટા સ્ક્રિપ્ટ
-├── hardware_erp.db        # SQLite ડેટાબેઝ ફાઇલ
-├── run.command            # Mac પર એક ક્લિકથી શરૂ કરવા માટેની સ્ક્રિપ્ટ
-├── README.md              # પ્રોજેક્ટ ગાઈડ
-└── static/
-    ├── index.html         # Tailwind CSS આધારિત સંપૂર્ણ ફ્રન્ટએન્ડ પેજ
-    └── app.js             # PC Builder, Cart, Job Sheets, Billing અને Print લોજિક
-```
+### Staff Credentials for ERP
+* **Executive Administrator**: `admin@pcware.in` / `Admin@123`
+* **Lead QC Technician**: `qc@pcware.in` / `Tech@123`
+* **Registered Customer**: `raj.patel@gmail.com` / `Customer@123`
 
 ---
 
-## 🌐 ફ્રી ક્લાઉડ ડિપ્લોયમેન્ટ (Zero VPS Cost)
-જો તમારે આ વેબસાઇટને ઓનલાઇન લાઈવ કરવી હોય:
-1. આ કોડને GitHub પર અપલોડ કરો.
-2. **Vercel** અથવા **Render** (Free Tier) સાથે કનેક્ટ કરો.
-3. ડેટાબેઝ માટે **Supabase** (Free PostgreSQL) વાપરી શકો છો.
-**કોઈ પણ VPS ખરીદવાની જરૂર નથી!**
+## 🧪 Automated Test Suites
+
+Run the automated tests verifying all business rules:
+```bash
+# Test Strict QC Inward Gatekeeper (Rules 1 & 2)
+python3 tests/test_qc_gate.py
+
+# Test 8-Vector Hardware Compatibility Engine (Rules 4 & 5)
+python3 tests/test_compatibility.py
+
+# Test Server-Side Financials & GST Calculation (Rule 8)
+python3 tests/test_financials.py
+
+# Test Immutable Referral Points Ledger (Rule 7)
+python3 tests/test_referral_ledger.py
+
+# Test In-Process HTTP Gateway & Routing
+python3 tests/test_inprocess_api.py
+```
