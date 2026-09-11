@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details & Custom Upgrades — PC WARE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/api.js" defer></script>
+  <script src="/js/store.js" defer></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo-brand">
+      <span style="color: #0284c7;">PC</span>WARE
+      <span class="logo-badge">Refurbished Enterprise</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/shop" class="nav-link">All Products</a></li>
+      <li><a href="/laptops" class="nav-link">Laptops</a></li>
+      <li><a href="/desktops" class="nav-link">Desktops</a></li>
+      <li><a href="/servers" class="nav-link">Servers</a></li>
+      <li><a href="/workstations" class="nav-link">Workstations</a></li>
+      <li><a href="/custom-pc" class="nav-link" style="color: #0284c7; font-weight: 700;">⚡ Custom PC</a></li>
+      <li><a href="/upgrades" class="nav-link">Upgrades</a></li>
+      <li><a href="/repair-tracking" class="nav-link">Track Repair</a></li>
+      <li><a href="/referral-program" class="nav-link">Referral Pts</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="/cart" class="btn btn-secondary btn-sm" style="position: relative;">
+        🛒 Cart <span class="cart-count-badge badge badge-grade-a" style="display:none; font-size: 0.7rem;">0</span>
+      </a>
+      <div id="nav-auth-section" style="display: flex; align-items: center; gap: 0.5rem;">
+        <a href="/login" class="nav-link">Sign In</a>
+        <a href="/register" class="btn btn-sm btn-primary">Register</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <div class="container">
+    <div id="product-loading" style="padding: 4rem; text-align: center; color: #64748b;">
+      Loading hardware specifications and dynamic upgrade options...
+    </div>
+
+    <div id="product-content" style="display: none;">
+      <!-- Breadcrumb -->
+      <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.5rem;">
+        <a href="/">Home</a> / <a href="/shop">Shop</a> / <span id="bread-category">Laptops</span> / <span id="bread-title" style="color: #0f172a; font-weight: 600;">Product</span>
+      </div>
+
+      <div class="grid-2" style="gap: 3rem; align-items: start; margin-bottom: 3rem;">
+        <!-- Image Gallery & Badges -->
+        <div>
+          <div class="card" style="padding: 1rem; margin-bottom: 1rem;">
+            <img id="detail-main-img" src="" style="width: 100%; height: 380px; object-fit: cover; border-radius: 8px;">
+          </div>
+          <div class="grid-3" style="gap: 0.75rem;">
+            <div class="card" style="text-align: center; padding: 0.75rem;">
+              <div style="font-size: 0.75rem; color: #64748b;">QC STATUS</div>
+              <div style="color: #10b981; font-weight: 700; font-size: 0.85rem;">✓ 24-Point Passed</div>
+            </div>
+            <div class="card" style="text-align: center; padding: 0.75rem;">
+              <div style="font-size: 0.75rem; color: #64748b;">WARRANTY</div>
+              <div style="font-weight: 700; font-size: 0.85rem;" id="detail-warranty">12 Months</div>
+            </div>
+            <div class="card" style="text-align: center; padding: 0.75rem;">
+              <div style="font-size: 0.75rem; color: #64748b;">BATTERY / THERMAL</div>
+              <div style="color: #0284c7; font-weight: 700; font-size: 0.85rem;" id="detail-battery">96% Health</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Overview & DYNAMIC UPGRADES -->
+        <div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <span class="badge badge-grade-a" id="detail-grade">Grade A</span>
+            <span class="badge badge-available" id="detail-stock">Available in Stock</span>
+          </div>
+          
+          <h1 id="detail-title" style="font-size: 1.85rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem;">Product Title</h1>
+          <p id="detail-sku" style="font-size: 0.85rem; color: #64748b; font-family: monospace; margin-bottom: 1rem;">SKU: PCW-LT-DEL-5420</p>
+          
+          <!-- Live Price Card -->
+          <div class="card" style="background: #f8fafc; border: 2px solid #0284c7; padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Configured Price (Incl. GST):</span>
+              <div style="font-size: 2rem; font-weight: 800; color: #0284c7;" id="detail-live-price">₹0</div>
+            </div>
+            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;" id="detail-tax-breakdown">
+              Base Price: ₹0 | Upgrades: ₹0 | 18% GST Included
+            </div>
+          </div>
+
+          <!-- DYNAMIC UPGRADE MODULE -->
+          <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+              🛠️ Factory Upgrade Options (Customized in Cleanroom)
+            </h3>
+            <div id="upgrades-container">
+              <!-- Dynamically populated RAM & SSD radios/checkboxes -->
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-primary btn-lg" style="flex: 2;" onclick="addConfiguredToCart()">
+              🛒 Add Configured System to Cart
+            </button>
+            <button class="btn btn-secondary btn-lg" style="flex: 1;" onclick="requestProductQuote()">
+              📄 Request Quote
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parametric Hardware Specifications Table -->
+      <div class="card" style="padding: 2rem; margin-bottom: 3rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 1.5rem;">Full Technical Specifications</h2>
+        <div class="grid-2" id="specs-grid" style="gap: 1.5rem;">
+          <!-- Populated from specs -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentProduct = null;
+    let selectedUpgradeIds = new Set();
+
+    async function loadProductDetail() {
+      const pathParts = window.location.pathname.split("/");
+      let slug = pathParts[pathParts.length - 1];
+      if (!slug || slug === "product-detail.html") {
+        slug = "dell-latitude-5420-i5"; // Default demo product
+      }
+
+      try {
+        const prod = await api.get("/api/v1/catalog/products/" + slug);
+        currentProduct = prod;
+        
+        document.getElementById("product-loading").style.display = "none";
+        document.getElementById("product-content").style.display = "block";
+        
+        document.title = prod.title + " — PC WARE Refurbished Hardware";
+        document.getElementById("bread-category").textContent = prod.category_name;
+        document.getElementById("bread-title").textContent = prod.title;
+        document.getElementById("detail-title").textContent = prod.title;
+        document.getElementById("detail-sku").textContent = "SKU: " + prod.sku + " | Brand: " + prod.brand_name;
+        document.getElementById("detail-grade").textContent = prod.condition_grade;
+        document.getElementById("detail-stock").textContent = prod.available_serials_count + " Units Available";
+        document.getElementById("detail-warranty").textContent = prod.warranty_months + " Months Warranty";
+        document.getElementById("detail-main-img").src = prod.image_url;
+        
+        // Populate Specifications
+        const s = prod.specifications || {};
+        document.getElementById("detail-battery").textContent = s.battery_health_percentage ? (s.battery_health_percentage + "% Health") : "Tested Thermal Stable";
+        
+        const specsGrid = document.getElementById("specs-grid");
+        specsGrid.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Processor:</span>
+              <b>${s.cpu_model || "Intel Core"} (${s.cpu_generation || ""})</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Memory (Installed / Max):</span>
+              <b>${s.ram_capacity_gb || 8}GB ${s.ram_gen || "DDR4"} ${s.ram_type || "SODIMM"} (Max ${s.max_ram_supported_gb || 64}GB)</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Primary Storage:</span>
+              <b>${s.storage_capacity_gb || 256}GB ${s.storage_type || "NVMe"} (${s.storage_interface || "M.2 NVMe"})</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Graphics:</span>
+              <b>${s.gpu_model || "Integrated Graphics"}</b>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Display:</span>
+              <b>${s.display_size || "14.0 inch Full HD Anti-Glare"}</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Operating System:</span>
+              <b>${s.os_installed || "Windows 11 Pro"}</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Available Expansion Slots:</span>
+              <b>${s.ram_slots_free || 1} Free RAM Slot, ${s.m2_slots || 1} M.2 NVMe Slot</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #e2e8f0;">
+              <span style="color: #64748b;">Condition Standard:</span>
+              <b>Grade A Certified Refurbished (Passed 24-Point QC)</b>
+            </div>
+          </div>
+        `;
+
+        renderUpgradesList(prod.upgrade_options || []);
+        recalculateLivePrice();
+      } catch (err) {
+        document.getElementById("product-loading").innerHTML = '<div style="color: #ef4444;">Failed to load product: ' + err.message + '</div>';
+      }
+    }
+
+    function renderUpgradesList(upgrades) {
+      const container = document.getElementById("upgrades-container");
+      if (upgrades.length === 0) {
+        container.innerHTML = '<p style="font-size: 0.85rem; color: #64748b;">This hardware is in its maximum factory configuration.</p>';
+        return;
+      }
+      
+      container.innerHTML = "";
+      upgrades.forEach(u => {
+        const row = document.createElement("div");
+        row.style = "display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9;";
+        row.innerHTML = `
+          <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+            <input type="checkbox" value="${u.id}" onchange="toggleUpgrade(${u.id}, this.checked)">
+            <div>
+              <span style="font-weight: 600;">${u.title}</span>
+              <div style="font-size: 0.75rem; color: #64748b;">${u.spec_change}</div>
+            </div>
+          </label>
+          <div style="font-weight: 700; color: #0284c7; font-size: 0.95rem;">
+            +₹${(u.additional_cost + u.labour_charge).toLocaleString("en-IN")}
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function toggleUpgrade(id, checked) {
+      if (checked) selectedUpgradeIds.add(id);
+      else selectedUpgradeIds.delete(id);
+      recalculateLivePrice();
+    }
+
+    async function recalculateLivePrice() {
+      if (!currentProduct) return;
+      try {
+        const res = await api.post("/api/v1/products/calculate-price", {
+          base_product_id: currentProduct.id,
+          upgrade_ids: Array.from(selectedUpgradeIds)
+        });
+        document.getElementById("detail-live-price").textContent = "₹" + res.grand_total.toLocaleString("en-IN");
+        document.getElementById("detail-tax-breakdown").textContent = 
+          "Base: ₹" + res.base_price.toLocaleString("en-IN") + " | Upgrades: ₹" + (res.total_upgrade_cost + res.total_labour_charge).toLocaleString("en-IN") + " | 18% GST: ₹" + res.total_tax.toLocaleString("en-IN");
+      } catch (err) {
+        console.error("Price recalculation error:", err);
+      }
+    }
+
+    function addConfiguredToCart() {
+      if (!currentProduct) return;
+      const selectedList = [];
+      (currentProduct.upgrade_options || []).forEach(u => {
+        if (selectedUpgradeIds.has(u.id)) selectedList.push(u);
+      });
+      Cart.addItem(currentProduct, selectedList);
+    }
+
+    async function requestProductQuote() {
+      if (!currentProduct) return;
+      try {
+        const res = await api.post("/api/v1/products/calculate-price", {
+          base_product_id: currentProduct.id,
+          upgrade_ids: Array.from(selectedUpgradeIds)
+        });
+        const q = await api.post("/api/v1/quotations", { subtotal: res.subtotal });
+        showToast("Official Quote #" + q.quotation_number + " generated for ₹" + q.grand_total.toLocaleString("en-IN"), "success");
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => loadProductDetail());
+  </script>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="logo-brand" style="color: #fff; margin-bottom: 0.75rem;">
+        <span style="color: #38bdf8;">PC</span>WARE
+        <span class="logo-badge">Certified IT Hub</span>
+      </div>
+      <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem;">
+        Rajkot's premier enterprise for certified refurbished laptops, desktops, server nodes, high-performance CAD workstations, and custom liquid-cooled gaming rigs.
+      </p>
+      <div style="font-size: 0.85rem; color: #cbd5e1;">
+        📍 Shop No. SF, 47, 48, 49, Suvarnabhumi Complex, opp. Speedwell Party Plot, Ambika Twp, Mota Mava, Rajkot 360005<br>
+        📞 CEO: +91 94261 83934 | Service: +91 80007 80704
+      </div>
+    </div>
+    <div>
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Hardware Categories</h4>
+      <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+        <li><a href="/laptops" style="color: #94a3b8;">Refurbished Laptops</a></li>
+        <li><a href="/desktops" style="color: #94a3b8;">Refurbished Desktops</a></li>
+        <li><a href="/servers" style="color: #94a3b8;">Enterprise Servers</a></li>
+        <li><a href="/workstations" style="color: #94a3b8;">CAD Workstations</a></li>
+        <li><a href="/custom-pc" style="color: #94a3b8;">Custom PC Configurator</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Services & Warranty</h4>
+      <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+        <li><a href="/repair-tracking" style="color: #94a3b8;">Track Repair Job Card</a></li>
+        <li><a href="/upgrades" style="color: #94a3b8;">RAM & SSD Upgrades</a></li>
+        <li><a href="/warranty" style="color: #94a3b8;">Warranty Terms & RMA</a></li>
+        <li><a href="/services" style="color: #94a3b8;">Corporate IT AMC</a></li>
+        <li><a href="/referral-program" style="color: #94a3b8;">Referral Rewards</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">PC Ware Standards</h4>
+      <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+        <li><a href="/about" style="color: #94a3b8;">24-Point QC Testing Lab</a></li>
+        <li><a href="/faq" style="color: #94a3b8;">Condition Grading Guide</a></li>
+        <li><a href="/contact" style="color: #94a3b8;">Showroom & Lab Visit</a></li>
+        <li><a href="/erp" style="color: #38bdf8; font-weight: 700;">Internal Staff ERP ➔</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 PC Ware. All Rights Reserved. GSTIN: 24AAECP1234F1Z5 | HSN 8471 Compliant.</div>
+    <div style="display: flex; gap: 1rem;">
+      <a href="/warranty" style="color: #94a3b8;">Warranty Policy</a>
+      <a href="/faq" style="color: #94a3b8;">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

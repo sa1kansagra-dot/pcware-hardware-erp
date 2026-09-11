@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PC WARE Enterprise ERP System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/api.js" defer></script>
+  <script src="/js/erp.js" defer></script>
+</head>
+<body>
+  <div class="erp-container">
+    <!-- ERP Sidebar Navigation -->
+    <aside class="erp-sidebar">
+      <div class="erp-sidebar-header">
+        <div class="logo-brand" style="color: #fff; font-size: 1.15rem;">
+          <span style="color: #38bdf8;">PC</span>WARE <span class="logo-badge" style="background:#0284c7;">ERP</span>
+        </div>
+        <a href="/" style="font-size: 0.8rem; color: #94a3b8;">Storefront ➔</a>
+      </div>
+
+      <div style="overflow-y: auto; flex-grow: 1;">
+        <div class="erp-nav-group">
+          <div class="erp-nav-title">Operations</div>
+          <div class="erp-nav-item active" data-module="dashboard" onclick="switchModule('dashboard')">
+            📊 Executive Dashboard
+          </div>
+          <div class="erp-nav-item" data-module="receiving" onclick="switchModule('receiving')">
+            📥 Receiving Intake
+          </div>
+          <div class="erp-nav-item" data-module="qc-workstation" onclick="switchModule('qc-workstation')">
+            🔬 QC Testing Lab (24-Pt)
+          </div>
+          <div class="erp-nav-item" data-module="inward-gate" onclick="switchModule('inward-gate')">
+            🚪 Strict Inwarding Gate
+          </div>
+          <div class="erp-nav-item" data-module="refurb-costing" onclick="switchModule('refurb-costing')">
+            🛠️ Refurb Work Orders & Costing
+          </div>
+        </div>
+
+        <div class="erp-nav-group">
+          <div class="erp-nav-title">Accounting & General Ledger</div>
+          <div class="erp-nav-item" data-module="trial-balance" onclick="switchModule('trial-balance')">
+            ⚖️ Trial Balance & Invariant
+          </div>
+          <div class="erp-nav-item" data-module="coa" onclick="switchModule('coa')">
+            📖 Chart of Accounts (COA)
+          </div>
+          <div class="erp-nav-item" data-module="gl" onclick="switchModule('gl')">
+            📑 General Ledger Drilldown
+          </div>
+          <div class="erp-nav-item" data-module="pl" onclick="switchModule('pl')">
+            📈 Profit & Loss Statement
+          </div>
+          <div class="erp-nav-item" data-module="balance-sheet" onclick="switchModule('balance-sheet')">
+            🏛️ Balance Sheet
+          </div>
+          <div class="erp-nav-item" data-module="manual-journal" onclick="switchModule('manual-journal')">
+            ✍️ Post Manual Journal Entry
+          </div>
+        </div>
+
+        <div class="erp-nav-group">
+          <div class="erp-nav-title">Inventory & Assembly</div>
+          <div class="erp-nav-item" data-module="serials" onclick="switchModule('serials')">
+            🏷️ Serial Registry & Audit
+          </div>
+          <div class="erp-nav-item" data-module="assembly" onclick="switchModule('assembly')">
+            ⚡ Custom PC Assembly Pipeline
+          </div>
+          <div class="erp-nav-item" data-module="catalog" onclick="switchModule('catalog')">
+            📦 Catalog & Specifications
+          </div>
+        </div>
+
+        <div class="erp-nav-group">
+          <div class="erp-nav-title">Sales, Support & Loyalty</div>
+          <div class="erp-nav-item" data-module="sales" onclick="switchModule('sales')">
+            💼 Sales & GST Invoicing
+          </div>
+          <div class="erp-nav-item" data-module="repairs" onclick="switchModule('repairs')">
+            🔧 In-Shop Repair Job Sheets
+          </div>
+          <div class="erp-nav-item" data-module="referrals" onclick="switchModule('referrals')">
+            🎁 Referral Points Ledger
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 1rem; border-top: 1px solid #334155; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Lead Administrator</div>
+          <div style="font-size: 0.75rem; color: #10b981;">● Online (HQ Rajkot)</div>
+        </div>
+        <button onclick="api.logout()" class="btn btn-sm btn-outline" style="border-color:#ef4444; color:#ef4444;">Exit</button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main class="erp-main">
+      <header class="erp-topbar">
+        <div style="font-size: 0.9rem; color: #94a3b8;">
+          PC WARE ERP & Inventory Engine — Single Source of Truth
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <span class="badge badge-grade-a" style="background: rgba(2, 132, 199, 0.2); color: #38bdf8;">PostgreSQL & SQLite Dual-Engine</span>
+          <span style="font-size: 0.85rem; color: #e2e8f0;">Shop No. SF-47, Rajkot</span>
+        </div>
+      </header>
+
+      <div class="erp-content" id="erp-view-content">
+        <!-- Rendered by erp.js -->
+      </div>
+    </main>
+  </div>
+</body>
+</html>

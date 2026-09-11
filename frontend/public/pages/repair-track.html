@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Track Repair Job Sheet Status — PC WARE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/api.js" defer></script>
+  <script src="/js/store.js" defer></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo-brand">
+      <span style="color: #0284c7;">PC</span>WARE
+      <span class="logo-badge">Refurbished Enterprise</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/shop" class="nav-link">All Products</a></li>
+      <li><a href="/laptops" class="nav-link">Laptops</a></li>
+      <li><a href="/desktops" class="nav-link">Desktops</a></li>
+      <li><a href="/servers" class="nav-link">Servers</a></li>
+      <li><a href="/workstations" class="nav-link">Workstations</a></li>
+      <li><a href="/custom-pc" class="nav-link" style="color: #0284c7; font-weight: 700;">⚡ Custom PC</a></li>
+      <li><a href="/upgrades" class="nav-link">Upgrades</a></li>
+      <li><a href="/repair-tracking" class="nav-link">Track Repair</a></li>
+      <li><a href="/referral-program" class="nav-link">Referral Pts</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="/cart" class="btn btn-secondary btn-sm" style="position: relative;">
+        🛒 Cart <span class="cart-count-badge badge badge-grade-a" style="display:none; font-size: 0.7rem;">0</span>
+      </a>
+      <div id="nav-auth-section" style="display: flex; align-items: center; gap: 0.5rem;">
+        <a href="/login" class="nav-link">Sign In</a>
+        <a href="/register" class="btn btn-sm btn-primary">Register</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <div class="container" style="max-width: 800px;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <h1 style="font-size: 2.2rem; font-weight: 800;">Live Repair Job Sheet Tracker</h1>
+      <p style="color: #64748b;">Enter your Job Sheet Number (e.g. <b>JS-2026-1001</b>) or Registered Mobile Number to check real-time diagnosis & testing progress.</p>
+    </div>
+
+    <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+      <div style="display: flex; gap: 1rem;">
+        <input type="text" id="track-input" class="form-control" placeholder="Enter Token # (e.g. JS-2026-1001) or Phone..." value="JS-2026-1001">
+        <button class="btn btn-primary btn-lg" onclick="searchTicket()">Track Progress</button>
+      </div>
+    </div>
+
+    <div id="track-result" style="display: none;">
+      <!-- Populated on search -->
+    </div>
+  </div>
+
+  <script>
+    async function searchTicket() {
+      const q = document.getElementById("track-input").value.trim();
+      if (!q) return;
+      const resContainer = document.getElementById("track-result");
+      resContainer.style.display = "block";
+      resContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: #64748b;">Querying service database...</div>';
+      
+      try {
+        const ticket = await api.get("/api/v1/repair/track?token=" + encodeURIComponent(q));
+        resContainer.innerHTML = `
+          <div class="card" style="padding: 2rem; border-left: 4px solid #0284c7;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <div>
+                <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">${ticket.ticket_number}</h2>
+                <div style="font-size: 0.85rem; color: #64748b;">Device: <b>${ticket.device_brand_model}</b></div>
+              </div>
+              <span class="badge ${ticket.repair_status === 'repaired' ? 'badge-qc-pass' : 'badge-qc-pending'}" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+                ${ticket.repair_status.toUpperCase()}
+              </span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.7;">
+              <div><b>Reported Fault:</b> ${ticket.fault_description}</div>
+              <div><b>Accessories Included:</b> ${ticket.accessories_included || "None"}</div>
+              <div><b>Technician Diagnostic Report:</b><br><span style="color: #0369a1;">${ticket.diagnostic_report || "Under active board-level diagnostics."}</span></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+              <div>
+                <span style="font-size: 0.85rem; color: #64748b;">Estimated / Final Cost:</span>
+                <div style="font-size: 1.4rem; font-weight: 800; color: #0284c7;">₹${(ticket.final_cost > 0 ? ticket.final_cost : ticket.estimated_cost).toLocaleString("en-IN")}</div>
+              </div>
+              <div>
+                ${ticket.repair_status === 'repaired' ? '<span style="color: #10b981; font-weight: 700;">✓ Ready for Pickup at SF-47 Rajkot</span>' : '<span style="color: #f59e0b; font-weight: 700;">⏳ Testing in Progress</span>'}
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        resContainer.innerHTML = '<div class="card" style="padding: 2rem; text-align: center; color: #ef4444;">No job sheet found matching your search. Please verify your token number or call Service Desk: +91 80007 80704.</div>';
+      }
+    }
+    document.addEventListener("DOMContentLoaded", () => searchTicket());
+  </script>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="logo-brand" style="color: #fff; margin-bottom: 0.75rem;">
+        <span style="color: #38bdf8;">PC</span>WARE
+        <span class="logo-badge">Certified IT Hub</span>
+      </div>
+      <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem;">
+        Rajkot's premier enterprise for certified refurbished laptops, desktops, server nodes, high-performance CAD workstations, and custom liquid-cooled gaming rigs.
+      </p>
+      <div style="font-size: 0.85rem; color: #cbd5e1;">
+        📍 Shop No. SF, 47, 48, 49, Suvarnabhumi Complex, opp. Speedwell Party Plot, Ambika Twp, Mota Mava, Rajkot 360005<br>
+        📞 CEO: +91 94261 83934 | Service: +91 80007 80704
+      </div>
+    </div>
+    <div>
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Hardware Categories</h4>
+      <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+        <li><a href="/laptops" style="color: #94a3b8;">Refurbished Laptops</a></li>
+        <li><a href="/desktops" style="color: #94a3b8;">Refurbished Desktops</a></li>
+        <li><a href="/servers" style="color: #94a3b8;">Enterprise Servers</a></li>
+        <li><a href="/workstations" style="color: #94a3b8;">CAD Workstations</a></li>
+        <li><a href="/custom-pc" style="color: #94a3b8;">Custom PC Configurator</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Services & Warranty</h4>
+      <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+        <li><a href="/repair-tracking" style="color: #94a3b8;">Track Repair Job Card</a></li>
+        <li><a href="/upgrades" style="color: #94a3b8;">RAM & SSD Upgrades</a></li>
+        <li><a href="/warranty" style="color: #94a3b8;">Warranty Terms & RMA</a></li>
+        <li><a href="/services" style="color: #94a3b8;">Corporate IT AMC</a></li>
+        <li><a href="/referral-program" style="color: #94a3b8;">Referral Rewards</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">PC Ware Standards</h4>
+      <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+        <li><a href="/about" style="color: #94a3b8;">24-Point QC Testing Lab</a></li>
+        <li><a href="/faq" style="color: #94a3b8;">Condition Grading Guide</a></li>
+        <li><a href="/contact" style="color: #94a3b8;">Showroom & Lab Visit</a></li>
+        <li><a href="/erp" style="color: #38bdf8; font-weight: 700;">Internal Staff ERP ➔</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 PC Ware. All Rights Reserved. GSTIN: 24AAECP1234F1Z5 | HSN 8471 Compliant.</div>
+    <div style="display: flex; gap: 1rem;">
+      <a href="/warranty" style="color: #94a3b8;">Warranty Policy</a>
+      <a href="/faq" style="color: #94a3b8;">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

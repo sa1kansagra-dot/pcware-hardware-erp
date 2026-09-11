@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Refurbished Commercial Desktops — PC WARE Refurbished IT Hardware</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/api.js" defer></script>
+  <script src="/js/store.js" defer></script>
+</head>
+<body>
+  
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo-brand">
+          <span style="color: #0284c7;">PC</span>WARE
+          <span class="logo-badge">Refurbished Enterprise</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/shop" class="nav-link ">All Products</a></li>
+          <li><a href="/laptops" class="nav-link ">Laptops</a></li>
+          <li><a href="/desktops" class="nav-link active">Desktops</a></li>
+          <li><a href="/servers" class="nav-link ">Servers</a></li>
+          <li><a href="/workstations" class="nav-link ">Workstations</a></li>
+          <li><a href="/custom-pc" class="nav-link " style="color: #0284c7; font-weight: 700;">⚡ Custom PC</a></li>
+          <li><a href="/upgrades" class="nav-link ">Upgrades</a></li>
+          <li><a href="/repair-tracking" class="nav-link ">Track Repair</a></li>
+          <li><a href="/referral-program" class="nav-link ">Referral Pts</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="/cart" class="btn btn-secondary btn-sm" style="position: relative;">
+            🛒 Cart <span class="cart-count-badge badge badge-grade-a" style="display:none; font-size: 0.7rem;">0</span>
+          </a>
+          <div id="nav-auth-section" style="display: flex; align-items: center; gap: 0.5rem;">
+            <a href="/login" class="nav-link">Sign In</a>
+            <a href="/register" class="btn btn-sm btn-primary">Register</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+  <div class="container">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 800;">Refurbished Commercial Desktops</h1>
+      <p style="color: #64748b;">Dell OptiPlex Small Form Factor (SFF) and HP ProDesk microtowers.</p>
+    </div>
+    
+    <div style="display: flex; gap: 2rem; align-items: flex-start;">
+      <!-- Sidebar Filters -->
+      <div style="width: 260px; flex-shrink: 0;" class="card">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Filter Hardware</h3>
+        
+        <div class="form-group">
+          <label class="form-label">Search Query:</label>
+          <input type="text" id="filter-search" class="form-control" placeholder="Search title, SKU..." oninput="applyFilters()">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Condition Grade:</label>
+          <select id="filter-grade" class="form-control" onchange="applyFilters()">
+            <option value="">All Conditions</option>
+            <option value="Grade A">Grade A (Like New)</option>
+            <option value="Grade B">Grade B (Minor Wear)</option>
+            <option value="Brand New">Brand New</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Brand:</label>
+          <select id="filter-brand" class="form-control" onchange="applyFilters()">
+            <option value="">All Brands</option>
+            <option value="dell">Dell</option>
+            <option value="hp">HP</option>
+            <option value="lenovo">Lenovo</option>
+            <option value="apple">Apple</option>
+            <option value="amd">AMD</option>
+            <option value="intel">Intel</option>
+            <option value="asus">ASUS</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Max Price:</label>
+          <input type="range" id="filter-price" min="5000" max="200000" step="5000" value="200000" oninput="document.getElementById('price-val').textContent = '₹' + Number(this.value).toLocaleString('en-IN'); applyFilters()">
+          <div id="price-val" style="font-size: 0.85rem; font-weight: 700; color: #0284c7; text-align: right;">₹2,00,000</div>
+        </div>
+      </div>
+      
+      <!-- Product Grid -->
+      <div style="flex-grow: 1;">
+        <div id="catalog-products-grid" class="grid-3">
+          <div style="padding: 3rem; text-align: center; color: #94a3b8; grid-column: span 3;">Loading hardware inventory...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadProducts(params = "") {
+      try {
+        const products = await api.get("/api/v1/catalog/products?" + params + "&category_slug=desktops");
+        const container = document.getElementById("catalog-products-grid");
+        container.innerHTML = "";
+        if (products.length === 0) {
+          container.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 4rem 1rem; color: #64748b;">
+            <h3>No hardware matches your filter criteria.</h3>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Try resetting the filters or searching a different term.</p>
+          </div>`;
+          return;
+        }
+        products.forEach(p => {
+          const card = document.createElement("div");
+          card.className = "card product-card";
+          card.innerHTML = `
+            <img src="${p.image_url}" class="product-card-img" alt="${p.title}">
+            <div class="product-card-body">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span class="badge badge-grade-a">${p.condition_grade}</span>
+                <span class="badge badge-available">${p.available_serials_count} Available</span>
+              </div>
+              <h3 class="product-title"><a href="/products/${p.slug}">${p.title}</a></h3>
+              <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem;">
+                SKU: ${p.sku} | ${p.brand_name}
+              </p>
+              <div class="product-price">
+                ₹${p.selling_price.toLocaleString("en-IN")}
+                ${p.base_price > p.selling_price ? `<span class="product-original-price">₹${p.base_price.toLocaleString("en-IN")}</span>` : ""}
+              </div>
+              <div style="display: flex; gap: 0.5rem; margin-top: auto; padding-top: 0.75rem;">
+                <a href="/products/${p.slug}" class="btn btn-outline btn-sm" style="flex: 1;">Custom Upgrade</a>
+                <button class="btn btn-primary btn-sm" onclick='Cart.addItem(${JSON.stringify(p)})'>Add to Cart</button>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    
+    function applyFilters() {
+      const search = document.getElementById("filter-search").value;
+      const grade = document.getElementById("filter-grade").value;
+      const brand = document.getElementById("filter-brand").value;
+      const maxPrice = document.getElementById("filter-price").value;
+      
+      let q = "";
+      if (search) q += "&search=" + encodeURIComponent(search);
+      if (grade) q += "&condition_grade=" + encodeURIComponent(grade);
+      if (brand) q += "&brand_slug=" + encodeURIComponent(brand);
+      if (maxPrice) q += "&max_price=" + maxPrice;
+      
+      loadProducts(q);
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => loadProducts());
+  </script>
+  
+    <footer class="footer">
+      <div class="footer-container">
+        <div>
+          <div class="logo-brand" style="color: #fff; margin-bottom: 0.75rem;">
+            <span style="color: #38bdf8;">PC</span>WARE
+            <span class="logo-badge">Certified IT Hub</span>
+          </div>
+          <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem;">
+            Rajkot's premier enterprise for certified refurbished laptops, desktops, server nodes, high-performance CAD workstations, and custom liquid-cooled gaming rigs.
+          </p>
+          <div style="font-size: 0.85rem; color: #cbd5e1;">
+            📍 Shop No. SF, 47, 48, 49, Suvarnabhumi Complex, opp. Speedwell Party Plot, Ambika Twp, Mota Mava, Rajkot 360005<br>
+            📞 CEO: +91 94261 83934 | Service: +91 80007 80704
+          </div>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Hardware Categories</h4>
+          <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+            <li><a href="/laptops" style="color: #94a3b8;">Refurbished Laptops</a></li>
+            <li><a href="/desktops" style="color: #94a3b8;">Refurbished Desktops</a></li>
+            <li><a href="/servers" style="color: #94a3b8;">Enterprise Servers</a></li>
+            <li><a href="/workstations" style="color: #94a3b8;">CAD Workstations</a></li>
+            <li><a href="/custom-pc" style="color: #94a3b8;">Custom PC Configurator</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Services & Warranty</h4>
+          <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+            <li><a href="/repair-tracking" style="color: #94a3b8;">Track Repair Job Card</a></li>
+            <li><a href="/upgrades" style="color: #94a3b8;">RAM & SSD Upgrades</a></li>
+            <li><a href="/warranty" style="color: #94a3b8;">Warranty Terms & RMA</a></li>
+            <li><a href="/services" style="color: #94a3b8;">Corporate IT AMC</a></li>
+            <li><a href="/referral-program" style="color: #94a3b8;">Referral Rewards</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">PC Ware Standards</h4>
+          <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+            <li><a href="/about" style="color: #94a3b8;">24-Point QC Testing Lab</a></li>
+            <li><a href="/faq" style="color: #94a3b8;">Condition Grading Guide</a></li>
+            <li><a href="/contact" style="color: #94a3b8;">Showroom & Lab Visit</a></li>
+            <li><a href="/erp" style="color: #38bdf8; font-weight: 700;">Internal Staff ERP ➔</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 PC Ware. All Rights Reserved. GSTIN: 24AAECP1234F1Z5 | HSN 8471 Compliant.</div>
+        <div style="display: flex; gap: 1rem;">
+          <a href="/warranty" style="color: #94a3b8;">Warranty Policy</a>
+          <a href="/faq" style="color: #94a3b8;">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+    
+</body>
+</html>

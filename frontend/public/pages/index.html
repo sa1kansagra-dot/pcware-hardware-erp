@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PC WARE — Refurbished Laptops, Desktops, Servers & Custom PCs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/api.js" defer></script>
+  <script src="/js/store.js" defer></script>
+</head>
+<body>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo-brand">
+          <span style="color: #0284c7;">PC</span>WARE
+          <span class="logo-badge">Refurbished Enterprise</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/shop" class="nav-link ">All Products</a></li>
+          <li><a href="/laptops" class="nav-link ">Laptops</a></li>
+          <li><a href="/desktops" class="nav-link ">Desktops</a></li>
+          <li><a href="/servers" class="nav-link ">Servers</a></li>
+          <li><a href="/workstations" class="nav-link ">Workstations</a></li>
+          <li><a href="/custom-pc" class="nav-link " style="color: #0284c7; font-weight: 700;">⚡ Custom PC</a></li>
+          <li><a href="/upgrades" class="nav-link ">Upgrades</a></li>
+          <li><a href="/repair-tracking" class="nav-link ">Track Repair</a></li>
+          <li><a href="/referral-program" class="nav-link ">Referral Pts</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="/cart" class="btn btn-secondary btn-sm" style="position: relative;">
+            🛒 Cart <span class="cart-count-badge badge badge-grade-a" style="display:none; font-size: 0.7rem;">0</span>
+          </a>
+          <div id="nav-auth-section" style="display: flex; align-items: center; gap: 0.5rem;">
+            <a href="/login" class="nav-link">Sign In</a>
+            <a href="/register" class="btn btn-sm btn-primary">Register</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+  <section style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 4rem 1.5rem; border-bottom: 1px solid #334155;">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 0;">
+      <div style="max-width: 650px;">
+        <div class="badge badge-grade-a" style="margin-bottom: 1rem; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #34d399;">
+          🔬 24-Point Quality Certified Refurbished IT Hardware
+        </div>
+        <h1 style="font-size: 2.8rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.25rem;">
+          Enterprise Hardware.<br><span style="color: #38bdf8;">Fraction of the Cost.</span>
+        </h1>
+        <p style="font-size: 1.1rem; color: #94a3b8; margin-bottom: 2rem; line-height: 1.6;">
+          Every Dell, HP, Lenovo laptop and server undergoes deep thermal profiling, MemTest86, and display inspection in our Cleanroom Lab before entering available stock.
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="/shop" class="btn btn-primary btn-lg">Explore Catalog</a>
+          <a href="/custom-pc" class="btn btn-accent btn-lg">⚡ Custom PC Configurator</a>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(8px); border-color: #334155; color: #fff; padding: 1.5rem; width: 340px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span style="font-weight: 700; font-size: 0.9rem;">PC Ware Lab Guarantee</span>
+            <span class="badge badge-qc-pass">100% Passed</span>
+          </div>
+          <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.8;">
+            ✓ Cinebench Thermal Benchmark<br>
+            ✓ SMART Health >= 90%<br>
+            ✓ Battery Capacity Verified >= 80%<br>
+            ✓ Genuine Activated Windows 11<br>
+            ✓ 12-Month Replacement Warranty
+          </div>
+          <a href="/about" class="btn btn-outline btn-sm" style="width: 100%; margin-top: 1rem; border-color: #38bdf8; color: #38bdf8;">Learn Our QC Process →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <h2 style="font-size: 2rem; font-weight: 800; color: #0f172a;">Refurbished & Custom Categories</h2>
+      <p style="color: #64748b;">Commercial grade laptops, workstation towers, and custom rigs</p>
+    </div>
+    
+    <div class="grid-4">
+      <a href="/laptops" class="card" style="text-decoration: none; text-align: center; padding: 2rem 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">💻</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Refurbished Laptops</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Dell Latitude, ThinkPad, EliteBook, MacBook Pro with RAM/SSD upgrades</p>
+      </a>
+      <a href="/desktops" class="card" style="text-decoration: none; text-align: center; padding: 2rem 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🖥️</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Refurbished Desktops</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Compact Small Form Factor (SFF) and Microtowers for office & trade</p>
+      </a>
+      <a href="/servers" class="card" style="text-decoration: none; text-align: center; padding: 2rem 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🗄️</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Refurbished Servers</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Dell PowerEdge & HP ProLiant dual-Xeon virtualization nodes with iDRAC</p>
+      </a>
+      <a href="/custom-pc" class="card" style="text-decoration: none; text-align: center; padding: 2rem 1.5rem; border: 2px solid #0284c7; background: #f0f9ff;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚡</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #0284c7; margin-bottom: 0.5rem;">Custom PC Builder</h3>
+        <p style="font-size: 0.85rem; color: #0369a1;">10-step compatibility configurator with live power & socket validation</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <div>
+        <h2 style="font-size: 1.6rem; font-weight: 800;">Featured Refurbished Systems</h2>
+        <p style="color: #64748b; font-size: 0.85rem;">Inspected, inwarded, and available in store stock</p>
+      </div>
+      <a href="/shop" class="btn btn-outline btn-sm">View All Hardware →</a>
+    </div>
+    
+    <div id="featured-products-grid" class="grid-3">
+      <div style="padding: 3rem; text-align: center; color: #94a3b8; grid-column: span 3;">Loading verified hardware...</div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const products = await api.get("/api/v1/catalog/products?featured=1");
+        const container = document.getElementById("featured-products-grid");
+        container.innerHTML = "";
+        products.slice(0, 6).forEach(p => {
+          const card = document.createElement("div");
+          card.className = "card product-card";
+          card.innerHTML = `
+            <img src="${p.image_url}" class="product-card-img" alt="${p.title}">
+            <div class="product-card-body">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span class="badge badge-grade-a">${p.condition_grade}</span>
+                <span class="badge badge-qc-pass">✓ QC Passed</span>
+              </div>
+              <h3 class="product-title"><a href="/products/${p.slug}">${p.title}</a></h3>
+              <p style="font-size: 0.825rem; color: #64748b; margin-bottom: 0.75rem; flex-grow: 1;">
+                ${p.description.slice(0, 100)}...
+              </p>
+              <div class="product-price">
+                ₹${p.selling_price.toLocaleString("en-IN")}
+                ${p.base_price > p.selling_price ? `<span class="product-original-price">₹${p.base_price.toLocaleString("en-IN")}</span>` : ""}
+              </div>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                <a href="/products/${p.slug}" class="btn btn-outline btn-sm" style="flex: 1;">Custom Upgrade</a>
+                <button class="btn btn-primary btn-sm" onclick='Cart.addItem(${JSON.stringify(p)})'>Add to Cart</button>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  </script>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div>
+          <div class="logo-brand" style="color: #fff; margin-bottom: 0.75rem;">
+            <span style="color: #38bdf8;">PC</span>WARE
+            <span class="logo-badge">Certified IT Hub</span>
+          </div>
+          <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem;">
+            Rajkot's premier enterprise for certified refurbished laptops, desktops, server nodes, high-performance CAD workstations, and custom liquid-cooled gaming rigs.
+          </p>
+          <div style="font-size: 0.85rem; color: #cbd5e1;">
+            📍 Shop No. SF, 47, 48, 49, Suvarnabhumi Complex, opp. Speedwell Party Plot, Ambika Twp, Mota Mava, Rajkot 360005<br>
+            📞 CEO: +91 94261 83934 | Service: +91 80007 80704
+          </div>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Hardware Categories</h4>
+          <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+            <li><a href="/laptops" style="color: #94a3b8;">Refurbished Laptops</a></li>
+            <li><a href="/desktops" style="color: #94a3b8;">Refurbished Desktops</a></li>
+            <li><a href="/servers" style="color: #94a3b8;">Enterprise Servers</a></li>
+            <li><a href="/workstations" style="color: #94a3b8;">CAD Workstations</a></li>
+            <li><a href="/custom-pc" style="color: #94a3b8;">Custom PC Configurator</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">Services & Warranty</h4>
+          <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+            <li><a href="/repair-tracking" style="color: #94a3b8;">Track Repair Job Card</a></li>
+            <li><a href="/upgrades" style="color: #94a3b8;">RAM & SSD Upgrades</a></li>
+            <li><a href="/warranty" style="color: #94a3b8;">Warranty Terms & RMA</a></li>
+            <li><a href="/services" style="color: #94a3b8;">Corporate IT AMC</a></li>
+            <li><a href="/referral-program" style="color: #94a3b8;">Referral Rewards</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem;">PC Ware Standards</h4>
+          <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+            <li><a href="/about" style="color: #94a3b8;">24-Point QC Testing Lab</a></li>
+            <li><a href="/faq" style="color: #94a3b8;">Condition Grading Guide</a></li>
+            <li><a href="/contact" style="color: #94a3b8;">Showroom & Lab Visit</a></li>
+            <li><a href="/erp" style="color: #38bdf8; font-weight: 700;">Internal Staff ERP ➔</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 PC Ware. All Rights Reserved. GSTIN: 24AAECP1234F1Z5 | HSN 8471 Compliant.</div>
+        <div style="display: flex; gap: 1rem;">
+          <a href="/warranty" style="color: #94a3b8;">Warranty Policy</a>
+          <a href="/faq" style="color: #94a3b8;">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+    
+</body>
+</html>
