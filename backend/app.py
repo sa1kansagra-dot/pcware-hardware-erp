@@ -38,6 +38,7 @@ FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "fr
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True
+    allow_reuse_address = True
 
 class PCWareRequestHandler(BaseHTTPRequestHandler):
     def end_headers(self):
@@ -526,18 +527,36 @@ class PCWareRequestHandler(BaseHTTPRequestHandler):
         except Exception as e:
             return self.send_error_json(str(e), 500, "SERVER_ERROR")
 
-def run(port=8085):
-    server_address = ("0.0.0.0", port)
-    httpd = ThreadedHTTPServer(server_address, PCWareRequestHandler)
+def run(port=8080):
+    httpd = None
+    final_port = port
+    for try_port in range(port, port + 20):
+        try:
+            server_address = ("0.0.0.0", try_port)
+            httpd = ThreadedHTTPServer(server_address, PCWareRequestHandler)
+            final_port = try_port
+            break
+        except OSError:
+            try:
+                server_address = ("127.0.0.1", try_port)
+                httpd = ThreadedHTTPServer(server_address, PCWareRequestHandler)
+                final_port = try_port
+                break
+            except OSError:
+                continue
+
+    if not httpd:
+        raise RuntimeError("Could not find an available port to bind PCWARE server.")
+
     print(f"============================================================")
     print(f"🚀 PC WARE ENTERPRISE WEBSITE + ERP SYSTEM ACTIVE")
-    print(f"🌐 Running on http://localhost:{port}")
+    print(f"🌐 Running on http://localhost:{final_port}")
     print(f"🏢 Showroom: SF 47-49 Suvarnabhumi Complex, Mota Mava, Rajkot")
-    print(f"============================================================")
+    print(f"============================================================", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nServer shutting down gracefully.")
+        print("\nServer shutting down gracefully.", flush=True)
         httpd.server_close()
 
 if __name__ == "__main__":
