@@ -76,13 +76,43 @@ def process_bulk_upload(items_list):
             updated_count += 1
         else:
             image_url = item.get("image_url") or "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400"
-            if "name" in table_cols and "brand" in table_cols and "stock_quantity" in table_cols:
-                cursor.execute("""
-                    INSERT INTO products (
-                        name, brand, category, selling_price, stock_quantity, 
-                        hsn_sac, gst_rate, description, specs, image_url, low_stock_threshold
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (name, brand, category, selling_price, stock_qty, hsn_sac, gst_rate, description, specs, image_url, 5))
+            if "name" in table_cols and "stock_quantity" in table_cols:
+                hsn_col = "hsn_code" if "hsn_code" in table_cols else ("hsn_sac" if "hsn_sac" in table_cols else None)
+                cols = ["name", "selling_price", "stock_quantity", "image_url"]
+                vals = [name, selling_price, stock_qty, image_url]
+
+                if "description" in table_cols:
+                    cols.append("description")
+                    vals.append(description)
+                if "sku" in table_cols:
+                    cols.append("sku")
+                    vals.append(f"SKU-PCW-{os.urandom(3).hex().upper()}")
+                if "cost_price" in table_cols:
+                    cols.append("cost_price")
+                    vals.append(purchase_price or round(selling_price * 0.8, 2))
+
+                if "category" in table_cols:
+                    cols.append("category")
+                    vals.append(category)
+                if "brand" in table_cols:
+                    cols.append("brand")
+                    vals.append(brand)
+                if hsn_col:
+                    cols.append(hsn_col)
+                    vals.append(hsn_sac)
+                if "gst_rate" in table_cols:
+                    cols.append("gst_rate")
+                    vals.append(gst_rate)
+                if "specs" in table_cols:
+                    cols.append("specs")
+                    vals.append(specs)
+                if "low_stock_threshold" in table_cols:
+                    cols.append("low_stock_threshold")
+                    vals.append(5)
+
+                col_str = ", ".join(cols)
+                val_str = ", ".join(["?"] * len(vals))
+                cursor.execute(f"INSERT INTO products ({col_str}) VALUES ({val_str})", vals)
             else:
                 cursor.execute("""
                     INSERT INTO products (
